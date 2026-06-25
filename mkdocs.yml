@@ -1,0 +1,35 @@
+site_name: Your Project Documentation
+site_url: https://your-org.github.io/docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - admonition
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Camera Setup:
+    - Conversion: camera/conversion.md
+    - Settings: camera/settings.md
+  - Calibration Procedure:
+    - Overview: calibration/overview.md
+    - White Balance: calibration/cwb.md
+    - ColorChecker: calibration/colorchecker.md
+    - Wavelength Characterization: calibration/wavelengths.md
+    - Regression Models: calibration/regression.md
+    - Validation: calibration/validation.md
+  - Index Selection:
+    - NDVI vs NDRE: calibration/index-selection.md
+    - ImageJ Scripts: calibration/imagej.md
