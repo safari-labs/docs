@@ -20,6 +20,28 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Fire Risk Model:
+    - Overview: fire-risk-model/index.md
+    - Installation: fire-risk-model/installation.md
+    - Data Pipeline: fire-risk-model/data-pipeline.md
+    - Training:
+      - Stage 1 — Ecology Model: fire-risk-model/training-ecology.md
+      - Stage 2 — Fire Risk Model: fire-risk-model/training-fire-risk.md
+    - Inference: fire-risk-model/inference.md
+    - Deployment: fire-risk-model/deployment.md
+    - Architecture: fire-risk-model/architecture.md
+  - ProtoSat CAN-SBX:
+    - Overview: protosat-cansbx/index.md
+  - ADCS Firmware:
+    - Overview: adcs-firmware/index.md
+  - WDM Firmware:
+    - Overview: wdm-firmware/index.md
+  - CAO ProtoSat:
+    - Overview: cao-protosat/index.md
+  - Cariboulite:
+    - Overview: cariboulite/index.md
+  - RF Radiation Pattern Simulator:
+    - Overview: rf-radiation/index.md
   - Camera Setup:
     - Conversion: camera/conversion.md
     - Settings: camera/settings.md

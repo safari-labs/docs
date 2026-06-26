@@ -1,0 +1,30 @@
+# MkDocs build output
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Docs fetched from other repos at CI time — not committed here
+docs/fire-risk-model/
+docs/protosat-cansbx/
+docs/adcs-firmware/
+docs/wdm-firmware/
+docs/cao-protosat/
+docs/cariboulite/
+docs/rf-radiation/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Claude Code
+.claude/

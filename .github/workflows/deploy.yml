@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  # Allow other repos to trigger this workflow via repository_dispatch
+  repository_dispatch:
+    types: [docs-update]
 
 permissions:
   contents: write
@@ -13,6 +16,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Fetch docs from other SAFARI repos.
+      # Requires a PAT with repo scope added as a repository secret named DOCS_PAT.
+      # Replace SAFARI below with your actual GitHub organization name if different.
+      - name: Fetch docs from other repos
+        env:
+          DOCS_PAT: ${{ secrets.DOCS_PAT }}
+        run: |
+          ORG="safari-labs"
+          BASE_URL="https://x-access-token:${DOCS_PAT}@github.com/${ORG}"
+
+          clone_docs() {
+            local repo=$1
+            local dest=$2
+            git clone --depth 1 "${BASE_URL}/${repo}" "/tmp/${repo}"
+            mkdir -p "docs/${dest}"
+            # Copy docs/ subfolder if it exists, otherwise copy repo root
+            if [ -d "/tmp/${repo}/docs" ]; then
+              cp -r "/tmp/${repo}/docs/." "docs/${dest}/"
+            else
+              cp -r "/tmp/${repo}/." "docs/${dest}/"
+            fi
+          }
+
+          clone_docs "Fire_Risk_Model"            "fire-risk-model"
+          clone_docs "protosat-cansbx"            "protosat-cansbx"
+          clone_docs "ADCS_Firmware"              "adcs-firmware"
+          clone_docs "WDM_Firmware"               "wdm-firmware"
+          clone_docs "CAO_ProtoSat"               "cao-protosat"
+          clone_docs "Cariboulite"                "cariboulite"
+          clone_docs "RF_RadiationPattern_Simulator" "rf-radiation"
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
