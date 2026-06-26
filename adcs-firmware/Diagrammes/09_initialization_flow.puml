@@ -1,0 +1,51 @@
+@startuml Initialization_Flow
+
+skinparam activityBackgroundColor #E3F2FD
+skinparam activityBorderColor #1565C0
+skinparam activityArrowColor #1565C0
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+start
+
+:Serial.begin(115200);
+note right : Debug output ready
+
+:Wire.begin()\nWire.setClock(400 000 Hz);
+note right : I2C bus on GPIO 4/5
+
+:gnss.begin()\n— probe I2C address 0x42;
+
+if (M9N responds?) then (no)
+  #FF8A80:Print "ERROR: GNSS not detected!";
+  :halt — while(true) delay(1000);
+  stop
+else (yes)
+  :Print "GNSS initialized";
+endif
+
+:sensorMgr.addSensor(new Pt1000Sensor());
+note right : calls Pt1000Sensor::begin()
+
+:sensorMgr.addSensor(new IMUSensor());
+note right : calls IMUSensor::begin()
+
+:sensorMgr.addSensor(new AltimeterSensor());
+note right : calls AltimeterSensor::begin()
+
+:watchdog.begin();
+
+if (Watchdog OK?) then (no)
+  #FFE082:Print "WARNING: Watchdog comm failed";
+  note right : non-fatal — continue
+else (yes)
+  :Print "Watchdog initialized";
+endif
+
+:Print "System ready!";
+
+:Enter loop();
+
+stop
+
+@enduml

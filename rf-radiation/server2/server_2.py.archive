@@ -1,0 +1,907 @@
+#!/usr/bin/env python3
+"""
+RF Link Budget Simulator v2 — Borealis ProtoSat / ICARUS7
+- Pre-cached patterns at startup (no per-request recompute)
+- Editable RF budget via POST
+- Cesium pattern geometry: balloon TX + GS RX per frame
+- Vectorized numpy throughout
+- Ground power grid: 25x25 meshgrid with per-point RSSI (dBm)
+"""
+
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+import numpy as np
+import math, time, os, glob, json
+from openpyxl import load_workbook
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+CORS(app)
+
+# Upload directory
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), '..', 'telemetry_uploads')
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+PRESETS_FILE = os.path.join(os.path.dirname(__file__), '..', 'antenna_presets.json')
+CUSTOM_ANTENNAS_FILE = os.path.join(os.path.dirname(__file__), '..', 'custom_antennas.json')
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def load_custom_presets():
+    """Load custom antenna presets from JSON file"""
+    if os.path.exists(PRESETS_FILE):
+        try:
+            with open(PRESETS_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_custom_presets(presets):
+    """Save custom antenna presets to JSON file"""
+    with open(PRESETS_FILE, 'w') as f:
+        json.dump(presets, f, indent=2)
+
+def load_custom_antennas():
+    """Load custom antenna definitions from JSON file"""
+    if os.path.exists(CUSTOM_ANTENNAS_FILE):
+        try:
+            with open(CUSTOM_ANTENNAS_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_custom_antennas(antennas):
+    """Save custom antenna definitions to JSON file"""
+    with open(CUSTOM_ANTENNAS_FILE, 'w') as f:
+        json.dump(antennas, f, indent=2)
+
+# ─── Mutable RF Budget ────────────────────────────────────────────────────────
+RF_BUDGET = {
+    "modem": "RFD900x",
+    "frequency_mhz": 902.0,
+    "tx_power_dbm": 24.0,
+    "tx_pa_gain_db": 0.0,
+    "tx_cable_loss_db": -1.0,
+    "rx_sensitivity_dbm": -110.0,
+    "rx_lna_gain_db": 0.0,
+    "rx_lna_loss_db": 0.0,
+    "rx_lowband_filter_loss_db": 0.0,
+    "atm_constant_db_per_km": 0.02,
+    "polarization_mismatch_db": -3.0,
+    "pointing_loss_db": -3.0,
+    "min_link_margin_db": 10.0,
+    "recommended_link_margin_db": 15.0,
+    "sensitivity_warning_band_db": 3.0,
+    "speed_kbps": 10.0,
+    "enable_attitude_rotation": True,
+    "attitude_jitter_deg": 2.0,
+    # RF Realism features
+    "enable_multipath_fading": False,
+    "multipath_fade_depth_db": -8.0,
+    "enable_pendulum_swing": False,
+    "pendulum_frequency_hz": 0.5,
+    "enable_body_shadowing": False,
+    "body_shadow_angle_range_deg": 45.0,
+    "body_shadow_attenuation_db": -20.0,
+}
+
+GROUND_STATION = {"lat": 48.5678, "lon": -81.3655, "alt": 285.8}
+
+# ─── Antenna Patterns (vectorized) ───────────────────────────────────────────
+
+def dipole_pattern(th, ph, g=2.2):
+    t = np.radians(np.asarray(th, float))
+    p = np.sin(t)**2
+    p = np.clip(p, 1e-12, 1)
+    return np.clip(10*np.log10(p) + g, -200, 100)
+
+def yagi_pattern(th, ph, g=13.0, bw=30):
+    t = np.radians(np.asarray(th, float))
+    main = np.clip(np.abs(np.cos(t))**(2*np.pi/bw), 0, 1)
+    sll  = 0.05*np.abs(np.cos(3*t))
+    p    = main + sll
+    p    = np.clip(p, 1e-12, 1e6)
+    mx   = np.max(p)
+    mx   = max(mx, 1e-12)
+    normalized = np.clip(p/mx, 1e-12, 1)
+    return np.clip(10*np.log10(normalized) + g, -200, 100)
+
+def patch_pattern(th, ph, g=7.0):
+    th = np.asarray(th, float)
+    t  = np.radians(th)
+    p  = np.where(th < 90, np.cos(t)**2, 1e-12)
+    p  = np.clip(p, 1e-12, 1)
+    return np.clip(10*np.log10(p) + g, -200, 100)
+
+def helix_pattern(th, ph, g=10.0):
+    t  = np.radians(np.asarray(th, float))
+    n  = 8
+    sinc_arg = np.clip(n*np.cos(t)/np.pi, -100, 100)
+    p  = (np.abs(np.cos(t))*np.sinc(sinc_arg))**2
+    p  = np.clip(p, 1e-12, 1e6)
+    mx = np.max(p)
+    mx = max(mx, 1e-12)
+    normalized = np.clip(p/mx, 1e-12, 1)
+    return np.clip(10*np.log10(normalized) + g, -200, 100)
+
+def omni_pattern(th, ph, g=2.2):
+    return np.full_like(np.asarray(th, float), g)
+
+ANTENNA_CONFIGS = {
+    "dipole_half_wave": {"name":"Dipôle λ/2","gain_dbi":2.2,"fn":dipole_pattern,"color":"#00d4ff","desc":"Pattern torique, omnidirectionnel H","use":"Embarquée ballon"},
+    "yagi":             {"name":"Yagi-Uda",  "gain_dbi":13., "fn":yagi_pattern,  "color":"#ff6b35","desc":"Lobe principal étroit, très directif","use":"Station sol pointée ballon"},
+    "patch":            {"name":"Patch",     "gain_dbi":7.,  "fn":patch_pattern, "color":"#a8ff3e","desc":"Hémisphérique, polarisation linéaire","use":"Embarquée — couverture ciel"},
+    "helix":            {"name":"Hélice axiale","gain_dbi":10.,"fn":helix_pattern,"color":"#ff3ea8","desc":"Mode axial, polarisation circulaire","use":"Embarquée — tolérance roulis"},
+    "omni":             {"name":"Omni",      "gain_dbi":2.2, "fn":omni_pattern,  "color":"#ffe03e","desc":"Couverture sphérique uniforme","use":"Référence / sol non-orienté"},
+}
+
+# ─── Pattern cache ────────────────────────────────────────────────────────────
+PATTERN_CACHE  = {}   # "key_res" -> Plotly surface data
+CESIUM_CACHE   = {}   # "key"     -> lightweight cone data
+
+RESOLUTIONS = {"low":20,"medium":36,"high":56}
+
+def _make_plotly_pattern(key, res):
+    cfg = ANTENNA_CONFIGS[key]
+    th  = np.linspace(0, 180, res)
+    ph  = np.linspace(0, 360, res*2)
+    TH, PH = np.meshgrid(th, ph)
+    gdb = cfg["fn"](TH, PH, cfg["gain_dbi"])
+    lin = 10**(gdb/10); r = lin/np.max(lin)
+    tr  = np.radians(TH); pr = np.radians(PH)
+    return {
+        "x": (r*np.sin(tr)*np.cos(pr)).tolist(),
+        "y": (r*np.sin(tr)*np.sin(pr)).tolist(),
+        "z": (r*np.cos(tr)).tolist(),
+        "gain_db": gdb.tolist(),
+        "max_gain_dbi": float(np.max(gdb)),
+        "color": cfg["color"], "name": cfg["name"],
+    }
+
+def _make_cesium_pattern(key, n_phi=48, n_th=24):
+    """Compact (r, theta, phi) mesh for GPU-side geo-transform in Cesium."""
+    cfg = ANTENNA_CONFIGS[key]
+    th  = np.linspace(0, 180, n_th)
+    ph  = np.linspace(0, 360, n_phi, endpoint=False)
+    TH, PH = np.meshgrid(th, ph)
+    gdb = cfg["fn"](TH, PH, cfg["gain_dbi"])
+    lin = 10**(gdb/10); r = lin/np.max(lin)
+    return {
+        "r":         r.tolist(),
+        "theta_deg": TH.tolist(),
+        "phi_deg":   PH.tolist(),
+        "max_gain_dbi": float(np.max(gdb)),
+        "color": cfg["color"], "name": cfg["name"],
+        "n_phi": n_phi, "n_th": n_th,
+    }
+
+def precompute():
+    t0 = time.time()
+    print("[CACHE] Pre-computing all patterns...", flush=True)
+    for k in ANTENNA_CONFIGS:
+        for rname, rval in RESOLUTIONS.items():
+            PATTERN_CACHE[f"{k}_{rname}"] = _make_plotly_pattern(k, rval)
+        CESIUM_CACHE[k] = _make_cesium_pattern(k)
+    print(f"[CACHE] Ready — {len(PATTERN_CACHE)} patterns in {time.time()-t0:.2f}s", flush=True)
+
+# ─── Attitude Rotation ─────────────────────────────────────────────────────────
+
+def apply_attitude_rotation(elevation_deg, azimuth_deg, roll_deg, pitch_deg, yaw_deg):
+    """
+    Apply aircraft attitude (roll, pitch, yaw) to modify antenna pointing angles.
+    """
+    el_rad = np.radians(elevation_deg)
+    az_rad = np.radians(azimuth_deg)
+    roll_rad = np.radians(roll_deg)
+    pitch_rad = np.radians(pitch_deg)
+    yaw_rad = np.radians(yaw_deg)
+
+    sin_el = np.sin(el_rad)
+    cos_el = np.cos(el_rad)
+    sin_az = np.sin(az_rad)
+    cos_az = np.cos(az_rad)
+
+    dir_x = cos_el * cos_az
+    dir_y = cos_el * sin_az
+    dir_z = sin_el
+
+    cos_yaw = np.cos(yaw_rad)
+    sin_yaw = np.sin(yaw_rad)
+    temp_x = cos_yaw * dir_x - sin_yaw * dir_y
+    temp_y = sin_yaw * dir_x + cos_yaw * dir_y
+    dir_z_temp = dir_z
+
+    cos_pitch = np.cos(pitch_rad)
+    sin_pitch = np.sin(pitch_rad)
+    rot_x = cos_pitch * temp_x + sin_pitch * dir_z_temp
+    rot_y = temp_y
+    rot_z = -sin_pitch * temp_x + cos_pitch * dir_z_temp
+
+    cos_roll = np.cos(roll_rad)
+    sin_roll = np.sin(roll_rad)
+    final_x = rot_x
+    final_y = cos_roll * rot_y - sin_roll * rot_z
+    final_z = sin_roll * rot_y + cos_roll * rot_z
+
+    new_el = np.degrees(np.arctan2(final_z, np.sqrt(final_x**2 + final_y**2)))
+    new_az = np.degrees(np.arctan2(final_y, final_x)) % 360
+
+    return new_el, new_az
+
+def apply_attitude_jitter(elevation_deg, azimuth_deg, jitter_amount_deg):
+    """Add random jitter to pointing angles."""
+    jitter_el = np.random.normal(0, jitter_amount_deg)
+    jitter_az = np.random.normal(0, jitter_amount_deg)
+    return elevation_deg + jitter_el, azimuth_deg + jitter_az
+
+def calculate_footprint(lat, lon, alt, tx_antenna_key, min_power_dbm=-120, num_points=72):
+    """Legacy footprint — kept for backward compatibility."""
+    try:
+        cfg = get_antenna_config(tx_antenna_key)
+        R = 6371000.
+        if "yagi" in tx_antenna_key.lower():
+            beamwidth_3db = 30.0
+        elif "patch" in tx_antenna_key.lower():
+            beamwidth_3db = 60.0
+        elif "helix" in tx_antenna_key.lower():
+            beamwidth_3db = 40.0
+        elif "dipole" in tx_antenna_key.lower():
+            beamwidth_3db = 120.0
+        else:
+            beamwidth_3db = 80.0
+
+        half_angle_3db_rad = np.radians(beamwidth_3db / 2)
+        max_ground_range = alt * np.tan(half_angle_3db_rad)
+        footprint = []
+        for i in range(num_points):
+            azimuth_to_point = (360.0 / num_points) * i
+            bearing_rad = np.radians(azimuth_to_point)
+            angular_distance = max_ground_range / R
+            lat_rad = np.radians(lat)
+            lon_rad = np.radians(lon)
+            lat2_rad = np.arcsin(np.sin(lat_rad)*np.cos(angular_distance) +
+                                 np.cos(lat_rad)*np.sin(angular_distance)*np.cos(bearing_rad))
+            lon2_rad = lon_rad + np.arctan2(np.sin(bearing_rad)*np.sin(angular_distance)*np.cos(lat_rad),
+                                            np.cos(angular_distance) - np.sin(lat_rad)*np.sin(lat2_rad))
+            footprint.append([np.degrees(lat2_rad), np.degrees(lon2_rad)])
+        return footprint
+    except Exception as e:
+        print(f"[ERROR] Footprint calculation failed: {e}", flush=True)
+        return []
+
+# ─── Vectorized geometry + budget ─────────────────────────────────────────────
+
+def geo_vec(lats, lons, alts, gs):
+    R    = 6371000.
+    la   = np.asarray(lats,float); lo = np.asarray(lons,float); al = np.asarray(alts,float)
+    dlat = np.radians(la - gs["lat"]); dlon = np.radians(lo - gs["lon"])
+    a    = np.sin(dlat/2)**2 + np.cos(np.radians(gs["lat"]))*np.cos(np.radians(la))*np.sin(dlon/2)**2
+    hdist= R*2*np.arctan2(np.sqrt(a),np.sqrt(1-a))
+    dalt = al - gs["alt"]
+    slant= np.sqrt(hdist**2+dalt**2)
+    elev = np.degrees(np.arctan2(dalt, hdist))
+    y    = np.sin(np.radians(lo-gs["lon"]))*np.cos(np.radians(la))
+    x    = np.cos(np.radians(gs["lat"]))*np.sin(np.radians(la)) - np.sin(np.radians(gs["lat"]))*np.cos(np.radians(la))*np.cos(np.radians(lo-gs["lon"]))
+    azim = np.degrees(np.arctan2(y,x))%360
+    return slant/1000, elev, azim
+
+def is_antenna_valid(key):
+    """Check if antenna exists (built-in or custom)"""
+    if key in ANTENNA_CONFIGS:
+        return True
+    custom_antennas = load_custom_antennas()
+    return key in custom_antennas
+
+def get_antenna_config(key):
+    """Get antenna configuration - supports both built-in and custom antennas"""
+    if key in ANTENNA_CONFIGS:
+        return ANTENNA_CONFIGS[key]
+    custom_antennas = load_custom_antennas()
+    if key in custom_antennas:
+        custom = custom_antennas[key]
+        base_type = custom.get('base_pattern', 'dipole_half_wave')
+        base_cfg = ANTENNA_CONFIGS[base_type]
+        return {
+            "name": custom["name"],
+            "gain_dbi": custom["gain_dbi"],
+            "fn": base_cfg["fn"],
+            "color": custom.get("color", "#00d4ff"),
+            "desc": custom.get("description", "Antenne personnalisée"),
+            "use": "Personnalisée"
+        }
+    return ANTENNA_CONFIGS["dipole_half_wave"]
+
+def gain_vec(key, elev, azim):
+    cfg   = get_antenna_config(key)
+    theta = np.clip(90-np.asarray(elev,float), 0, 180)
+    g     = cfg["fn"](theta, np.asarray(azim,float), cfg["gain_dbi"])
+    return np.asarray(g, float)
+
+# ─── RF Realism Effects ───────────────────────────────────────────────────────
+
+def apply_multipath_fading(margin_db, index, enable=False, fade_depth_db=-8.0):
+    if not enable or len(TELEMETRY) == 0:
+        return margin_db
+    np.random.seed(index + (int(time.time()) % 1000) * 1000)
+    rayleigh = np.random.rayleigh(scale=1.0)
+    fade_amount = (1 - np.exp(-rayleigh)) * abs(fade_depth_db)
+    return margin_db - fade_amount
+
+def apply_pendulum_swing(margin_db, timestamp_str, enable=False, freq_hz=0.5):
+    if not enable:
+        return margin_db
+    try:
+        time_parts = timestamp_str.split('T')[1].split(':')
+        total_seconds = int(time_parts[0])*3600 + int(time_parts[1])*60 + float(time_parts[2])
+    except:
+        total_seconds = 0
+    phase = 2 * np.pi * freq_hz * total_seconds
+    pendulum_effect = 3.0 * np.sin(phase)
+    return margin_db + pendulum_effect
+
+def apply_body_shadowing(elevation_deg, azimuth_deg, enable=False,
+                         shadow_angle_range_deg=45.0, shadow_attenuation_db=-20.0):
+    if not enable:
+        return 0
+    shadow_center = 180
+    shadow_half_width = shadow_angle_range_deg / 2
+    az_dist = min(
+        abs(azimuth_deg - shadow_center),
+        360 - abs(azimuth_deg - shadow_center)
+    )
+    if az_dist < shadow_half_width:
+        taper = (1 + np.cos(np.pi * az_dist / shadow_half_width)) / 2
+        loss = shadow_attenuation_db * (1 - taper)
+        return loss
+    return 0
+
+# ─── Vectorized Link Budget ───────────────────────────────────────────────────
+
+def budget_vec(tx, rx, bud=None):
+    if bud is None: bud = RF_BUDGET
+    lats = np.array([p["lat"] for p in TELEMETRY])
+    lons = np.array([p["lon"] for p in TELEMETRY])
+    alts = np.array([p["alt"] for p in TELEMETRY])
+    dist, elev, azim = geo_vec(lats, lons, alts, GROUND_STATION)
+
+    if bud.get("enable_attitude_rotation", True):
+        rolls = np.array([p.get("roll_deg", 0) for p in TELEMETRY])
+        pitches = np.array([p.get("pitch_deg", 0) for p in TELEMETRY])
+        yaws = np.array([p.get("yaw_deg", 0) for p in TELEMETRY])
+        elev_rot = np.zeros_like(elev)
+        azim_rot = np.zeros_like(azim)
+        for i in range(len(elev)):
+            elev_rot[i], azim_rot[i] = apply_attitude_rotation(
+                elev[i], azim[i], rolls[i], pitches[i], yaws[i]
+            )
+        jitter = bud.get("attitude_jitter_deg", 2.0)
+        if jitter > 0:
+            jitter_el = np.random.normal(0, jitter, len(elev))
+            jitter_az = np.random.normal(0, jitter, len(azim))
+            elev_rot += jitter_el
+            azim_rot += jitter_az
+        elev = elev_rot
+        azim = azim_rot % 360
+
+    txg  = gain_vec(tx, elev, azim)
+    rxg  = gain_vec(rx, elev, azim)
+    f    = bud["frequency_mhz"]
+    fspl = np.where(dist>0, 20*np.log10(np.maximum(dist,1e-9))+20*np.log10(f)+32.44, 0)
+    atm  = bud["atm_constant_db_per_km"]*dist
+    loss = fspl+atm+bud["polarization_mismatch_db"]+bud["pointing_loss_db"]
+    eirp = bud["tx_power_dbm"]+txg+bud["tx_pa_gain_db"]+bud["tx_cable_loss_db"]
+    rxp  = eirp-loss+rxg
+    rxadc= rxp+bud["rx_lna_gain_db"]-bud["rx_lna_loss_db"]-bud["rx_lowband_filter_loss_db"]
+    marg = rxadc-bud["rx_sensitivity_dbm"]
+
+    for i in range(len(marg)):
+        if bud.get("enable_multipath_fading", False):
+            marg[i] = apply_multipath_fading(marg[i], i,
+                enable=True,
+                fade_depth_db=bud.get("multipath_fade_depth_db", -8.0))
+        if bud.get("enable_pendulum_swing", False):
+            marg[i] = apply_pendulum_swing(marg[i], TELEMETRY[i]["timestamp"],
+                enable=True,
+                freq_hz=bud.get("pendulum_frequency_hz", 0.5))
+        if bud.get("enable_body_shadowing", False):
+            shadow_loss = apply_body_shadowing(elev[i], azim[i],
+                enable=True,
+                shadow_angle_range_deg=bud.get("body_shadow_angle_range_deg", 45.0),
+                shadow_attenuation_db=bud.get("body_shadow_attenuation_db", -20.0))
+            marg[i] += shadow_loss
+
+    def st(m):
+        if m>=bud["recommended_link_margin_db"]: return "NOMINAL"
+        if m>=bud["min_link_margin_db"]:          return "WARNING"
+        if m>=0:                                   return "MARGINAL"
+        return "LINK_LOST"
+    return dict(
+        dist_km=np.round(dist,3).tolist(), elevation_deg=np.round(elev,2).tolist(),
+        azimuth_deg=np.round(azim,2).tolist(), tx_gain_dbi=np.round(txg,2).tolist(),
+        rx_gain_dbi=np.round(rxg,2).tolist(), eirp_dbm=np.round(eirp,2).tolist(),
+        fspl_db=np.round(fspl,2).tolist(), atm_loss_db=np.round(atm,4).tolist(),
+        total_path_loss_db=np.round(loss,2).tolist(), rx_power_dbm=np.round(rxp,2).tolist(),
+        rx_at_adc_dbm=np.round(rxadc,2).tolist(), margin_db=np.round(marg,2).tolist(),
+        statuses=[st(float(m)) for m in marg],
+    )
+
+# ─── Telemetry ────────────────────────────────────────────────────────────────
+
+CURRENT_TELEMETRY_FILE = None
+
+def load_telemetry(filename=None):
+    """Load telemetry from XLSX file."""
+    global CURRENT_TELEMETRY_FILE
+
+    if filename is None:
+        telemetry_file = os.path.join(os.path.dirname(__file__), '..', 'tm_test.xlsx')
+        CURRENT_TELEMETRY_FILE = 'tm_test.xlsx'
+    else:
+        telemetry_file = os.path.join(UPLOAD_DIR, filename)
+        if not os.path.exists(telemetry_file):
+            return []
+        CURRENT_TELEMETRY_FILE = filename
+
+    try:
+        wb = load_workbook(telemetry_file, read_only=True)
+        ws = wb.active
+        out = []
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            if row[0] and row[3] and row[4] and row[5]:
+                roll_deg  = float(row[10]) if len(row) > 10 and row[10] else 0.0
+                pitch_deg = float(row[11]) if len(row) > 11 and row[11] else 0.0
+                yaw_deg   = float(row[12]) if len(row) > 12 and row[12] else 0.0
+                out.append({
+                    "timestamp":      row[0].isoformat(),
+                    "lat":            float(row[3]),
+                    "lon":            float(row[4]),
+                    "alt":            float(row[5]),
+                    "ground_speed":   float(row[6] or 0),
+                    "vertical_speed": float(row[7] or 0),
+                    "num_sats":       int(row[8] or 0),
+                    "pressure":       float(row[9] or 0),
+                    "roll_deg":       roll_deg,
+                    "pitch_deg":      pitch_deg,
+                    "yaw_deg":        yaw_deg,
+                })
+        return out
+    except Exception as e:
+        print(f"[ERROR] Failed to load telemetry from {filename}: {e}", flush=True)
+        return []
+
+TELEMETRY = load_telemetry()
+print(f"[SERVER] {len(TELEMETRY)} telemetry points from {CURRENT_TELEMETRY_FILE}", flush=True)
+precompute()
+
+# ─── Ground Power Grid ────────────────────────────────────────────────────────
+
+def rotation_matrix_from_euler(roll_deg, pitch_deg, yaw_deg):
+    """
+    ZYX convention: yaw → pitch → roll.
+    Returns 3×3 rotation matrix (body → NED).
+    """
+    r = np.radians(roll_deg)
+    p = np.radians(pitch_deg)
+    y = np.radians(yaw_deg)
+
+    cr, sr = np.cos(r), np.sin(r)
+    cp, sp = np.cos(p), np.sin(p)
+    cy, sy = np.cos(y), np.sin(y)
+
+    # R = Rz(yaw) · Ry(pitch) · Rx(roll)
+    R = np.array([
+        [cy*cp,  cy*sp*sr - sy*cr,  cy*sp*cr + sy*sr],
+        [sy*cp,  sy*sp*sr + cy*cr,  sy*sp*cr - cy*sr],
+        [  -sp,            cp*sr,             cp*cr ],
+    ], dtype=float)
+    return R  # shape (3,3)
+
+
+# ─── Routes ───────────────────────────────────────────────────────────────────
+
+@app.route("/")
+def serve_index():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    return send_from_directory(script_dir, 'index2.html')
+
+@app.route("/favicon.ico")
+def favicon():
+    return jsonify({"error": "no favicon"}), 204
+
+@app.route("/api/upload_telemetry", methods=["POST"])
+def upload_telemetry():
+    global TELEMETRY
+
+    if 'file' not in request.files:
+        return jsonify({"ok": False, "error": "No file provided"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"ok": False, "error": "Empty filename"}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({"ok": False, "error": "Only .xlsx and .xls files allowed"}), 400
+
+    try:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        file.save(filepath)
+        new_telem = load_telemetry(filename)
+        if len(new_telem) == 0:
+            return jsonify({"ok": False, "error": "No valid telemetry data in file"}), 400
+        TELEMETRY = new_telem
+        print(f"[UPLOAD] Loaded {len(TELEMETRY)} points from {filename}", flush=True)
+        return jsonify({"ok": True, "message": f"{len(TELEMETRY)} points loaded"})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route("/api/telemetry_files")
+def get_telemetry_files():
+    files_list = [{"name": "tm_test.xlsx", "current": CURRENT_TELEMETRY_FILE == "tm_test.xlsx"}]
+    if os.path.exists(UPLOAD_DIR):
+        for f in os.listdir(UPLOAD_DIR):
+            if allowed_file(f):
+                files_list.append({"name": f, "current": CURRENT_TELEMETRY_FILE == f})
+    return jsonify({"files": files_list})
+
+@app.route("/api/delete_telemetry", methods=["DELETE"])
+def delete_telemetry():
+    global TELEMETRY, CURRENT_TELEMETRY_FILE
+
+    filename = request.args.get('file', '')
+    if not filename or filename == 'tm_test.xlsx':
+        return jsonify({"ok": False, "error": "Cannot delete default file"}), 400
+
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    try:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            print(f"[DELETE] Removed {filename}", flush=True)
+        if CURRENT_TELEMETRY_FILE == filename:
+            TELEMETRY = load_telemetry()
+        return jsonify({"ok": True, "message": "File deleted"})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route("/api/antenna_presets")
+def get_antenna_presets():
+    custom = load_custom_presets()
+    return jsonify({"presets": custom})
+
+@app.route("/api/antenna_presets", methods=["POST"])
+def create_antenna_preset():
+    data = request.get_json(force=True)
+    name = data.get('name', '').strip()
+    tx = data.get('tx', '')
+    rx = data.get('rx', '')
+
+    if not name or not tx or not rx:
+        return jsonify({"ok": False, "error": "Missing name, tx, or rx"}), 400
+    if not is_antenna_valid(tx) or not is_antenna_valid(rx):
+        return jsonify({"ok": False, "error": "Invalid antenna type"}), 400
+
+    presets = load_custom_presets()
+    preset_id = name.lower().replace(' ', '_')
+    presets[preset_id] = {
+        "name": name, "tx": tx, "rx": rx,
+        "tx_name": ANTENNA_CONFIGS[tx]["name"],
+        "rx_name": ANTENNA_CONFIGS[rx]["name"]
+    }
+    save_custom_presets(presets)
+    print(f"[PRESET] Created {preset_id}: {tx} + {rx}", flush=True)
+    return jsonify({"ok": True, "preset": presets[preset_id]})
+
+@app.route("/api/antenna_presets/<preset_id>", methods=["DELETE"])
+def delete_antenna_preset(preset_id):
+    presets = load_custom_presets()
+    if preset_id not in presets:
+        return jsonify({"ok": False, "error": "Preset not found"}), 404
+    del presets[preset_id]
+    save_custom_presets(presets)
+    print(f"[PRESET] Deleted {preset_id}", flush=True)
+    return jsonify({"ok": True})
+
+@app.route("/api/custom_antennas")
+def get_custom_antennas():
+    custom = load_custom_antennas()
+    return jsonify({"antennas": custom})
+
+@app.route("/api/custom_antennas", methods=["POST"])
+def create_custom_antenna():
+    data = request.get_json(force=True)
+    name = data.get('name', '').strip()
+    antenna_type = data.get('antenna_type', 'dipole')
+    gain_dbi = float(data.get('gain_dbi', 2.2))
+    beamwidth_h = float(data.get('beamwidth_h_deg', 60.0))
+    beamwidth_v = float(data.get('beamwidth_v_deg', 60.0))
+    polarization = data.get('polarization', 'linear')
+    cable_loss_db = float(data.get('cable_loss_db', 0.0))
+    wavelength_cm = data.get('wavelength_cm', None)
+    reference_url = data.get('reference_url', None)
+    description = data.get('description', 'Antenne personnalisée')
+
+    if not name:
+        return jsonify({"ok": False, "error": "Antenna name required"}), 400
+
+    custom = load_custom_antennas()
+    antenna_id = f"custom_{name.lower().replace(' ', '_')}"
+    custom[antenna_id] = {
+        "name": name, "type": antenna_type, "gain_dbi": gain_dbi,
+        "beamwidth_h_deg": beamwidth_h, "beamwidth_v_deg": beamwidth_v,
+        "polarization": polarization, "cable_loss_db": cable_loss_db,
+        "wavelength_cm": wavelength_cm, "reference_url": reference_url,
+        "description": description, "base_pattern": antenna_type
+    }
+    save_custom_antennas(custom)
+    print(f"[ANTENNA] Created {antenna_id}: {name} ({gain_dbi} dBi)", flush=True)
+    return jsonify({"ok": True, "antenna": custom[antenna_id]})
+
+@app.route("/api/custom_antennas/<antenna_id>", methods=["PUT"])
+def update_custom_antenna(antenna_id):
+    data = request.get_json(force=True)
+    custom = load_custom_antennas()
+    if antenna_id not in custom:
+        return jsonify({"ok": False, "error": "Antenna not found"}), 404
+    if 'name' in data:       custom[antenna_id]['name']         = data['name'].strip()
+    if 'gain_db' in data:    custom[antenna_id]['gain_dbi']      = float(data['gain_db'])
+    if 'color' in data:      custom[antenna_id]['color']         = data['color']
+    if 'description' in data:custom[antenna_id]['description']   = data['description']
+    if 'type' in data and data['type'] in ANTENNA_CONFIGS:
+        custom[antenna_id]['base_pattern'] = data['type']
+    save_custom_antennas(custom)
+    print(f"[ANTENNA] Updated {antenna_id}", flush=True)
+    return jsonify({"ok": True, "antenna": custom[antenna_id]})
+
+@app.route("/api/custom_antennas/<antenna_id>", methods=["DELETE"])
+def delete_custom_antenna(antenna_id):
+    custom = load_custom_antennas()
+    if antenna_id not in custom:
+        return jsonify({"ok": False, "error": "Antenna not found"}), 404
+    del custom[antenna_id]
+    save_custom_antennas(custom)
+    print(f"[ANTENNA] Deleted {antenna_id}", flush=True)
+    return jsonify({"ok": True})
+
+@app.route("/api/config")
+def get_config():
+    return jsonify({
+        "rf_budget": RF_BUDGET, "ground_station": GROUND_STATION,
+        "antennas": {k:{"name":v["name"],"gain_dbi":v["gain_dbi"],"color":v["color"],
+                        "description":v["desc"],"use_case":v["use"]} for k,v in ANTENNA_CONFIGS.items()},
+        "telemetry_count": len(TELEMETRY),
+    })
+
+@app.route("/api/rf_budget", methods=["POST"])
+def update_rf_budget():
+    data = request.get_json(force=True)
+    keys = ["frequency_mhz","tx_power_dbm","tx_pa_gain_db","tx_cable_loss_db",
+            "rx_sensitivity_dbm","rx_lna_gain_db","rx_lna_loss_db","rx_lowband_filter_loss_db",
+            "atm_constant_db_per_km","polarization_mismatch_db","pointing_loss_db",
+            "min_link_margin_db","recommended_link_margin_db","sensitivity_warning_band_db","speed_kbps",
+            "enable_attitude_rotation","attitude_jitter_deg",
+            "enable_multipath_fading","multipath_fade_depth_db",
+            "enable_pendulum_swing","pendulum_frequency_hz",
+            "enable_body_shadowing","body_shadow_angle_range_deg","body_shadow_attenuation_db"]
+    for k in keys:
+        if k in data:
+            if k in ["enable_attitude_rotation","enable_multipath_fading","enable_pendulum_swing","enable_body_shadowing"]:
+                RF_BUDGET[k] = bool(data[k])
+            else:
+                RF_BUDGET[k] = float(data[k])
+    return jsonify({"ok": True, "rf_budget": RF_BUDGET})
+
+@app.route("/api/telemetry")
+def get_telemetry():
+    return jsonify(TELEMETRY)
+
+@app.route("/api/pattern/<key>")
+def get_pattern(key):
+    if not is_antenna_valid(key): return jsonify({"error":"Unknown antenna"}), 400
+    res = request.args.get("resolution","medium")
+    if res not in RESOLUTIONS: res = "medium"
+    ck  = f"{key}_{res}"
+    if ck not in PATTERN_CACHE: PATTERN_CACHE[ck] = _make_plotly_pattern(key, RESOLUTIONS[res])
+    return jsonify(PATTERN_CACHE[ck])
+
+@app.route("/api/cesium_pattern/<key>")
+def get_cesium_pattern(key):
+    if not is_antenna_valid(key): return jsonify({"error":"Unknown antenna"}), 400
+    if key not in CESIUM_CACHE: CESIUM_CACHE[key] = _make_cesium_pattern(key)
+    return jsonify(CESIUM_CACHE[key])
+
+@app.route("/api/link_budget")
+def get_link_budget():
+    tx = request.args.get("tx","dipole_half_wave")
+    rx = request.args.get("rx","yagi")
+    if not is_antenna_valid(tx) or not is_antenna_valid(rx):
+        return jsonify({"error":"Unknown antenna"}),400
+    b = budget_vec(tx, rx)
+    out = []
+    for i,pt in enumerate(TELEMETRY):
+        out.append({**pt,"dist_km":b["dist_km"][i],"elevation_deg":b["elevation_deg"][i],
+                    "azimuth_deg":b["azimuth_deg"][i],"tx_gain_dbi":b["tx_gain_dbi"][i],
+                    "rx_gain_dbi":b["rx_gain_dbi"][i],"eirp_dbm":b["eirp_dbm"][i],
+                    "fspl_db":b["fspl_db"][i],"atm_loss_db":b["atm_loss_db"][i],
+                    "total_path_loss_db":b["total_path_loss_db"][i],"rx_power_dbm":b["rx_power_dbm"][i],
+                    "rx_at_adc_dbm":b["rx_at_adc_dbm"][i],"margin_db":b["margin_db"][i],
+                    "status":b["statuses"][i]})
+    return jsonify(out)
+
+@app.route("/api/statistics")
+def get_statistics():
+    tx = request.args.get("tx","dipole_half_wave")
+    rx = request.args.get("rx","yagi")
+    b  = budget_vec(tx, rx)
+    mg = b["margin_db"]; st = b["statuses"]; n = len(st)
+    return jsonify({
+        "min_margin_db":round(min(mg),2),"max_margin_db":round(max(mg),2),
+        "avg_margin_db":round(sum(mg)/n,2),
+        "status_counts":{"NOMINAL":st.count("NOMINAL"),"WARNING":st.count("WARNING"),
+                         "MARGINAL":st.count("MARGINAL"),"LINK_LOST":st.count("LINK_LOST")},
+        "link_reliability_pct":round(100*(st.count("NOMINAL")+st.count("WARNING"))/n,1),
+        "total_points":n,
+    })
+
+@app.route("/api/frame/<int:idx>")
+def get_frame(idx):
+    tx = request.args.get("tx","dipole_half_wave")
+    rx = request.args.get("rx","yagi")
+    if idx >= len(TELEMETRY): return jsonify({"error":"Out of range"}),400
+    pt   = TELEMETRY[idx]
+    dist, elev, azim = geo_vec([pt["lat"]],[pt["lon"]],[pt["alt"]], GROUND_STATION)
+    d=float(dist[0]); e=float(elev[0]); az=float(azim[0])
+
+    if RF_BUDGET.get("enable_attitude_rotation", True):
+        roll = pt.get("roll_deg", 0)
+        pitch = pt.get("pitch_deg", 0)
+        yaw = pt.get("yaw_deg", 0)
+        e, az = apply_attitude_rotation(e, az, roll, pitch, yaw)
+        jitter = RF_BUDGET.get("attitude_jitter_deg", 2.0)
+        if jitter > 0:
+            e  += np.random.normal(0, jitter)
+            az += np.random.normal(0, jitter)
+            az  = az % 360
+
+    txg  = float(gain_vec(tx,[e],[az])[0])
+    rxg  = float(gain_vec(rx,[e],[az])[0])
+    f    = RF_BUDGET["frequency_mhz"]
+    fspl = 20*math.log10(max(d,1e-3))+20*math.log10(f)+32.44
+    loss = fspl+RF_BUDGET["atm_constant_db_per_km"]*d+RF_BUDGET["polarization_mismatch_db"]+RF_BUDGET["pointing_loss_db"]
+    eirp = RF_BUDGET["tx_power_dbm"]+txg+RF_BUDGET["tx_pa_gain_db"]+RF_BUDGET["tx_cable_loss_db"]
+    rxp  = eirp-loss+rxg
+    marg = rxp-RF_BUDGET["rx_sensitivity_dbm"]
+    if marg>=RF_BUDGET["recommended_link_margin_db"]: s="NOMINAL"
+    elif marg>=RF_BUDGET["min_link_margin_db"]: s="WARNING"
+    elif marg>=0: s="MARGINAL"
+    else: s="LINK_LOST"
+    return jsonify({**pt,"idx":idx,"dist_km":round(d,3),"elevation_deg":round(e,2),
+                    "azimuth_deg":round(az,2),"tx_gain_dbi":round(txg,2),"rx_gain_dbi":round(rxg,2),
+                    "eirp_dbm":round(eirp,2),"fspl_db":round(fspl,2),"total_path_loss_db":round(loss,2),
+                    "rx_power_dbm":round(rxp,2),"margin_db":round(marg,2),"status":s,
+                    "gs_elev_to_balloon":round(e,2),"gs_azim_to_balloon":round(az,2),
+                    "ground_station":GROUND_STATION})
+
+@app.route("/api/footprint")
+def get_footprint():
+    try:
+        # 1. Récupération des paramètres dynamiques
+        lat   = float(request.args.get("lat", 48.5))
+        lon   = float(request.args.get("lon", -81.3))
+        alt   = float(request.args.get("alt", 10000.0))
+        tx    = request.args.get("tx", "dipole_half_wave")
+        N     = int(request.args.get("grid_n", 25))
+        freq  = float(request.args.get("freq", RF_BUDGET.get("frequency_mhz", 902.0)))
+        
+        # NOUVEAU : Récupération du multiplicateur de rayon et des angles de visée
+        radius_mult = float(request.args.get("radius_mult", 1.5))
+        
+        # Get antenna pointing angles from frontend
+        # Frontend sends pitch, roll, yaw (from TX antenna orientation)
+        # Map to azimuth (yaw) and elevation (pitch)
+        pitch = float(request.args.get("pitch", 0.0))
+        roll = float(request.args.get("roll", 0.0))
+        yaw = float(request.args.get("yaw", 0.0))
+        
+        # Convert TX antenna angles to boresight direction
+        # elevation = pitch (positive up from nadir)
+        # azimuth = yaw (compass direction)
+        target_el = pitch  # Direct mapping: pitch -> elevation
+        target_az = yaw    # Direct mapping: yaw -> azimuth
+        
+        # IMU variation parameters (for RX signal degradation)
+        enable_imu_variation = request.args.get("enable_imu_variation", "false").lower() == "true"
+        imu_variation_intensity = float(request.args.get("imu_variation_intensity", 0.0))
+
+        if not is_antenna_valid(tx):
+            return jsonify({"error": "Unknown antenna"}), 400
+
+        cfg = get_antenna_config(tx)
+
+        # 2. Définition de la taille de la grille au sol
+        grid_radius_km = (alt / 1000.0) * radius_mult
+        grid_radius_km = np.clip(grid_radius_km, 2.0, 300.0)
+
+        # 3. Génération de la grille centrée sur le BALLON
+        r_km = np.linspace(-grid_radius_km, grid_radius_km, N)
+        dE, dN = np.meshgrid(r_km, r_km) 
+
+        R_earth = 6371.0
+        grid_lat = lat + np.degrees(dN / R_earth)
+        grid_lon = lon + np.degrees(dE / (R_earth * np.cos(np.radians(lat))))
+
+        # 4. Calcul de la distance et du vecteur unitaire (ENU) vers chaque point
+        dE_m, dN_m, dU_m = dE * 1000.0, dN * 1000.0, -alt
+        dist_m = np.sqrt(dE_m**2 + dN_m**2 + dU_m**2).clip(min=1e-9)
+        vec_ENU = np.stack([dE_m/dist_m, dN_m/dist_m, dU_m/dist_m], axis=-1)
+
+        # 5. Orientation du faisceau (Boresight) dans l'espace 3D
+        # On utilise l'azimuth et l'élévation calculés par le frontend (qui incluent le Jitter)
+        az_rad = np.radians(target_az)
+        el_rad = np.radians(target_el)
+
+        bx = np.cos(el_rad) * np.sin(az_rad)
+        by = np.cos(el_rad) * np.cos(az_rad)
+        bz = np.sin(el_rad)
+        boresight_ENU = np.array([bx, by, bz])
+
+        # 6. Calcul des angles de gain (Theta/Phi)
+        # Theta est l'angle entre le vecteur vers le point au sol et le centre du faisceau
+        cos_theta = np.clip(np.einsum('ijk,k->ij', vec_ENU, boresight_ENU), -1.0, 1.0)
+        theta_deg = np.degrees(np.arccos(cos_theta))
+        phi_deg   = np.degrees(np.arctan2(vec_ENU[..., 0], vec_ENU[..., 1]))
+
+        # 7. Gain et RSSI
+        gain_db = cfg["fn"](theta_deg, phi_deg, cfg["gain_dbi"])
+        dist_km = dist_m / 1000.0
+        fspl_db = 20 * np.log10(dist_km) + 20 * np.log10(freq) + 32.44
+        
+        rssi_dbm = (RF_BUDGET["tx_power_dbm"] + gain_db + 
+                    RF_BUDGET["tx_pa_gain_db"] + RF_BUDGET["tx_cable_loss_db"] - 
+                    (fspl_db + RF_BUDGET["atm_constant_db_per_km"]*dist_km))
+        
+        # Apply IMU-based RX signal degradation if enabled
+        # IMU jitter affects received signal power through antenna wobble
+        if enable_imu_variation and imu_variation_intensity > 0:
+            # Simple model: jitter causes fading loss proportional to intensity
+            # Reduced by ~50% vs TX since GS is typically more stable
+            imu_fading_loss = 6.0 * imu_variation_intensity  # Up to 6 dB fading
+            rssi_dbm = rssi_dbm - imu_fading_loss
+        sens = RF_BUDGET["rx_sensitivity_dbm"]
+        mask = rssi_dbm.ravel() > (sens - 15)
+        
+        points = np.column_stack([grid_lat.ravel()[mask], grid_lon.ravel()[mask], rssi_dbm.ravel()[mask]])
+
+        return jsonify({
+            "points": np.round(points, 6).tolist(),
+            "sensitivity_dbm": float(sens),
+            "rssi_max": float(np.max(rssi_dbm)),
+            "grid_radius_km": float(grid_radius_km)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/api/footprint/<int:idx>")
+def get_footprint_idx(idx):
+    """Legacy per-frame footprint polygon (kept for compatibility)."""
+    tx = request.args.get("tx","dipole_half_wave")
+    if idx >= len(TELEMETRY): return jsonify({"error":"Out of range"}),400
+    if not is_antenna_valid(tx): return jsonify({"error":"Unknown antenna"}), 400
+
+    pt = TELEMETRY[idx]
+    footprint = calculate_footprint(
+        lat=pt["lat"], lon=pt["lon"], alt=pt["alt"],
+        tx_antenna_key=tx, num_points=72
+    )
+    return jsonify({
+        "idx": idx, "tx_antenna": tx,
+        "balloon_lat": pt["lat"], "balloon_lon": pt["lon"], "balloon_alt": pt["alt"],
+        "footprint": footprint,
+        "timestamp": pt["timestamp"],
+    })
+
+if __name__ == "__main__":
+    print("[SERVER] RF Link Budget Simulator v2 — http://localhost:5050", flush=True)
+    app.run(host="0.0.0.0", port=5050, debug=False, threaded=True)

@@ -1,0 +1,40 @@
+@startuml Hardware_Connections
+
+skinparam rectangle {
+  BackgroundColor #E1F5FE
+  BorderColor #01579B
+  FontColor #01579B
+}
+skinparam package {
+  BackgroundColor #F0F8FF
+  BorderColor #01579B
+}
+
+package "RP2040 (Pico)" {
+  rectangle "I2C0\nGPIO4 (SDA) / GPIO5 (SCL)" as i2c0
+  rectangle "I2C1\nGPIO6 (SDA) / GPIO7 (SCL)" as i2c1
+  rectangle "SPI\nGPIO8 (MISO) / GPIO9 (CS)\nGPIO10 (SCLK) / GPIO11 (MOSI)" as spi
+  rectangle "ADC\nGPIO26" as adc
+  rectangle "Mux control\nGPIO0 (A0) / GPIO1 (A1)\nGPIO2 (A2) / GPIO3 (SW)" as mux_ctrl
+  rectangle "GPIO12 (AD0)" as ad0
+  rectangle "GPIO19 (CLK out)" as clk_out
+  rectangle "RUN (RST)" as run_pin
+  rectangle "GPIO15 / GPIO16\nGPIO17 / GPIO18\n(spare)" as spare
+}
+
+rectangle "Watchdog module\n(external, coded separately)" as watchdog
+rectangle "ICM-20948\nIMU — I2C addr 0x68" as imu
+rectangle "MS5607\nAltimeter" as altimeter
+rectangle "MUX 8:1 + Op-amp" as mux_hw
+rectangle "Pt1000 S1…S8\n(PTFC102B1G0)" as pt1000_hw
+
+i2c0   -->  watchdog   : SDA / SCL (I2C0)
+clk_out --> watchdog   : CLK
+i2c1   <--> imu        : SDA / SCL (I2C1)
+ad0    -->  imu        : AD0 LOW → 0x68
+spi    <--> altimeter  : MISO / CS / SCLK / MOSI
+mux_ctrl --> mux_hw    : A0 / A1 / A2 + SW
+mux_hw --> pt1000_hw   : selects Si
+mux_hw --> adc         : op-amp output
+
+@enduml

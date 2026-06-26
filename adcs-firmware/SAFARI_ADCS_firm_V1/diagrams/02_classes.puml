@@ -1,0 +1,139 @@
+@startuml 02_classes
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Courier
+skinparam class {
+  BackgroundColor #E8F5E9
+  BorderColor     #2E7D32
+  HeaderBackgroundColor #A5D6A7
+}
+skinparam abstract {
+  BackgroundColor #FFF9C4
+  BorderColor     #F9A825
+  HeaderBackgroundColor #FFE082
+}
+skinparam struct {
+  BackgroundColor #E3F2FD
+  BorderColor     #1565C0
+}
+
+title SAFARI ADCS — Diagramme de classes firmware
+
+' ── Structures de données ─────────────────────────────────
+class SensorData << (S,#E3F2FD) struct >> {
+  + timestamp : uint32_t
+  + value     : float
+  + valid      : bool
+}
+
+class IMUData << (S,#E3F2FD) struct >> {
+  + accelX, accelY, accelZ : float   ' g
+  + gyroX,  gyroY,  gyroZ  : float   ' °/s
+  + magX,   magY,   magZ   : float   ' µT
+  + tempC     : float
+  + timestamp : uint32_t
+  + valid      : bool
+}
+
+class AltimeterData << (S,#E3F2FD) struct >> {
+  + pressureHPa : float
+  + altitudeM   : float
+  + tempC        : float
+  + prom[8]      : uint16_t
+  + timestamp    : uint32_t
+  + valid         : bool
+}
+
+class Pt1000Data << (S,#E3F2FD) struct >> {
+  + tempC[8]        : float
+  + resistanceOhm[8]: float
+  + valid[8]         : bool
+  + timestamp        : uint32_t
+}
+
+' ── Interface abstraite ───────────────────────────────────
+abstract class Sensor {
+  + {abstract} begin()   : bool
+  + {abstract} update()  : void
+  + {abstract} getData() : SensorData&
+}
+
+' ── Implémentations ───────────────────────────────────────
+class IMUSensor {
+  - data    : IMUData
+  - generic : SensorData
+  --
+  + begin()    : bool
+  + update()   : void
+  + getData()  : SensorData&
+  + getIMU()   : IMUData&
+}
+
+class AltimeterSensor {
+  - data        : AltimeterData
+  - generic     : SensorData
+  - seaLevelHPa : float
+  --
+  + begin()               : bool
+  + update()              : void
+  + getData()             : SensorData&
+  + getAltimeter()        : AltimeterData&
+  + setSeaLevelPressure() : void
+  - spiCmd(cmd)           : void
+  - readPROM()            : bool
+  - readADC()             : uint32_t
+  - compensate(D1,D2)     : void
+}
+
+class Pt1000Sensor {
+  - data    : Pt1000Data
+  - generic : SensorData
+  - rRef    : float
+  - gain    : float
+  - vcc     : float
+  --
+  + begin()            : bool
+  + update()           : void
+  + getData()          : SensorData&
+  + getPt1000()        : Pt1000Data&
+  + setCircuitParams() : void
+  - selectChannel(ch)  : void
+  - adcToTemp(raw)     : float  ' équation maison
+}
+
+' ── Gestionnaire ─────────────────────────────────────────
+class SensorManager {
+  - sensors[MAX_SENSORS] : Sensor*
+  - sensorCount          : uint8_t
+  --
+  + addSensor(s)         : bool
+  + updateAll()          : void
+  + getSensorData(idx)   : SensorData&
+  + getSensor(idx)       : Sensor*
+  + getSensorCount()     : uint8_t
+}
+
+' ── Watchdog ─────────────────────────────────────────────
+class WatchdogComm {
+  - status            : WatchdogStatus
+  - lastHeartbeatTime : uint32_t
+  --
+  + begin()           : bool
+  + sendHeartbeat()   : void
+  + sendAlert(code)   : void
+  + isWatchdogAlive() : bool
+  + getStatus()       : WatchdogStatus&
+}
+
+' ── Relations ────────────────────────────────────────────
+Sensor <|-- IMUSensor
+Sensor <|-- AltimeterSensor
+Sensor <|-- Pt1000Sensor
+
+Sensor     ..> SensorData     : produit
+IMUSensor  ..> IMUData        : produit
+AltimeterSensor ..> AltimeterData : produit
+Pt1000Sensor    ..> Pt1000Data    : produit
+
+SensorManager o-- "0..4" Sensor : gère >
+
+@enduml

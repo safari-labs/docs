@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF Link Budget Simulator v2 — Borealis ProtoSat</title>
+
+<!-- Cesium -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cesium/1.111.0/Cesium.js"></script>
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/cesium/1.111.0/Widgets/widgets.min.css" rel="stylesheet">
+<!-- Plotly -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;500;600;700&display=swap');
+:root {
+  --bg:#050a0f; --surface:#0a141e; --panel:#0d1b28; --border:#1a3045;
+  --accent:#00d4ff; --accent2:#ff6b35; --green:#00ff88; --yellow:#ffe03e; --red:#ff3e3e;
+  --text:#c8dae8; --muted:#4a6a80;
+  --nominal:#00ff88; --warning:#ffe03e; --marginal:#ff9500; --lost:#ff3e3e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,.012) 2px,rgba(0,212,255,.012) 4px);pointer-events:none;z-index:9000}
+
+/* ── Header ── */
+header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:rgba(5,10,15,.97);border-bottom:1px solid var(--border);z-index:100}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:32px;height:32px;border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent);box-shadow:0 0 12px rgba(0,212,255,.5);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 12px rgba(0,212,255,.4)}50%{box-shadow:0 0 24px rgba(0,212,255,.9),0 0 40px rgba(0,212,255,.3)}}
+.logo h1{font-size:16px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase}
+.logo p{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px}
+.hstats{display:flex;gap:20px;font-family:'Space Mono',monospace}
+.hs{text-align:right}
+.hs-v{font-size:13px;font-weight:700;color:var(--accent)}
+.hs-l{font-size:8px;color:var(--muted);letter-spacing:1px}
+
+/* ── Main layout ── */
+.main{flex:1;display:grid;grid-template-columns:280px 1fr;min-height:0}
+
+/* ── Sidebar ── */
+.sidebar{background:rgba(5,10,15,.97);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+
+.panel{border-bottom:1px solid var(--border)}
+.ph{display:flex;align-items:center;gap:7px;padding:9px 14px;background:rgba(0,212,255,.04);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;cursor:pointer;user-select:none}
+.ph .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 5px var(--accent);flex:none}
+.ph .chevron{margin-left:auto;font-size:8px;transition:.2s;color:var(--muted)}
+.ph.collapsed .chevron{transform:rotate(-90deg)}
+.pb{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.pb.hidden{display:none}
+
+/* Selects */
+.field-lbl{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px}
+select,input[type=number]{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 9px;font-family:'Rajdhani',sans-serif;font-size:12px;border-radius:2px;outline:none}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%234a6a80'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+select:focus,input[type=number]:focus{border-color:var(--accent)}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{opacity:.3}
+.ant-info{padding:6px 8px;background:rgba(0,212,255,.05);border-left:2px solid var(--accent);font-size:10px;color:var(--muted);line-height:1.5}
+
+/* RF Budget fields */
+.budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bf{display:flex;flex-direction:column}
+.bf label{font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:2px}
+.bf input{padding:5px 7px;font-size:11px}
+.btn-apply{width:100%;padding:7px;background:rgba(0,212,255,.1);border:1px solid var(--accent);color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;border-radius:2px;transition:.2s;text-transform:uppercase}
+.btn-apply:hover{background:rgba(0,212,255,.2)}
+.btn-reset-budget{width:100%;padding:5px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:10px;cursor:pointer;border-radius:2px;transition:.2s}
+.btn-reset-budget:hover{border-color:var(--muted);color:var(--text)}
+
+/* Param rows */
+.pr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(26,48,69,.4);font-size:11px}
+.pr:last-child{border-bottom:none}
+.pn{color:var(--muted)}
+.pv{font-family:'Space Mono',monospace;font-size:10px}
+.pv.acc{color:var(--accent)}
+.pv.grn{color:var(--green)}
+.pv.yel{color:var(--yellow)}
+
+/* Stats */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sbox{padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:2px;text-align:center}
+.sbox .sv{font-family:'Space Mono',monospace;font-size:14px;font-weight:700}
+.sbox .sl{font-size:8px;color:var(--muted);letter-spacing:1px;margin-top:2px;text-transform:uppercase}
+
+/* Status badge */
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:2px}
+.NOMINAL{background:rgba(0,255,136,.12);color:var(--nominal);border:1px solid rgba(0,255,136,.3)}
+.WARNING{background:rgba(255,224,62,.12);color:var(--warning);border:1px solid rgba(255,224,62,.3)}
+.MARGINAL{background:rgba(255,149,0,.12);color:var(--marginal);border:1px solid rgba(255,149,0,.3)}
+.LINK_LOST{background:rgba(255,62,62,.12);color:var(--lost);border:1px solid rgba(255,62,62,.3)}
+
+/* Status counts bar */
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:10px;border-left:3px solid;padding-left:8px;margin-bottom:3px}
+
+/* ── Right side ── */
+.right{display:flex;flex-direction:column;min-height:0}
+
+/* Tab bar */
+.tabbar{flex:none;display:flex;padding:0 16px;background:rgba(5,10,15,.9);border-bottom:1px solid var(--border)}
+.tab{padding:10px 18px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:.15s;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* Content */
+.content{flex:1;position:relative;overflow:hidden}
+.tc{display:none;height:100%;flex-direction:column;gap:12px;padding:14px}
+.tc.active{display:flex}
+
+/* Cesium container */
+#cesium-container{flex:1;border-radius:3px;overflow:hidden;border:1px solid var(--border);position:relative;min-height:0}
+#cesiumWidget{width:100%;height:100%}
+
+/* Readout bar */
+.readout-bar{flex:none;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ro{padding:6px 12px;background:var(--panel);border:1px solid var(--border);border-radius:2px;font-family:'Space Mono',monospace;font-size:10px}
+.ro .rl{color:var(--muted);font-size:8px;display:block;letter-spacing:1px;margin-bottom:1px}
+.ro .rv{color:var(--accent)}
+
+/* Playback */
+.playback{flex:none;display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border:1px solid var(--border);border-radius:3px}
+.btn{padding:5px 14px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:.15s}
+.btn:hover{background:rgba(0,212,255,.12)}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:8px}
+#timeline{flex:1;accent-color:var(--accent);cursor:pointer}
+.tl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);white-space:nowrap;min-width:46px}
+
+/* Margin plot */
+.plot-sm{height:140px;background:var(--panel);border:1px solid var(--border);border-radius:3px;flex:none;overflow:hidden}
+
+/* Pattern tab */
+.pattern-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+.plot-box{background:var(--panel);border:1px solid var(--border);border-radius:3px;overflow:hidden;position:relative}
+.pspinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pat-info{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pat-panel{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:10px 14px}
+.pat-panel h4{font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:8px;text-transform:uppercase}
+
+/* Analysis tab */
+.analysis-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+.detail-panel{flex:none;background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:10px 14px}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:11px}
+
+/* Cesium overlay */
+.cesium-overlay{position:absolute;top:10px;right:10px;z-index:100;display:flex;flex-direction:column;gap:6px}
+.cesium-btn{padding:5px 12px;background:rgba(13,27,40,.9);border:1px solid var(--border);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:2px;backdrop-filter:blur(4px);transition:.15s}
+.cesium-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cesium-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.1)}
+
+/* Antenna Presets */
+.preset-list{display:grid;grid-template-columns:1fr;gap:6px}
+.preset-card{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:8px 10px;cursor:pointer;transition:.15s;font-size:10px}
+.preset-card:hover{border-color:var(--accent);background:rgba(0,212,255,.05)}
+.preset-name{font-weight:700;color:var(--text);margin-bottom:2px}
+.preset-gain{color:var(--muted);font-size:9px}
+
+/* File Upload */
+.upload-section{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:10px 14px;margin-bottom:12px}
+.upload-label{font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;display:block}
+.file-input-wrap{position:relative;overflow:hidden;display:inline-block}
+.file-input-wrap input[type=file]{position:absolute;opacity:0}
+.upload-btn{padding:6px 12px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:.15s;width:100%}
+.upload-btn:hover{background:rgba(0,212,255,.12)}
+.file-list{margin-top:8px;font-size:9px}
+.file-item{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:2px;padding:6px 8px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;color:var(--text)}
+.file-item-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-item-btn{background:transparent;border:none;color:var(--red);cursor:pointer;font-weight:700;padding:0;font-size:10px}
+.file-item-btn:hover{color:var(--accent)}
+
+.legend{background:rgba(13,27,40,.85);border:1px solid var(--border);border-radius:3px;padding:8px 10px;font-size:9px;backdrop-filter:blur(4px)}
+.legend-row{display:flex;align-items:center;gap:6px;padding:2px 0}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex:none}
+
+/* Custom Antenna Form */
+.antenna-form{display:flex;flex-direction:column;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:3px;color:var(--text);padding:6px 8px;font-size:10px;font-family:'Space Mono',monospace}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);background:rgba(255,255,255,.1)}
+.form-group input::placeholder{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📡</div>
+    <div>
+      <h1>RF Link Budget Simulator</h1>
+      <p>ICARUS7 / BOREALIS PROTOSAT — RFD900x @ 902 MHz</p>
+    </div>
+  </div>
+  <div class="hstats">
+    <div class="hs"><div class="hs-v" id="h-freq">902 MHz</div><div class="hs-l">FREQUENCY</div></div>
+    <div class="hs"><div class="hs-v" id="h-power">24 dBm</div><div class="hs-l">TX POWER</div></div>
+    <div class="hs"><div class="hs-v">691</div><div class="hs-l">TELEM PTS</div></div>
+    <div class="hs"><div class="hs-v" id="h-rely" style="color:var(--green)">—</div><div class="hs-l">LINK RELIABILITY</div></div>
+  </div>
+</header>
+
+<div class="main">
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+
+  <!-- TX -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot"></div>ANTENNE TX (BALLON)<span class="chevron">▼</span></div>
+    <div class="pb">
+      <div class="field-lbl">TYPE EMBARQUÉ</div>
+      <select id="sel-tx">
+        <option value="dipole_half_wave">Dipôle λ/2 (2.2 dBi)</option>
+        <option value="patch">Patch (7 dBi)</option>
+        <option value="helix">Hélice axiale (10 dBi)</option>
+        <option value="omni">Omnidirectionnel (2.2 dBi)</option>
+      </select>
+      <div class="ant-info" id="tx-info">—</div>
+    </div>
+  </div>
+
+  <!-- RX -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--accent2);box-shadow:0 0 5px var(--accent2)"></div>ANTENNE RX (SOL)<span class="chevron">▼</span></div>
+    <div class="pb">
+      <div class="field-lbl">TYPE STATION SOL</div>
+      <select id="sel-rx">
+        <option value="yagi" selected>Yagi-Uda (13 dBi)</option>
+        <option value="dipole_half_wave">Dipôle λ/2 (2.2 dBi)</option>
+        <option value="patch">Patch (7 dBi)</option>
+        <option value="omni">Omnidirectionnel (2.2 dBi)</option>
+      </select>
+      <div class="ant-info" id="rx-info">—</div>
+    </div>
+  </div>
+
+  <!-- Antenna Presets -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--accent2);box-shadow:0 0 5px var(--accent2)"></div>PRÉSETS D'ANTENNES<span class="chevron">▼</span></div>
+    <div class="pb">
+      <button class="btn" style="width:100%;margin-bottom:8px" onclick="showCreatePresetForm()">💾 Créer un préset</button>
+      <div class="preset-list" id="preset-list">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Telemetry Files -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--green);box-shadow:0 0 5px var(--green)"></div>FICHIERS TÉLÉMÉTRIE<span class="chevron">▼</span></div>
+    <div class="pb">
+      <div class="upload-section">
+        <label class="upload-label">Ajouter un fichier</label>
+        <div class="file-input-wrap">
+          <button class="upload-btn">📁 Sélectionner .xlsx</button>
+          <input type="file" id="telemetry-upload" accept=".xlsx,.xls" onchange="handleFileUpload(event)">
+        </div>
+      </div>
+      <div class="file-list" id="telemetry-list">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RF Budget editable -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--yellow);box-shadow:0 0 5px var(--yellow)"></div>BUDGET RF ÉDITABLE<span class="chevron">▼</span></div>
+    <div class="pb" id="budget-fields">
+      <div class="budget-grid">
+        <div class="bf"><label>TX Power (dBm)</label><input type="number" id="bf-tx_power_dbm" value="24" step="0.5"></div>
+        <div class="bf"><label>Freq (MHz)</label><input type="number" id="bf-frequency_mhz" value="902" step="1"></div>
+        <div class="bf"><label>TX PA Gain (dB)</label><input type="number" id="bf-tx_pa_gain_db" value="0" step="0.5"></div>
+        <div class="bf"><label>TX Cable Loss (dB)</label><input type="number" id="bf-tx_cable_loss_db" value="-1" step="0.5"></div>
+        <div class="bf"><label>RX Sens. (dBm)</label><input type="number" id="bf-rx_sensitivity_dbm" value="-110" step="1"></div>
+        <div class="bf"><label>RX LNA Gain (dB)</label><input type="number" id="bf-rx_lna_gain_db" value="0" step="0.5"></div>
+        <div class="bf"><label>LNA Loss (dB)</label><input type="number" id="bf-rx_lna_loss_db" value="0" step="0.5"></div>
+        <div class="bf"><label>Filter Loss (dB)</label><input type="number" id="bf-rx_lowband_filter_loss_db" value="0" step="0.5"></div>
+        <div class="bf"><label>Pol. Mismatch (dB)</label><input type="number" id="bf-polarization_mismatch_db" value="-3" step="0.5"></div>
+        <div class="bf"><label>Pointing Loss (dB)</label><input type="number" id="bf-pointing_loss_db" value="-3" step="0.5"></div>
+        <div class="bf"><label>Atm. (dB/km)</label><input type="number" id="bf-atm_constant_db_per_km" value="0.02" step="0.01"></div>
+        <div class="bf"><label>Min Margin (dB)</label><input type="number" id="bf-min_link_margin_db" value="10" step="1"></div>
+        <div class="bf"><label>Rec. Margin (dB)</label><input type="number" id="bf-recommended_link_margin_db" value="15" step="1"></div>
+        <div class="bf"><label>Speed (Kbps)</label><input type="number" id="bf-speed_kbps" value="10" step="1"></div>
+      </div>
+      <button class="btn-apply" onclick="applyBudget()">⚡ APPLIQUER & RECALCULER</button>
+      <button class="btn-reset-budget" onclick="resetBudget()">↺ Réinitialiser par défaut</button>
+      
+      <!-- Attitude & Rotation Section -->
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Rotation IMU & Réalisme</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:10px">
+          <input type="checkbox" id="bf-enable_attitude_rotation" checked>
+          <label for="bf-enable_attitude_rotation">Activer rotation d'attitude (IMU)</label>
+        </div>
+        <div class="bf" style="margin-bottom:8px">
+          <label>Jitter d'antenne (°)</label>
+          <input type="number" id="bf-attitude_jitter_deg" value="2" step="0.1" min="0" max="10">
+          <div style="font-size:8px;color:var(--muted);margin-top:2px">Oscillation aléatoire du faisceau (0=désactivé)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--green);box-shadow:0 0 5px var(--green)"></div>STATISTIQUES VOL<span class="chevron">▼</span></div>
+    <div class="pb">
+      <div class="stat-grid">
+        <div class="sbox"><div class="sv" id="s-min" style="color:var(--red)">—</div><div class="sl">Marge min</div></div>
+        <div class="sbox"><div class="sv" id="s-max" style="color:var(--green)">—</div><div class="sl">Marge max</div></div>
+        <div class="sbox"><div class="sv" id="s-avg" style="color:var(--accent)">—</div><div class="sl">Marge moy</div></div>
+        <div class="sbox"><div class="sv" id="s-rely" style="color:var(--green)">—</div><div class="sl">Fiabilité</div></div>
+      </div>
+      <div id="sc-rows" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- Custom Antenna Creator -->
+  <div class="panel">
+    <div class="ph" onclick="togglePanel(this)"><div class="dot" style="background:var(--accent);box-shadow:0 0 5px var(--accent)"></div>CRÉER ANTENNE PERSONNALISÉE<span class="chevron">▼</span></div>
+    <div class="pb">
+      <div class="antenna-form">
+        <div class="form-group">
+          <label>Nom de l'antenne</label>
+          <input type="text" id="antenna-name" placeholder="ex: Ma Dipole">
+        </div>
+        <div class="form-group">
+          <label>Type d'antenne</label>
+          <select id="antenna-type">
+            <option value="">-- Sélectionner --</option>
+            <option value="dipole">Dipôle</option>
+            <option value="yagi">Yagi</option>
+            <option value="parabolic">Parabolique</option>
+            <option value="monopole">Monopôle</option>
+            <option value="patch">Patch</option>
+            <option value="helical">Hélicoïdale</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Gain (dBi)</label>
+          <input type="number" id="antenna-gain" step="0.1" placeholder="ex: 5.5">
+        </div>
+        <div class="form-group">
+          <label>Angle d'ouverture horizontal (°)</label>
+          <input type="number" id="antenna-beamwidth-h" step="1" placeholder="ex: 60">
+        </div>
+        <div class="form-group">
+          <label>Angle d'ouverture vertical (°)</label>
+          <input type="number" id="antenna-beamwidth-v" step="1" placeholder="ex: 60">
+        </div>
+        <div class="form-group">
+          <label>Polarisation</label>
+          <select id="antenna-polarization">
+            <option value="">-- Sélectionner --</option>
+            <option value="linear">Linéaire</option>
+            <option value="circular">Circulaire</option>
+            <option value="elliptical">Elliptique</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Perte de câble (dB)</label>
+          <input type="number" id="antenna-cable-loss" step="0.1" placeholder="ex: 0.5">
+        </div>
+        <div class="form-group">
+          <label>Longueur d'onde (cm) [optionnel]</label>
+          <input type="number" id="antenna-wavelength" step="0.1" placeholder="ex: 33.3">
+        </div>
+        <button class="btn-apply" onclick="createCustomAntenna()" style="width:100%;margin-top:12px">✨ CRÉER L'ANTENNE</button>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ── RIGHT ── -->
+<div class="right">
+  <div class="tabbar">
+    <div class="tab active" data-tab="globe">🌍 VUE GLOBE 3D</div>
+    <div class="tab" data-tab="pattern">📡 RADIATION PATTERN</div>
+    <div class="tab" data-tab="analysis">📊 ANALYSE</div>
+  </div>
+
+  <div class="content">
+
+    <!-- GLOBE TAB -->
+    <div class="tc active" id="tab-globe">
+      <div class="readout-bar">
+        <div class="ro"><span class="rl">ALTITUDE</span><span class="rv" id="ro-alt">—</span></div>
+        <div class="ro"><span class="rl">DISTANCE</span><span class="rv" id="ro-dist">—</span></div>
+        <div class="ro"><span class="rl">ÉLÉVATION</span><span class="rv" id="ro-elev">—</span></div>
+        <div class="ro"><span class="rl">FSPL</span><span class="rv" id="ro-fspl">—</span></div>
+        <div class="ro"><span class="rl">RX POWER</span><span class="rv" id="ro-rxp">—</span></div>
+        <div class="ro"><span class="rl">MARGE LIAISON</span><span class="rv" id="ro-marg">—</span></div>
+        <div class="ro"><span class="rl">STATUS</span><span id="ro-status">—</span></div>
+        <div style="margin-left:auto;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted)" id="ro-time">—</div>
+      </div>
+
+      <div id="cesium-container">
+        <div id="cesiumWidget"></div>
+        <div class="cesium-overlay">
+          <button class="cesium-btn active" id="btn-show-imagery" onclick="toggleImagery()">🛰️ Satellite Imagery</button>
+          <button class="cesium-btn active" id="btn-show-tx" onclick="toggleLayer('tx')">TX Pattern</button>
+          <button class="cesium-btn active" id="btn-show-rx" onclick="toggleLayer('rx')">RX Pattern</button>
+          <button class="cesium-btn active" id="btn-show-beam" onclick="toggleLayer('beam')">Link Beam</button>
+          <button class="cesium-btn active" id="btn-show-footprint" onclick="toggleLayer('footprint')">📡 Footprint</button>
+          <button class="cesium-btn active" id="btn-show-traj" onclick="toggleLayer('traj')">Trajectoire</button>
+          <div class="legend">
+            <div class="legend-row"><div class="legend-dot" style="background:var(--nominal)"></div><span style="font-size:9px">NOMINAL ≥15dB</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:var(--warning)"></div><span style="font-size:9px">WARNING 10-15dB</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:var(--marginal)"></div><span style="font-size:9px">MARGINAL 0-10dB</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:var(--lost)"></div><span style="font-size:9px">LINK LOST &lt;0dB</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="playback">
+        <button class="btn" id="btn-play">▶ PLAY</button>
+        <button class="btn" onclick="resetPlay()">↺</button>
+        <div class="prog-wrap">
+          <span class="tl" id="tl-s">—</span>
+          <input type="range" id="timeline" min="0" max="690" value="0">
+          <span class="tl" id="tl-e">—</span>
+        </div>
+        <select id="sel-speed" style="width:80px;font-size:10px;padding:4px 6px">
+          <option value="30">30ms</option>
+          <option value="60" selected>60ms</option>
+          <option value="150">150ms</option>
+          <option value="400">400ms</option>
+        </select>
+      </div>
+
+      <div class="plot-sm" id="plot-margin"></div>
+    </div>
+
+    <!-- PATTERN TAB -->
+    <div class="tc" id="tab-pattern">
+      <div class="pattern-wrap">
+        <div class="plot-box" id="pb-tx"><div class="pspinner"><div class="spin"></div>Génération pattern TX…</div></div>
+        <div class="plot-box" id="pb-rx"><div class="pspinner"><div class="spin"></div>Génération pattern RX…</div></div>
+      </div>
+      <div class="pat-info">
+        <div class="pat-panel"><h4>TX — <span id="ptx-name">—</span></h4><div id="ptx-body"></div></div>
+        <div class="pat-panel"><h4>RX — <span id="prx-name">—</span></h4><div id="prx-body"></div></div>
+      </div>
+    </div>
+
+    <!-- ANALYSIS TAB -->
+    <div class="tc" id="tab-analysis">
+      <div class="analysis-grid">
+        <div class="plot-box" id="plot-bv"></div>
+        <div class="plot-box" id="plot-fspl"></div>
+      </div>
+      <div class="detail-panel">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:8px;text-transform:uppercase">BILAN DÉTAILLÉ — POINT SÉLECTIONNÉ</div>
+        <div class="detail-grid" id="detail-body"><span style="color:var(--muted);font-size:11px">← Sélectionne un point sur le globe ou la timeline</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ─── Cesium token (OSM imagery, no token needed) ──────────────────────────────
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJpZCI6MCwiaWF0IjoxNjAwMDAwMDAwfQ.invalid';
+
+const API = 'http://localhost:5050/api';
+let telemetry = [], budgetData = [], antennaConfigs = {};
+let viewer, balloonEntity, beamEntity, txPatternEntities=[], rxPatternEntities=[];
+let trajEntities = [];
+let footprintEntity = null;
+let currentIdx = 0, playTimer = null;
+let layerVis = {tx:true, rx:true, beam:true, traj:true, footprint:true};
+const DEFAULTS = {tx_power_dbm:24,frequency_mhz:902,tx_pa_gain_db:0,tx_cable_loss_db:-1,rx_sensitivity_dbm:-110,rx_lna_gain_db:0,rx_lna_loss_db:0,rx_lowband_filter_loss_db:0,polarization_mismatch_db:-3,pointing_loss_db:-3,atm_constant_db_per_km:0.02,min_link_margin_db:10,recommended_link_margin_db:15,speed_kbps:10,enable_attitude_rotation:true,attitude_jitter_deg:2};
+
+// ─── Plotly theme ─────────────────────────────────────────────────────────────
+const PT = {bg:'#050a0f',paper:'#0d1b28',grid:'#1a3045',font:{family:'Rajdhani,sans-serif',color:'#c8dae8',size:10}};
+const pLayout = (ex={}) => ({paper_bgcolor:PT.paper,plot_bgcolor:PT.bg,font:PT.font,margin:{t:16,b:36,l:46,r:16},xaxis:{gridcolor:PT.grid,zerolinecolor:PT.grid},yaxis:{gridcolor:PT.grid,zerolinecolor:PT.grid},...ex});
+const pCfg = {displayModeBar:false,responsive:true};
+
+function sColor(s){return{NOMINAL:'#00ff88',WARNING:'#ffe03e',MARGINAL:'#ff9500',LINK_LOST:'#ff3e3e'}[s]||'#fff'}
+
+// ─── Sidebar collapse ─────────────────────────────────────────────────────────
+function togglePanel(ph){
+  ph.classList.toggle('collapsed');
+  const pb = ph.nextElementSibling;
+  pb.classList.toggle('hidden');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  const [cfg, telem] = await Promise.all([
+    fetch(`${API}/config`).then(r=>r.json()),
+    fetch(`${API}/telemetry`).then(r=>r.json()),
+  ]);
+  antennaConfigs = cfg.antennas;
+  telemetry = telem;
+  document.getElementById('tl-s').textContent = telem[0].timestamp.slice(11,19);
+  document.getElementById('tl-e').textContent = telem[telem.length-1].timestamp.slice(11,19);
+  updateAntInfo();
+  loadRFBudgetForm(cfg.rf_budget);
+  loadAntennaPresets();
+  await loadTelemetryFiles();
+  initCesium();
+  await loadBudget();
+  renderMargin();
+  renderAnalysis();
+  renderPattern('tx');
+  renderPattern('rx');
+}
+
+function loadRFBudgetForm(rfBudget) {
+  // Populate form with RF budget values from server
+  ['tx_power_dbm','frequency_mhz','tx_pa_gain_db','tx_cable_loss_db','rx_sensitivity_dbm',
+   'rx_lna_gain_db','rx_lna_loss_db','rx_lowband_filter_loss_db','polarization_mismatch_db',
+   'pointing_loss_db','atm_constant_db_per_km','min_link_margin_db','recommended_link_margin_db','speed_kbps',
+   'attitude_jitter_deg'].forEach(k=>{
+    const el = document.getElementById(`bf-${k}`);
+    if(el && rfBudget[k] !== undefined) el.value = rfBudget[k];
+  });
+  const enableEl = document.getElementById('bf-enable_attitude_rotation');
+  if(enableEl && rfBudget['enable_attitude_rotation'] !== undefined) {
+    enableEl.checked = rfBudget['enable_attitude_rotation'];
+  }
+}
+
+// ─── Cesium Globe ─────────────────────────────────────────────────────────────
+function initCesium() {
+  try {
+    // Use ArcGIS World Imagery (open source, good quality, no key needed)
+    const imageryProvider = new Cesium.ArcGisMapServerImageryProvider({
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
+    });
+
+    viewer = new Cesium.Viewer('cesiumWidget', {
+      imageryProvider,
+      baseLayerPicker: false,
+      geocoder: false,
+      homeButton: false,
+      sceneModePicker: false,
+      navigationHelpButton: false,
+      animation: false,
+      timeline: false,
+      fullscreenButton: false,
+      infoBox: false,
+      selectionIndicator: false,
+    });
+
+    // Configure camera controller for Google Maps-like interaction
+    const controller = viewer.scene.screenSpaceCameraController;
+    
+    // Enable all interactions
+    controller.enableRotate = true;      // Right-click + drag to rotate
+    controller.enableZoom = true;        // Scroll wheel + pinch to zoom
+    controller.enablePan = true;         // Left-click + drag to pan
+    controller.enableTilt = true;        // Ctrl + drag to tilt
+    controller.enableLook = false;       // Disable free look
+    
+    // Zoom settings
+    controller.zoomFactor = 3.0;         // Zoom sensitivity
+    controller.wheelZoomFactor = 1.1;    // Scroll wheel zoom factor
+    controller.minZoomDistance = 100;    // Minimum zoom distance (meters)
+    controller.maxZoomDistance = 8000000; // Maximum zoom distance (meters)
+    
+    // Physics-based interactions (like Google Maps)
+    controller.inertiaPan = true;        // Pan momentum
+    controller.inertiaZoom = true;       // Zoom momentum
+    controller.inertiaRotate = true;     // Rotation momentum
+    controller.inertiaConstant = 0.9;    // Inertia factor (0-1)
+    
+    // Rotation settings
+    controller.rotateEventTypes = [
+      Cesium.CameraEventType.RIGHT_DRAG,
+      Cesium.CameraEventType.WHEEL  // Allow scroll to rotate in 3D
+    ];
+    
+    // Zoom event types
+    controller.zoomEventTypes = [
+      Cesium.CameraEventType.WHEEL,
+      Cesium.CameraEventType.PINCH
+    ];
+    
+    // Pan event type
+    controller.panEventTypes = [
+      Cesium.CameraEventType.LEFT_DRAG,
+      Cesium.CameraEventType.TOUCH
+    ];
+
+    viewer.scene.backgroundColor = Cesium.Color.fromCssColorString('#050a0f');
+    viewer.scene.globe.baseColor  = Cesium.Color.fromCssColorString('#0a141e');
+
+    // Ground station marker (simple point)
+    viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(
+        GROUND_STATION_DATA.lon, GROUND_STATION_DATA.lat, GROUND_STATION_DATA.alt
+      ),
+      point: {
+        pixelSize: 12,
+        color: Cesium.Color.fromCssColorString('#ff6b35'),
+        outlineColor: Cesium.Color.WHITE,
+        outlineWidth: 2,
+      },
+      label: {
+        text: 'GS',
+        font: '11px Rajdhani',
+        fillColor: Cesium.Color.fromCssColorString('#ff6b35'),
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 1,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        pixelOffset: new Cesium.Cartesian2(0, -20),
+      }
+    });
+
+    // Balloon entity
+    balloonEntity = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(telemetry[0].lon, telemetry[0].lat, telemetry[0].alt),
+      point: {
+        pixelSize: 10,
+        color: Cesium.Color.fromCssColorString('#00d4ff'),
+        outlineColor: Cesium.Color.WHITE,
+        outlineWidth: 2,
+      },
+      label: {
+        text: 'ICARUS7',
+        font: '10px Space Mono',
+        fillColor: Cesium.Color.fromCssColorString('#00d4ff'),
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 1,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        pixelOffset: new Cesium.Cartesian2(0, -15),
+      }
+    });
+
+    // Fly to region
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(-81.08, 48.44, 500000),
+      orientation: {
+        heading: Cesium.Math.toRadians(0),
+        pitch: Cesium.Math.toRadians(-60),
+        roll: 0
+      }
+    });
+
+    console.log('[CESIUM] Viewer initialized successfully with satellite imagery');
+  } catch(err) {
+    console.error('[CESIUM] Initialization error:', err);
+  }
+}
+
+let GROUND_STATION_DATA = {lat:48.5678, lon:-81.3655, alt:285.8};
+
+function makeMarkerCanvas(color, sym) {
+  const c = document.createElement('canvas');
+  c.width = 32; c.height = 32;
+  const ctx = c.getContext('2d');
+  ctx.beginPath(); ctx.arc(16,16,12,0,Math.PI*2);
+  ctx.fillStyle = color+'33'; ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = color; ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(sym, 16, 16);
+  return c.toDataURL();
+}
+
+// ─── Trajectory polyline ──────────────────────────────────────────────────────
+function buildTrajectory() {
+  if (!viewer) return; // Safety check
+  // Remove old
+  trajEntities.forEach(e => viewer.entities.remove(e));
+  trajEntities = [];
+  if (!budgetData.length) return;
+
+  // Segment by status
+  let seg = [telemetry[0]];
+  let curStatus = budgetData[0].status;
+
+  const flush = (pts, st) => {
+    if (pts.length < 2) return;
+    const positions = pts.flatMap(p => [p.lon, p.lat, p.alt]);
+    trajEntities.push(viewer.entities.add({
+      show: layerVis.traj,
+      polyline: {
+        positions: Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+        width: 2.5,
+        material: new Cesium.PolylineGlowMaterialProperty({
+          glowPower: 0.15,
+          color: Cesium.Color.fromCssColorString(sColor(st)).withAlpha(0.9),
+        }),
+        clampToGround: false,
+      }
+    }));
+  };
+
+  for (let i=1; i<telemetry.length; i++) {
+    if (budgetData[i].status !== curStatus) {
+      flush(seg, curStatus);
+      seg = [telemetry[i-1]];
+      curStatus = budgetData[i].status;
+    }
+    seg.push(telemetry[i]);
+  }
+  flush(seg, curStatus);
+}
+
+// ─── Link beam ────────────────────────────────────────────────────────────────
+function updateBeam(idx) {
+  if (!viewer) return; // Safety check
+  if (beamEntity) viewer.entities.remove(beamEntity);
+  if (!layerVis.beam || !budgetData[idx]) return;
+  const pt = telemetry[idx];
+  const margin = budgetData[idx].margin_db;
+  const col = sColor(budgetData[idx].status);
+  const alpha = Math.min(0.9, Math.max(0.2, margin/40));
+  beamEntity = viewer.entities.add({
+    polyline: {
+      positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+        GROUND_STATION_DATA.lon, GROUND_STATION_DATA.lat, GROUND_STATION_DATA.alt,
+        pt.lon, pt.lat, pt.alt
+      ]),
+      width: 1.5,
+      material: new Cesium.PolylineDashMaterialProperty({
+        color: Cesium.Color.fromCssColorString(col).withAlpha(alpha),
+        dashLength: 24,
+      }),
+      clampToGround: false,
+    }
+  });
+}
+
+// ─── Footprint visualization (ground coverage) ─────────────────────────────────
+async function updateFootprint(idx) {
+  if (!viewer || idx >= telemetry.length) return;
+  if (!layerVis.footprint) {
+    if (footprintEntity) {
+      viewer.entities.remove(footprintEntity);
+      footprintEntity = null;
+    }
+    return;
+  }
+  
+  const tx = document.getElementById('sel-tx').value;
+  try {
+    const response = await fetch(`${API}/footprint/${idx}?tx=${tx}`);
+    if (!response.ok) return;
+    
+    const data = await response.json();
+    if (!data.footprint || data.footprint.length === 0) return;
+    
+    // Remove old footprint entity
+    if (footprintEntity) viewer.entities.remove(footprintEntity);
+    
+    // Convert footprint points to Cartesian3
+    const positions = [];
+    for (const [lat, lon] of data.footprint) {
+      positions.push(Cesium.Cartesian3.fromDegrees(lon, lat, 0));
+    }
+    // Close the polygon
+    if (positions.length > 0) {
+      positions.push(positions[0]);
+    }
+    
+    // Create the footprint polygon
+    footprintEntity = viewer.entities.add({
+      polygon: {
+        hierarchy: new Cesium.PolygonHierarchy(
+          Cesium.Cartesian3.fromDegreesArray(
+            data.footprint.flatMap(p => [p[1], p[0]])
+          )
+        ),
+        material: Cesium.Color.fromCssColorString('#ff6b35').withAlpha(0.25),
+        outline: true,
+        outlineColor: Cesium.Color.fromCssColorString('#ff6b35').withAlpha(0.7),
+        outlineWidth: 2,
+      }
+    });
+  } catch(err) {
+    console.error('Footprint update error:', err);
+  }
+}
+
+// ─── Pattern visualization on Cesium (3D cones) ─────────────────────────────────
+let txPatternData = null, rxPatternData = null;
+
+async function loadCesiumPatterns() {
+  const tx = document.getElementById('sel-tx').value;
+  const rx = document.getElementById('sel-rx').value;
+  [txPatternData, rxPatternData] = await Promise.all([
+    fetch(`${API}/cesium_pattern/${tx}`).then(r=>r.json()),
+    fetch(`${API}/cesium_pattern/${rx}`).then(r=>r.json()),
+  ]);
+}
+
+function removeCesiumPatterns() {
+  if (!viewer) return; // Safety check
+  txPatternEntities.forEach(e=>viewer.entities.remove(e)); txPatternEntities=[];
+  rxPatternEntities.forEach(e=>viewer.entities.remove(e)); rxPatternEntities=[];
+}
+
+function drawCesiumPattern(data, originLon, originLat, originAlt,
+                           azimDeg, elevDeg, scale, entities, layerKey) {
+  // Convert spherical (r, theta, phi) mesh to Cartesian3 positions
+  // theta=0 → boresight direction (aimed at target), phi=azimuth around boresight
+  // We rotate the pattern so Z-axis of pattern aligns with boresight direction.
+  if (!data || !viewer) return;
+  const nTh = data.n_th, nPh = data.n_phi;
+  const r   = data.r;
+  const th  = data.theta_deg;
+  const ph  = data.phi_deg;
+  const col = Cesium.Color.fromCssColorString(data.color);
+
+  // Boresight unit vector in ENU (East-North-Up) frame
+  const azR = Cesium.Math.toRadians(azimDeg);
+  const elR = Cesium.Math.toRadians(elevDeg);
+  // Boresight (N=y, E=x, U=z in ENU)
+  const bx = Math.cos(elR)*Math.sin(azR);  // East
+  const by = Math.cos(elR)*Math.cos(azR);  // North
+  const bz = Math.sin(elR);                // Up
+
+  // Build rotation matrix: z_body → boresight, x_body → arbitrary perp
+  // Use Gram-Schmidt
+  let ux=0,uy=0,uz=1; // "up" to find perp
+  if (Math.abs(bz) > 0.99) { ux=1;uy=0;uz=0; }
+  // right = boresight × up
+  let rx2=by*uz-bz*uy, ry2=bz*ux-bx*uz, rz2=bx*uy-by*ux;
+  let rm=Math.sqrt(rx2*rx2+ry2*ry2+rz2*rz2);
+  rx2/=rm; ry2/=rm; rz2/=rm;
+  // up2 = boresight × right
+  let ux2=by*rz2-bz*ry2, uy2=bz*rx2-bx*rz2, uz2=bx*ry2-by*rx2;
+
+  const origin = Cesium.Cartesian3.fromDegrees(originLon, originLat, originAlt);
+  const matrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
+
+  // Draw meridian lines (phi slices)
+  const N_LINES = Math.min(nPh, 16); // limit line count for perf
+  const phStep = Math.floor(nPh / N_LINES);
+
+  for (let pi=0; pi<nPh; pi+=phStep) {
+    const pts = [];
+    for (let ti=0; ti<nTh; ti++) {
+      const rv = r[pi][ti] * scale;
+      const tR = Cesium.Math.toRadians(th[ti][pi] || th[ti] && th[ti][0] || 0);
+      // Actually th and ph are meshgrid (nTh rows, nPh cols) from Python meshgrid(th,ph)
+      // Python: TH,PH = meshgrid(th,ph) → shape (nPh, nTh)
+      const tRad = Cesium.Math.toRadians(th[pi] ? th[pi][ti] : 0);
+      const pRad = Cesium.Math.toRadians(ph[pi] ? ph[pi][ti] : 0);
+      // Pattern local coords (z = boresight)
+      const lx = rv * Math.sin(tRad)*Math.cos(pRad);
+      const ly = rv * Math.sin(tRad)*Math.sin(pRad);
+      const lz = rv * Math.cos(tRad);
+      // Rotate to ENU
+      const ex = rx2*lx + ux2*ly + bx*lz;
+      const ey = ry2*lx + uy2*ly + by*lz;
+      const ez = rz2*lx + uz2*ly + bz*lz;
+      // ENU → ECEF
+      const ecef = Cesium.Matrix4.multiplyByPoint(matrix,
+        new Cesium.Cartesian3(ex, ey, ez), new Cesium.Cartesian3());
+      pts.push(ecef);
+    }
+    if (pts.length > 1 && layerKey === 'tx' ? layerVis.tx : layerVis.rx) {
+      entities.push(viewer.entities.add({
+        show: layerKey === 'tx' ? layerVis.tx : layerVis.rx,
+        polyline: {
+          positions: pts,
+          width: 0.8,
+          material: col.withAlpha(0.35),
+          clampToGround: false,
+        }
+      }));
+    }
+  }
+
+  // Draw a filled-ish surface using ellipses at peak gain directions as cone outline
+  // Max gain lobe marker
+  entities.push(viewer.entities.add({
+    show: layerKey === 'tx' ? layerVis.tx : layerVis.rx,
+    position: (() => {
+      const ex = bx*scale, ey = by*scale, ez2 = bz*scale;
+      return Cesium.Matrix4.multiplyByPoint(matrix,
+        new Cesium.Cartesian3(ex,ey,ez2), new Cesium.Cartesian3());
+    })(),
+    point: {
+      pixelSize: 6,
+      color: col.withAlpha(0.9),
+      outlineColor: Cesium.Color.WHITE.withAlpha(0.5),
+      outlineWidth: 1,
+      disableDepthTestDistance: Number.POSITIVE_INFINITY,
+    }
+  }));
+}
+
+function updateCesiumPatterns(idx) {
+  removeCesiumPatterns();
+  if (!budgetData[idx] || !txPatternData || !rxPatternData) return;
+  const pt  = telemetry[idx];
+  const bd  = budgetData[idx];
+  const SCALE = Math.max(pt.alt * 0.3, 8000); // scale in meters
+
+  // TX pattern (on balloon) — boresight downward toward GS
+  const txAzim = (bd.azimuth_deg + 180) % 360; // balloon→GS azimuth
+  const txElev = -bd.elevation_deg;             // downward
+  if (layerVis.tx)
+    drawCesiumPattern(txPatternData, pt.lon, pt.lat, pt.alt,
+                      txAzim, txElev, SCALE, txPatternEntities, 'tx');
+
+  // RX pattern (on GS) — boresight toward balloon
+  if (layerVis.rx)
+    drawCesiumPattern(rxPatternData, GROUND_STATION_DATA.lon, GROUND_STATION_DATA.lat, GROUND_STATION_DATA.alt,
+                      bd.azimuth_deg, bd.elevation_deg, SCALE*0.6, rxPatternEntities, 'rx');
+}
+
+// ─── Layer visibility ─────────────────────────────────────────────────────────
+function toggleLayer(key) {
+  layerVis[key] = !layerVis[key];
+  const btn = document.getElementById(`btn-show-${key}`);
+  btn.classList.toggle('active', layerVis[key]);
+  if (key==='traj') trajEntities.forEach(e=>e.show=layerVis.traj);
+  if (key==='beam' && beamEntity) beamEntity.show=layerVis.beam;
+  if (key==='tx') txPatternEntities.forEach(e=>e.show=layerVis.tx);
+  if (key==='rx') rxPatternEntities.forEach(e=>e.show=layerVis.rx);
+  if (key==='footprint') updateFootprint(currentIdx);
+}
+
+// ─── Toggle satellite imagery ─────────────────────────────────────────────────
+function toggleImagery() {
+  if (!viewer) return;
+  const btn = document.getElementById('btn-show-imagery');
+  const imageryLayers = viewer.imageryLayers;
+  
+  if (imageryLayers.length > 0) {
+    // Hide imagery
+    for (let i = 0; i < imageryLayers.length; i++) {
+      imageryLayers.get(i).show = false;
+    }
+    btn.classList.remove('active');
+    btn.textContent = '🛰️ Satellite Imagery (OFF)';
+  } else {
+    // Show imagery again (add default provider)
+    const osmProvider = new Cesium.OpenStreetMapImageryProvider({
+      url: 'https://tile.openstreetmap.org/'
+    });
+    imageryLayers.addImageryProvider(osmProvider, 0);
+    btn.classList.add('active');
+    btn.textContent = '🛰️ Satellite Imagery (ON)';
+  }
+}
+
+// ─── Budget loading ───────────────────────────────────────────────────────────
+async function loadBudget() {
+  const tx = document.getElementById('sel-tx').value;
+  const rx = document.getElementById('sel-rx').value;
+  budgetData = await fetch(`${API}/link_budget?tx=${tx}&rx=${rx}`).then(r=>r.json());
+  await loadStats();
+  buildTrajectory();
+  await loadCesiumPatterns();
+  renderMargin();
+  renderAnalysis();
+  updateFrame(currentIdx);
+}
+
+async function loadStats() {
+  const tx = document.getElementById('sel-tx').value;
+  const rx = document.getElementById('sel-rx').value;
+  const s = await fetch(`${API}/statistics?tx=${tx}&rx=${rx}`).then(r=>r.json());
+  document.getElementById('s-min').textContent  = s.min_margin_db+' dB';
+  document.getElementById('s-max').textContent  = s.max_margin_db+' dB';
+  document.getElementById('s-avg').textContent  = s.avg_margin_db+' dB';
+  document.getElementById('s-rely').textContent = s.link_reliability_pct+'%';
+  document.getElementById('h-rely').textContent = s.link_reliability_pct+'%';
+  document.getElementById('h-rely').style.color = s.link_reliability_pct>=95?'var(--green)':s.link_reliability_pct>=80?'var(--yellow)':'var(--red)';
+  const sc = s.status_counts, tot = s.total_points;
+  const rows = [{cls:'NOMINAL',label:'NOMINAL',c:sc.NOMINAL},{cls:'WARNING',label:'WARNING',c:sc.WARNING},{cls:'MARGINAL',label:'MARGINAL',c:sc.MARGINAL},{cls:'LINK_LOST',label:'LINK LOST',c:sc.LINK_LOST}];
+  document.getElementById('sc-rows').innerHTML = rows.map(r=>`
+    <div class="sc-row" style="border-left-color:${sColor(r.cls)}">
+      <span>${r.label}</span>
+      <span style="font-family:'Space Mono',monospace;font-size:9px">${r.c}pts &nbsp;${(100*r.c/tot).toFixed(1)}%</span>
+    </div>`).join('');
+}
+
+// ─── Frame update ─────────────────────────────────────────────────────────────
+function updateFrame(idx) {
+  if (!telemetry[idx] || !budgetData[idx]) return;
+  const t = telemetry[idx], b = budgetData[idx];
+  currentIdx = idx;
+
+  // Balloon entity position
+  if (balloonEntity)
+    balloonEntity.position = Cesium.Cartesian3.fromDegrees(t.lon, t.lat, t.alt);
+
+  // Readouts
+  document.getElementById('ro-alt').textContent  = t.alt.toFixed(0)+' m';
+  document.getElementById('ro-dist').textContent = b.dist_km+' km';
+  document.getElementById('ro-elev').textContent = b.elevation_deg+'°';
+  document.getElementById('ro-fspl').textContent = b.fspl_db+' dB';
+  document.getElementById('ro-rxp').textContent  = b.rx_power_dbm+' dBm';
+  document.getElementById('ro-marg').textContent = b.margin_db+' dB';
+  document.getElementById('ro-marg').style.color = sColor(b.status);
+  document.getElementById('ro-time').textContent = t.timestamp.slice(0,19).replace('T',' ');
+  document.getElementById('ro-status').innerHTML = `<span class="badge ${b.status}">${b.status.replace('_',' ')}</span>`;
+
+  updateBeam(idx);
+  updateCesiumPatterns(idx);
+  updateFootprint(idx);
+  updateDetailBudget(idx);
+}
+
+// ─── Margin plot ──────────────────────────────────────────────────────────────
+function renderMargin() {
+  if (!budgetData.length) return;
+  const times   = telemetry.map(d=>d.timestamp.slice(11,19));
+  const margins = budgetData.map(d=>d.margin_db);
+  const colors  = budgetData.map(d=>sColor(d.status));
+  Plotly.react('plot-margin', [{type:'bar',x:times,y:margins,marker:{color:colors},hovertemplate:'%{x}<br>Marge: %{y} dB<extra></extra>'}],
+    pLayout({
+      margin:{t:6,b:28,l:40,r:10},
+      shapes:[
+        {type:'line',x0:0,x1:1,xref:'paper',y0:15,y1:15,line:{color:'#00ff88',dash:'dash',width:1}},
+        {type:'line',x0:0,x1:1,xref:'paper',y0:10,y1:10,line:{color:'#ffe03e',dash:'dash',width:1}},
+        {type:'line',x0:0,x1:1,xref:'paper',y0:0,y1:0,line:{color:'#ff3e3e',dash:'dot',width:1}},
+      ],
+      annotations:[
+        {x:1,xref:'paper',y:15,text:'15dB',showarrow:false,font:{color:'#00ff88',size:8},xanchor:'right'},
+        {x:1,xref:'paper',y:10,text:'10dB',showarrow:false,font:{color:'#ffe03e',size:8},xanchor:'right'},
+      ],
+      xaxis:{tickangle:-45,nticks:14,gridcolor:PT.grid},
+      yaxis:{title:'Marge (dB)',gridcolor:PT.grid},
+      showlegend:false,
+    }), pCfg);
+}
+
+// ─── Plotly Pattern ───────────────────────────────────────────────────────────
+async function renderPattern(side) {
+  const key   = document.getElementById(`sel-${side}`).value;
+  const cfg   = antennaConfigs[key];
+  const plotId= side==='tx'?'pb-tx':'pb-rx';
+  const el    = document.getElementById(plotId);
+  el.innerHTML= `<div class="pspinner"><div class="spin"></div>Chargement…</div>`;
+  const data  = await fetch(`${API}/pattern/${key}?resolution=medium`).then(r=>r.json());
+  const col   = cfg?.color || '#00d4ff';
+  const mkRGBA= (hex,a) => { const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${a})`; };
+  el.innerHTML='';
+  const trace = {
+    type:'surface', x:data.x, y:data.y, z:data.z,
+    surfacecolor:data.gain_db,
+    colorscale:[[0,'rgba(5,10,15,0.8)'],[0.4,mkRGBA(col,0.5)],[0.75,col],[1,'#fff']],
+    opacity:0.82, showscale:false,
+    hovertemplate:'Gain: %{surfacecolor:.1f} dBi<extra></extra>',
+    contours:{x:{highlight:false},y:{highlight:false},z:{highlight:false}},
+  };
+  const axStyle={gridcolor:PT.grid,backgroundcolor:PT.bg,showticklabels:false,title:'',zeroline:false};
+  Plotly.newPlot(plotId,[trace],{
+    paper_bgcolor:PT.paper,font:PT.font,
+    title:{text:`<b>${side.toUpperCase()}: ${data.name}</b>`,font:{color:col,size:12},x:.5,y:.97},
+    scene:{xaxis:axStyle,yaxis:axStyle,zaxis:{...axStyle,title:'Z↑'},bgcolor:PT.bg,aspectmode:'cube',camera:{eye:{x:1.5,y:1.2,z:.8}}},
+    margin:{t:36,b:0,l:0,r:0},showlegend:false,
+  },pCfg);
+
+  const infoId = side==='tx'?'ptx':'prx';
+  document.getElementById(`${infoId}-name`).textContent = data.name;
+  document.getElementById(`${infoId}-body`).innerHTML = cfg ? `
+    <div class="pr"><span class="pn">Gain max</span><span class="pv acc">${data.max_gain_dbi.toFixed(1)} dBi</span></div>
+    <div class="pr"><span class="pn">Usage</span><span class="pv" style="font-size:10px;color:var(--muted)">${cfg.use_case}</span></div>
+    <div class="pr"><span class="pn">Description</span><span class="pv" style="font-size:10px;color:var(--muted)">${cfg.description}</span></div>
+  ` : '';
+}
+
+// ─── Analysis plots ───────────────────────────────────────────────────────────
+function renderAnalysis() {
+  if (!budgetData.length) return;
+  const alts   = telemetry.map(d=>d.alt);
+  const eirps  = budgetData.map(d=>d.eirp_dbm);
+  const rxpwrs = budgetData.map(d=>d.rx_power_dbm);
+  const margins= budgetData.map(d=>d.margin_db);
+  const fspls  = budgetData.map(d=>d.fspl_db);
+  const dists  = budgetData.map(d=>d.dist_km);
+
+  Plotly.react('plot-bv',[
+    {type:'scatter',mode:'lines',x:alts,y:eirps,name:'EIRP',line:{color:'#00d4ff',width:2}},
+    {type:'scatter',mode:'lines',x:alts,y:rxpwrs,name:'RX Power',line:{color:'#ff6b35',width:2}},
+    {type:'scatter',mode:'lines',x:alts,y:margins,name:'Marge',line:{color:'#00ff88',width:2,dash:'dash'},yaxis:'y2'},
+    {type:'scatter',mode:'lines',x:[0,Math.max(...alts)],y:[-110,-110],name:'RX Sens.',line:{color:'#ff3e3e',width:1,dash:'dot'}},
+  ],pLayout({title:{text:'<b>BILAN vs ALTITUDE</b>',font:{color:'#00d4ff',size:11},x:.5},
+    yaxis:{title:'dBm',gridcolor:PT.grid},yaxis2:{title:'Marge (dB)',overlaying:'y',side:'right',gridcolor:'transparent'},
+    legend:{x:.02,y:.98,bgcolor:'rgba(13,27,40,.8)',font:{size:9}},showlegend:true}),pCfg);
+
+  Plotly.react('plot-fspl',[
+    {type:'scatter',mode:'lines',x:alts,y:fspls,name:'FSPL (dB)',line:{color:'#ffe03e',width:2},fill:'tozeroy',fillcolor:'rgba(255,224,62,.05)'},
+    {type:'scatter',mode:'lines',x:alts,y:dists,name:'Distance (km)',line:{color:'#00d4ff',width:1.5,dash:'dot'},yaxis:'y2'},
+  ],pLayout({title:{text:'<b>FSPL & DISTANCE vs ALTITUDE</b>',font:{color:'#00d4ff',size:11},x:.5},
+    xaxis:{title:'Altitude (m)',gridcolor:PT.grid},yaxis:{title:'FSPL (dB)',gridcolor:PT.grid},
+    yaxis2:{title:'Distance (km)',overlaying:'y',side:'right',gridcolor:'transparent'},
+    legend:{x:.02,y:.98,bgcolor:'rgba(13,27,40,.8)',font:{size:9}},showlegend:true}),pCfg);
+}
+
+function updateDetailBudget(idx) {
+  if (!budgetData[idx]) return;
+  const b=budgetData[idx], t=telemetry[idx];
+  document.getElementById('detail-body').innerHTML = `
+    <div class="pr"><span class="pn">Timestamp</span><span class="pv">${t.timestamp.slice(11,19)}</span></div>
+    <div class="pr"><span class="pn">Altitude</span><span class="pv acc">${t.alt.toFixed(0)} m</span></div>
+    <div class="pr"><span class="pn">Distance slant</span><span class="pv">${b.dist_km} km</span></div>
+    <div class="pr"><span class="pn">Élévation</span><span class="pv">${b.elevation_deg}°</span></div>
+    <div class="pr"><span class="pn">Gain TX</span><span class="pv">${b.tx_gain_dbi} dBi</span></div>
+    <div class="pr"><span class="pn">EIRP</span><span class="pv acc">${b.eirp_dbm} dBm</span></div>
+    <div class="pr"><span class="pn">FSPL</span><span class="pv">${b.fspl_db} dB</span></div>
+    <div class="pr"><span class="pn">Total Loss</span><span class="pv">${b.total_path_loss_db} dB</span></div>
+    <div class="pr"><span class="pn">Gain RX</span><span class="pv">${b.rx_gain_dbi} dBi</span></div>
+    <div class="pr"><span class="pn">RX Power</span><span class="pv">${b.rx_power_dbm} dBm</span></div>
+    <div class="pr"><span class="pn">RX @ ADC</span><span class="pv">${b.rx_at_adc_dbm} dBm</span></div>
+    <div class="pr"><span class="pn">Marge</span><span class="pv" style="color:${sColor(b.status)}">${b.margin_db} dB</span></div>
+  `;
+}
+
+// ─── RF Budget controls ───────────────────────────────────────────────────────
+async function applyBudget() {
+  const keys=['tx_power_dbm','frequency_mhz','tx_pa_gain_db','tx_cable_loss_db','rx_sensitivity_dbm',
+               'rx_lna_gain_db','rx_lna_loss_db','rx_lowband_filter_loss_db','polarization_mismatch_db',
+               'pointing_loss_db','atm_constant_db_per_km','min_link_margin_db','recommended_link_margin_db','speed_kbps',
+               'enable_attitude_rotation','attitude_jitter_deg'];
+  const payload={};
+  keys.forEach(k=>{
+    const el=document.getElementById(`bf-${k}`);
+    if(el) {
+      if(k === 'enable_attitude_rotation') {
+        payload[k] = el.checked;
+      } else {
+        payload[k] = parseFloat(el.value);
+      }
+    }
+  });
+  const res = await fetch(`${API}/rf_budget`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const data = await res.json();
+  document.getElementById('h-freq').textContent  = data.rf_budget.frequency_mhz+' MHz';
+  document.getElementById('h-power').textContent = data.rf_budget.tx_power_dbm+' dBm';
+  await loadBudget();
+  renderMargin();
+  renderAnalysis();
+}
+
+function resetBudget() {
+  Object.entries(DEFAULTS).forEach(([k,v])=>{
+    const el=document.getElementById(`bf-${k}`);
+    if(el) {
+      if(el.type === 'checkbox') {
+        el.checked = v;
+      } else {
+        el.value = v;
+      }
+    }
+  });
+  applyBudget();
+}
+
+// ─── Antenna selects ──────────────────────────────────────────────────────────
+function updateAntInfo() {
+  const tx=antennaConfigs[document.getElementById('sel-tx').value];
+  const rx=antennaConfigs[document.getElementById('sel-rx').value];
+  if(tx) document.getElementById('tx-info').textContent=tx.description;
+  if(rx) document.getElementById('rx-info').textContent=rx.description;
+}
+
+function loadAntennaPresets() {
+  const presetList = document.getElementById('preset-list');
+  if (!antennaConfigs) return;
+  
+  presetList.innerHTML = '';
+  
+  // Built-in antenna presets
+  const header = document.createElement('div');
+  header.style.cssText = 'font-size:9px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700';
+  header.textContent = 'Antennes de Base';
+  presetList.appendChild(header);
+  
+  for (const [key, config] of Object.entries(antennaConfigs)) {
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    card.innerHTML = `
+      <div class="preset-name">${config.name}</div>
+      <div class="preset-gain">Gain: ${config.gain_dbi} dBi</div>
+      <div class="preset-gain" style="margin-top:3px;font-size:8px">${config.use_case}</div>
+    `;
+    card.style.borderLeft = `3px solid ${config.color}`;
+    card.addEventListener('click', () => {
+      console.log(`Selected antenna: ${key}`);
+    });
+    presetList.appendChild(card);
+  }
+  
+  // Load custom presets and antennas
+  loadCustomPresets();
+  loadCustomAntennas();
+}
+
+async function loadCustomPresets() {
+  try {
+    const data = await fetch(`${API}/antenna_presets`).then(r => r.json());
+    const presetList = document.getElementById('preset-list');
+    
+    if (data.presets && Object.keys(data.presets).length > 0) {
+      const header = document.createElement('div');
+      header.style.cssText = 'font-size:9px;color:var(--accent);margin-top:10px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700';
+      header.textContent = 'Mes Présets';
+      presetList.appendChild(header);
+      
+      for (const [id, preset] of Object.entries(data.presets)) {
+        const card = document.createElement('div');
+        card.className = 'preset-card';
+        card.style.background = 'rgba(0,212,255,.08)';
+        card.innerHTML = `
+          <div class="preset-name" style="color:var(--accent)">${preset.name}</div>
+          <div class="preset-gain">TX: ${preset.tx_name}</div>
+          <div class="preset-gain">RX: ${preset.rx_name}</div>
+          <button onclick="applyAntennaPreset('${preset.tx}', '${preset.rx}')" style="margin-top:4px;padding:3px 6px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-size:8px;cursor:pointer;border-radius:2px;width:100%">Appliquer</button>
+          <button onclick="deleteAntennaPreset('${id}')" style="margin-top:3px;padding:3px 6px;background:transparent;border:1px solid var(--red);color:var(--red);font-size:8px;cursor:pointer;border-radius:2px;width:100%">Supprimer</button>
+        `;
+        card.style.borderLeft = '3px solid var(--accent)';
+        presetList.appendChild(card);
+      }
+    }
+  } catch (err) {
+    console.error('Load custom presets error:', err);
+  }
+}
+
+function showCreatePresetForm() {
+  const tx = document.getElementById('sel-tx').value;
+  const rx = document.getElementById('sel-rx').value;
+  const name = prompt(`Créer un préset avec ${antennaConfigs[tx].name} (TX) + ${antennaConfigs[rx].name} (RX)?\n\nNom du préset:`, `${antennaConfigs[tx].name} + ${antennaConfigs[rx].name}`);
+  
+  if (!name) return;
+  
+  createAntennaPreset(name, tx, rx);
+}
+
+async function createAntennaPreset(name, tx, rx) {
+  try {
+    const response = await fetch(`${API}/antenna_presets`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, tx, rx})
+    });
+    const result = await response.json();
+    
+    if (result.ok) {
+      alert(`✅ Préset créé: ${name}`);
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Create preset error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+async function deleteAntennaPreset(presetId) {
+  if (!confirm('Supprimer ce préset?')) return;
+  
+  try {
+    const response = await fetch(`${API}/antenna_presets/${presetId}`, {method: 'DELETE'});
+    const result = await response.json();
+    
+    if (result.ok) {
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Delete preset error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+function applyAntennaPreset(tx, rx) {
+  document.getElementById('sel-tx').value = tx;
+  document.getElementById('sel-rx').value = rx;
+  updateAntInfo();
+  loadBudget();
+}
+
+// ─── Custom Antennas ──────────────────────────────────────────────────────────
+async function loadCustomAntennas() {
+  try {
+    const data = await fetch(`${API}/custom_antennas`).then(r => r.json());
+    const presetList = document.getElementById('preset-list');
+    
+    if (data.antennas && Object.keys(data.antennas).length > 0) {
+      const header = document.createElement('div');
+      header.style.cssText = 'font-size:9px;color:var(--accent);margin-top:10px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700';
+      header.textContent = 'Antennes Perso';
+      presetList.appendChild(header);
+      
+      for (const [id, antenna] of Object.entries(data.antennas)) {
+        const card = document.createElement('div');
+        card.className = 'preset-card';
+        card.style.background = 'rgba(255,107,53,.08)';
+        card.innerHTML = `
+          <div class="preset-name" style="color:var(--accent2)">${antenna.name}</div>
+          <div class="preset-gain">Gain: ${antenna.gain_dbi} dBi</div>
+          <div class="preset-gain" style="font-size:8px;margin-top:2px">${antenna.description}</div>
+          <button onclick="editCustomAntenna('${id}')" style="margin-top:4px;padding:3px 6px;background:transparent;border:1px solid var(--accent2);color:var(--accent2);font-size:8px;cursor:pointer;border-radius:2px;width:100%;flex:1">✏️ Éditer</button>
+          <button onclick="deleteCustomAntenna('${id}')" style="margin-top:3px;padding:3px 6px;background:transparent;border:1px solid var(--red);color:var(--red);font-size:8px;cursor:pointer;border-radius:2px;width:100%">Supprimer</button>
+        `;
+        card.style.borderLeft = '3px solid var(--accent2)';
+        presetList.appendChild(card);
+      }
+    }
+  } catch (err) {
+    console.error('Load custom antennas error:', err);
+  }
+}
+
+function showCreateCustomAntennaForm() {
+  const name = prompt('Nom de l\'antenne personnalisée:');
+  if (!name) return;
+  
+  const gainStr = prompt('Gain (dBi):', '5');
+  const gain = parseFloat(gainStr);
+  if (isNaN(gain)) {
+    alert('Gain invalide');
+    return;
+  }
+  
+  const color = prompt('Couleur (hex, ex: #ff6b35):', '#ff6b35');
+  const description = prompt('Description:', 'Antenne personnalisée');
+  
+  createCustomAntenna(name, gain, color, description);
+}
+
+async function createCustomAntenna(name, gain_db, color, description) {
+  try {
+    const response = await fetch(`${API}/custom_antennas`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: name,
+        gain_db: gain_db,
+        color: color,
+        description: description,
+        type: 'dipole_half_wave'
+      })
+    });
+    const result = await response.json();
+    
+    if (result.ok) {
+      alert(`✅ Antenne créée: ${name}\nGain: ${gain_db} dBi`);
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Create antenna error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+function editCustomAntenna(antennaId) {
+  // Get current antenna data from loaded list
+  fetch(`${API}/custom_antennas`).then(r => r.json()).then(data => {
+    if (!data.antennas[antennaId]) return;
+    const antenna = data.antennas[antennaId];
+    
+    const newName = prompt('Nom:', antenna.name);
+    if (!newName) return;
+    
+    const newGain = parseFloat(prompt('Gain (dBi):', antenna.gain_dbi));
+    if (isNaN(newGain)) return;
+    
+    const newColor = prompt('Couleur:', antenna.color);
+    const newDesc = prompt('Description:', antenna.description);
+    
+    updateCustomAntenna(antennaId, newName, newGain, newColor, newDesc);
+  });
+}
+
+async function updateCustomAntenna(antennaId, name, gain_db, color, description) {
+  try {
+    const response = await fetch(`${API}/custom_antennas/${antennaId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: name,
+        gain_db: gain_db,
+        color: color,
+        description: description
+      })
+    });
+    const result = await response.json();
+    
+    if (result.ok) {
+      alert(`✅ Antenne modifiée: ${name}`);
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Update antenna error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+async function deleteCustomAntenna(antennaId) {
+  if (!confirm('Supprimer cette antenne?')) return;
+  
+  try {
+    const response = await fetch(`${API}/custom_antennas/${antennaId}`, {method: 'DELETE'});
+    const result = await response.json();
+    
+    if (result.ok) {
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Delete antenna error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+// ─── Custom Antenna Form Submission ────────────────────────────────────────────
+async function createCustomAntenna() {
+  // Get form values
+  const name = document.getElementById('antenna-name').value.trim();
+  const type = document.getElementById('antenna-type').value;
+  const gain = parseFloat(document.getElementById('antenna-gain').value);
+  const beamwidthH = parseFloat(document.getElementById('antenna-beamwidth-h').value);
+  const beamwidthV = parseFloat(document.getElementById('antenna-beamwidth-v').value);
+  const polarization = document.getElementById('antenna-polarization').value;
+  const cableLoss = parseFloat(document.getElementById('antenna-cable-loss').value) || 0;
+  const wavelength = parseFloat(document.getElementById('antenna-wavelength').value) || null;
+
+  // Validate required fields
+  if (!name) {
+    alert('❌ Veuillez entrer un nom d\'antenne');
+    return;
+  }
+  
+  if (!type) {
+    alert('❌ Veuillez sélectionner un type d\'antenne');
+    return;
+  }
+  
+  if (isNaN(gain)) {
+    alert('❌ Veuillez entrer un gain valide');
+    return;
+  }
+  
+  if (isNaN(beamwidthH) || isNaN(beamwidthV)) {
+    alert('❌ Veuillez entrer des angles d\'ouverture valides');
+    return;
+  }
+  
+  if (!polarization) {
+    alert('❌ Veuillez sélectionner une polarisation');
+    return;
+  }
+
+  try {
+    // Send to API
+    const response = await fetch(`${API}/custom_antennas`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: name,
+        antenna_type: type,
+        gain_dbi: gain,
+        beamwidth_h_deg: beamwidthH,
+        beamwidth_v_deg: beamwidthV,
+        polarization: polarization,
+        cable_loss_db: cableLoss,
+        wavelength_cm: wavelength,
+        description: `${type.charAt(0).toUpperCase() + type.slice(1)} | Gain: ${gain} dBi | BW: ${beamwidthH}°×${beamwidthV}°`
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.ok) {
+      alert(`✅ Antenne personnalisée créée!\n\n${name}\nType: ${type}\nGain: ${gain} dBi\nPolarisation: ${polarization}`);
+      
+      // Clear form
+      document.getElementById('antenna-name').value = '';
+      document.getElementById('antenna-type').value = '';
+      document.getElementById('antenna-gain').value = '';
+      document.getElementById('antenna-beamwidth-h').value = '';
+      document.getElementById('antenna-beamwidth-v').value = '';
+      document.getElementById('antenna-polarization').value = '';
+      document.getElementById('antenna-cable-loss').value = '';
+      document.getElementById('antenna-wavelength').value = '';
+      
+      // Reload antenna list
+      loadAntennaPresets();
+    } else {
+      alert(`❌ Erreur: ${result.error || 'Impossible de créer l\'antenne'}`);
+    }
+  } catch (err) {
+    console.error('Create custom antenna error:', err);
+    alert(`❌ Erreur: ${err.message}`);
+  }
+}
+
+// ─── File Upload ──────────────────────────────────────────────────────────────
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const response = await fetch(`${API}/upload_telemetry`, {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    
+    if (result.ok) {
+      alert(`✅ Fichier chargé: ${file.name}\n${result.message}`);
+      await loadTelemetryFiles();
+      await loadBudget();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Upload error:', err);
+    alert(`❌ Erreur d'upload: ${err.message}`);
+  }
+  
+  // Reset file input
+  event.target.value = '';
+}
+
+async function loadTelemetryFiles() {
+  try {
+    const files = await fetch(`${API}/telemetry_files`).then(r => r.json());
+    const fileList = document.getElementById('telemetry-list');
+    fileList.innerHTML = '';
+    
+    if (!files.files || files.files.length === 0) {
+      fileList.innerHTML = '<div style="color:var(--muted);font-size:9px">Aucun fichier personnalisé</div>';
+      return;
+    }
+    
+    files.files.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML = `
+        <span class="file-item-name" title="${f.name}">${f.name}</span>
+        <button class="file-item-btn" onclick="deleteTelemetryFile('${f.name}')" title="Supprimer">✕</button>
+      `;
+      if (f.current) {
+        item.style.borderColor = 'var(--accent)';
+        item.style.background = 'rgba(0,212,255,.15)';
+      }
+      fileList.appendChild(item);
+    });
+  } catch (err) {
+    console.error('Load files error:', err);
+  }
+}
+
+async function deleteTelemetryFile(filename) {
+  if (!confirm(`Supprimer ${filename}?`)) return;
+  
+  try {
+    const response = await fetch(`${API}/delete_telemetry?file=${filename}`, {method: 'DELETE'});
+    const result = await response.json();
+    
+    if (result.ok) {
+      await loadTelemetryFiles();
+      await loadBudget();
+    } else {
+      alert(`❌ Erreur: ${result.error}`);
+    }
+  } catch (err) {
+    console.error('Delete error:', err);
+    alert(`❌ Erreur de suppression: ${err.message}`);
+  }
+}
+
+document.getElementById('sel-tx').addEventListener('change',async()=>{
+  updateAntInfo(); await loadBudget(); renderPattern('tx'); renderMargin();
+});
+document.getElementById('sel-rx').addEventListener('change',async()=>{
+  updateAntInfo(); await loadBudget(); renderPattern('rx'); renderMargin();
+});
+
+// ─── Playback ─────────────────────────────────────────────────────────────────
+document.getElementById('btn-play').addEventListener('click',()=>{
+  if(playTimer){clearInterval(playTimer);playTimer=null;document.getElementById('btn-play').textContent='▶ PLAY';return;}
+  document.getElementById('btn-play').textContent='⏸ PAUSE';
+  const spd=parseInt(document.getElementById('sel-speed').value);
+  playTimer=setInterval(()=>{
+    currentIdx=(currentIdx+1)%telemetry.length;
+    document.getElementById('timeline').value=currentIdx;
+    updateFrame(currentIdx);
+  },spd);
+});
+
+function resetPlay(){
+  clearInterval(playTimer);playTimer=null;
+  document.getElementById('btn-play').textContent='▶ PLAY';
+  currentIdx=0; document.getElementById('timeline').value=0; updateFrame(0);
+}
+
+document.getElementById('timeline').addEventListener('input',e=>{
+  currentIdx=parseInt(e.target.value); updateFrame(currentIdx);
+});
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+    window.dispatchEvent(new Event('resize'));
+  });
+});
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

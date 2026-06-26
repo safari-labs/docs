@@ -1,0 +1,10 @@
+{
+  "custom_test": {
+    "name": "test",
+    "type": "dipole_half_wave",
+    "gain_dbi": 2.2,
+    "color": "#00d4ff",
+    "description": "Dipole | Gain: 5 dBi | BW: 60\u00b0\u00d760\u00b0",
+    "base_pattern": "dipole_half_wave"
+  }
+}

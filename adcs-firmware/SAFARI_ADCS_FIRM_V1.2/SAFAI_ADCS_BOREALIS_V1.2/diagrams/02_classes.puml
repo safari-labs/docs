@@ -1,0 +1,83 @@
+@startuml Class_Hierarchy
+
+skinparam classBackgroundColor #E8F5E9
+skinparam classArrowColor #2E7D32
+skinparam classBorderColor #2E7D32
+skinparam classFontColor #1B5E20
+skinparam enumBackgroundColor #FFF9C4
+skinparam enumBorderColor #F9A825
+
+abstract class SensorModule {
+  {abstract} +init()    : bool
+  {abstract} +read()    : bool
+  {abstract} +isReady() : bool
+  {abstract} +name()    : const char*
+  +lastError()          : SensorError
+  #_ready : bool
+  #_error : SensorError
+}
+
+enum SensorError {
+  OK
+  NOT_FOUND
+  BAD_ID
+  DATA_INVALID
+  READ_FAIL
+}
+
+class ImuModule {
+  -icm : Adafruit_ICM20948
+  +init()    : bool
+  +read()    : bool
+  +isReady() : bool
+  +name()    : const char*
+}
+
+class AltimeterModule {
+  -sensor : MS5607
+  +init()    : bool
+  +read()    : bool
+  +isReady() : bool
+  +name()    : const char*
+}
+
+class Pt1000Module {
+  -activeCount : uint8_t
+  +init()    : bool
+  +read()    : bool
+  +isReady() : bool
+  +name()    : const char*
+}
+
+class WatchdogModule {
+  +init()    : bool
+  +read()    : bool
+  +isReady() : bool
+  +name()    : const char*
+}
+
+class SensorManager {
+  -modules[MAX_MODULES] : SensorModule*
+  -count : uint8_t
+  +registerModule(m : SensorModule*) : void
+  +initAll() : void
+  +readAll()  : void
+}
+
+struct AdcsData {
+  imu       : \{ ax, ay, az (m/s²)\n             gx, gy, gz (rad/s)\n             mx, my, mz (µT), valid \}
+  altimeter : \{ pressure (hPa), temperature (°C)\n             altitude (m), valid \}
+  pt1000    : \{ temps[8] (°C), valid[8]\n             active_count \}
+  watchdog  : \{ connected \}
+}
+
+SensorModule <|-- ImuModule
+SensorModule <|-- AltimeterModule
+SensorModule <|-- Pt1000Module
+SensorModule <|-- WatchdogModule
+SensorModule ..> SensorError
+
+SensorManager "1" o-- "1..4" SensorModule : manages >
+SensorManager ..> AdcsData : writes g_adcs >
+
+@enduml

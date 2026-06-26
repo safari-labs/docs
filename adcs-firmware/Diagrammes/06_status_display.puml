@@ -1,0 +1,81 @@
+@startuml Status_Display_Layout
+
+skinparam rectangle {
+  BackgroundColor #FFF8E1
+  BorderColor #FF6F00
+  FontColor #E65100
+}
+skinparam noteBackgroundColor #E8F5E9
+skinparam noteBorderColor #2E7D32
+
+rectangle "Serial Console — printStatus() — 1 Hz refresh @ 115200 baud" {
+
+  rectangle "Col 1 : GPS DATA\n(36 chars wide)" as col1 {
+    rectangle "Fix quality"     as c1l1
+    rectangle "Fix type"        as c1l2
+    rectangle "Satellites"      as c1l3
+    rectangle "Valid"           as c1l4
+    rectangle "Date (UTC)"      as c1l5
+    rectangle "Time (UTC)"      as c1l6
+    rectangle "Latitude (deg)"  as c1l7
+    rectangle "Longitude (deg)" as c1l8
+    rectangle "Altitude MSL (m)"as c1l9
+    rectangle "Speed (kn)"      as c1l10
+    rectangle "Course (deg)"    as c1l11
+  }
+
+  rectangle "Col 2 : SYSTEM STATUS\n(36 chars wide)" as col2 {
+    rectangle "GNSS fix type"   as c2l1
+    rectangle "Satellites"      as c2l2
+    rectangle "Sensors N/4"     as c2l3
+    rectangle "Watchdog status" as c2l4
+    rectangle "Uptime (s)"      as c2l5
+  }
+
+  rectangle "Col 3 : SENSOR 1 — Pt1000\n(36 chars wide)" as col3 {
+    rectangle "Status OK/ERROR"  as c3l1
+    rectangle "Temp (°C)"        as c3l2
+    rectangle "Resistance (Ω)"   as c3l3
+    rectangle "Updated (ms)"     as c3l4
+  }
+
+  rectangle "Col 4 : SENSOR 2 — IMU\n(36 chars wide)" as col4 {
+    rectangle "Status OK/ERROR"  as c4l1
+    rectangle "Accel X/Y/Z m/s²" as c4l2
+    rectangle "Gyro X/Y/Z °/s"   as c4l3
+    rectangle "Temp die (°C)"    as c4l4
+    rectangle "Updated (ms)"     as c4l5
+  }
+
+  rectangle "Col 5 : SENSOR 3 — Altimeter\n(36 chars wide)" as col5 {
+    rectangle "Status OK/ERROR" as c5l1
+    rectangle "Pressure (hPa)"  as c5l2
+    rectangle "Altitude (m)"    as c5l3
+    rectangle "Temp die (°C)"   as c5l4
+    rectangle "Updated (ms)"    as c5l5
+  }
+
+  rectangle "Col 6 : SENSOR 4 — GNSS M9N\n(36 chars wide)" as col6 {
+    rectangle "Fix type"         as c6l1
+    rectangle "Satellites"       as c6l2
+    rectangle "Lat / Lon (deg)"  as c6l3
+    rectangle "Altitude MSL (m)" as c6l4
+    rectangle "Speed / Course"   as c6l5
+  }
+}
+
+note bottom of col1
+  Box-drawing borders on every column:
+  ┌──────────────────────────────────┐
+  │  COLUMN TITLE                    │
+  └──────────────────────────────────┘
+  Field   : value
+end note
+
+note bottom of col4
+  Columns printed side-by-side.
+  Missing rows padded with spaces.
+  Max rows = longest column.
+end note
+
+@enduml

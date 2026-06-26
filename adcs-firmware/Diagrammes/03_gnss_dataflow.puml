@@ -1,0 +1,67 @@
+@startuml GNSS_DataFlow
+
+skinparam rectangle {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
+  FontColor #BF360C
+}
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+rectangle "M9N u-blox (External)" {
+  rectangle "NMEA sentence\nbuffer" as hw_buf
+}
+
+rectangle "gnss.cpp — I2C Protocol Layer" {
+  rectangle "Read registers 0xFD/0xFE\n(available byte count)" as reg
+  rectangle "requestFrom()\nup to 255 bytes/chunk" as read
+}
+
+rectangle "gnss.cpp — NMEA State Machine" {
+  rectangle "feedByte()\n· skip 0xFF padding\n· detect '$' / CRLF\n· fill nmeaBuf[]" as feed
+  rectangle "dispatchNMEA()\n· verify checksum\n· route by type" as dispatch
+}
+
+rectangle "gnss.cpp — Sentence Parsers" {
+  rectangle "parseGGA()\nLat, Lon, Alt, Fix quality, Sats" as gga
+  rectangle "parseRMC()\nDate, Speed, Course, Status A/V" as rmc
+  rectangle "parseGSA()\nFix type (1=None / 2=2D / 3=3D)" as gsa
+}
+
+rectangle "Shared State" {
+  rectangle "GPSData struct\n(static, updated in-place)" as gpsstruct
+}
+
+hw_buf --> reg       : I2C polling
+reg    --> read      : byte count
+read   --> feed      : raw bytes
+
+feed   --> dispatch  : complete sentence
+dispatch --> gga
+dispatch --> rmc
+dispatch --> gsa
+
+gga --> gpsstruct
+rmc --> gpsstruct
+gsa --> gpsstruct
+
+gpsstruct --> "gnss.getData()" : const GPSData&
+
+note right of reg
+  Called every loop() iteration
+  from GNSS::update()
+end note
+
+note right of feed
+  0xFF bytes discarded
+  (M9N fills idle slots)
+end note
+
+note bottom of gpsstruct
+  Fields updated incrementally:
+  GGA → position / fix / sats / alt
+  RMC → date / speed / course / valid
+  GSA → fixType
+end note
+
+@enduml

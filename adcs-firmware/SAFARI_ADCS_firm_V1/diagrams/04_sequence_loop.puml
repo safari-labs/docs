@@ -1,0 +1,63 @@
+@startuml 04_sequence_loop
+skinparam defaultFontName Courier
+skinparam defaultFontSize 10
+skinparam ParticipantPadding 8
+skinparam BoxPadding 4
+skinparam sequenceArrowThickness 1
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+
+title Cycle de mesure — loop()
+
+participant "loop"  as L  #FFFDE7
+participant "MGR"   as MGR #E8F5E9
+participant "IMU"   as IMU #E3F2FD
+participant "ALT"   as ALT #E3F2FD
+participant "PT"    as PT  #E3F2FD
+participant "WD"    as WD  #F3E5F5
+participant "print" as PR  #FCE4EC
+
+loop ~10 ms
+  L -> MGR : updateAll()
+
+  MGR -> IMU : update()
+  IMU -> IMU : I2C read 0x68\naccel/gyro/mag/temp → IMUData
+  IMU --> MGR : ok
+
+  MGR -> ALT : update()
+  ALT -> ALT : cmd 0x48  Conv D1
+  ALT -> ALT : delay 10 ms
+  ALT -> ALT : cmd 0x00  ADC Read → D1
+  ALT -> ALT : cmd 0x58  Conv D2
+  ALT -> ALT : delay 10 ms
+  ALT -> ALT : cmd 0x00  ADC Read → D2
+  ALT -> ALT : compensate(D1,D2)\n→ P(hPa) T(°C) alt(m)
+  ALT --> MGR : ok
+
+  MGR -> PT  : update()
+  loop ch = 0..7
+    PT -> PT : GPIO0-2 ← ch
+    PT -> PT : delay 100 µs
+    PT -> PT : analogRead(GPIO26) → raw
+    PT -> PT : équation maison → T(°C)
+  end
+  PT --> MGR : ok
+
+  MGR --> L
+
+  alt toutes les 5 s
+    L -> WD : sendHeartbeat()
+    WD --> L
+  end
+
+  alt toutes les 1 s
+    L -> PR : printStatus()
+    PR --> L
+  end
+
+  L -> L : delay 10 ms
+end
+
+@enduml

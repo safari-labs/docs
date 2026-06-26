@@ -1,0 +1,78 @@
+@startuml SAFARI_ADCS_Architecture
+
+skinparam rectangle {
+  BackgroundColor #E1F5FE
+  BorderColor #01579B
+  FontColor #01579B
+}
+skinparam package {
+  BackgroundColor #F0F8FF
+  BorderColor #01579B
+}
+
+package "RP2040 Microcontroller" {
+
+  rectangle "Main Orchestrator\n(main.cpp)" as main
+
+  package "Communication Interfaces" {
+    rectangle "I2C Bus\n(GPIO 4, 5 @ 400kHz)" as i2c
+    rectangle "UART0 Serial\n(GPIO 0, 1 @ 115200)" as serial
+  }
+
+  package "Hardware Modules" {
+    rectangle "GNSS Module\n(gnss.h/cpp)" as gnss
+    rectangle "Sensor Manager\n(sensors.h/cpp)" as sensorMgr
+    rectangle "Watchdog Module\n(watchdog.h/cpp)" as watchdog
+    rectangle "Status Display\n(printStatus.h/cpp)" as display
+  }
+
+  package "Concrete Sensors" {
+    rectangle "Pt1000\nThermometer" as pt1000
+    rectangle "IMU\n(6-axis)" as imu
+    rectangle "Altimeter\n(Barometric)" as altimeter
+    rectangle "Sensor Slot 4\n(Reserved)" as slot4
+  }
+
+  package "Configuration" {
+    rectangle "config.h\n(Pins, Addresses, Constants)" as config
+  }
+}
+
+package "External Hardware" {
+  rectangle "M9N u-blox\nGNSS Receiver\n(I2C 0x42)" as m9n
+  rectangle "IMU Chip\n(I2C 0x68)" as imuHW
+  rectangle "Barometer\n(I2C 0x77)" as altimeterHW
+  rectangle "8× Pt1000 RTD\nMux 8:1 (GPIO0-2)\nOp-amp → GPIO26 (ADC)\nV = f(R), non-linear (TBD)" as pt1000HW
+  rectangle "External Watchdog\nController" as watchdogHW
+}
+
+main --> gnss
+main --> sensorMgr
+main --> watchdog
+main --> display
+
+gnss --> i2c
+gnss --> m9n
+
+sensorMgr --> pt1000
+sensorMgr --> imu
+sensorMgr --> altimeter
+sensorMgr --> slot4
+
+pt1000   --> pt1000HW
+imu      --> i2c
+altimeter --> i2c
+
+i2c --> m9n
+i2c --> imuHW
+i2c --> altimeterHW
+pt1000 -.-> pt1000HW
+
+display  --> serial
+watchdog --> watchdogHW
+
+config -.-> main
+config -.-> gnss
+config -.-> sensorMgr
+
+@enduml

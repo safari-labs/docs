@@ -1,0 +1,2839 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://your-org.github.io/docs/adcs-firmware/SAFARI_ADCS_FIRM_V1.2/SAFAI_ADCS_BOREALIS_V1.2/ARCHITECTURE_V2/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SAFARI ADCS — Architecture V2 - Your Project Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#safari-adcs-architecture-v2" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Your Project Documentation" class="md-header__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Your Project Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SAFARI ADCS — Architecture V2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Your Project Documentation" class="md-nav__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Your Project Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fire Risk Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/training-ecology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 1 — Ecology Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/training-fire-risk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 2 — Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fire-risk-model/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProtoSat CAN-SBX
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ProtoSat CAN-SBX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../protosat-cansbx/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADCS Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADCS Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WDM Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    WDM Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../wdm-firmware/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAO ProtoSat
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAO ProtoSat
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cao-protosat/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cariboulite
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cariboulite
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cariboulite/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RF Radiation Pattern Simulator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RF Radiation Pattern Simulator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rf-radiation/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Camera Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../camera/conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../camera/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration Procedure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Calibration Procedure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/cwb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    White Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/colorchecker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ColorChecker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/wavelengths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wavelength Characterization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/regression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regression Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Selection
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Index Selection
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/index-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NDVI vs NDRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../calibration/imagej/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImageJ Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#diagrammes-plantuml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagrammes PlantUML
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-systeme-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Système global
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-carte-des-gpios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Carte des GPIOs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Carte des GPIOs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tableau-complet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Tableau complet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-sous-systemes-materiels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sous-systèmes matériels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Sous-systèmes matériels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-communication-usb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Communication USB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-pt1000-multiplexeur-analogique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Pt1000 — Multiplexeur analogique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-altimetre-ms5607-02ba03-50-te-connectivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Altimètre — MS5607-02BA03-50 (TE Connectivity)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-imu-icm-20948-adafruit-4554" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 IMU — ICM-20948 (Adafruit #4554)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-architecture-firmware-modularite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Architecture firmware — Modularité
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Architecture firmware — Modularité">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-principe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Principe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-interface-commune-sensormodule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Interface commune (SensorModule)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#421-codes-derreur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1 Codes d'erreur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-politique-de-recuperation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2 Politique de récupération
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-gestionnaire-de-capteurs-sensormanager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Gestionnaire de capteurs (SensorManager)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-bus-de-donnees-partage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Bus de données partagé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-configuration-par-define" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Configuration par #define
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-flux-dexecution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Flux d'exécution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dependances-inter-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Dépendances inter-modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-resume-des-bus-de-communication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Résumé des bus de communication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-librairies-et-dependances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Librairies et dépendances
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Librairies et dépendances">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-librairies-externes-platformio-lib_deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Librairies externes — PlatformIO (lib_deps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-framework-et-bibliotheques-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Framework et bibliothèques SDK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-modules-internes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Modules internes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-arbre-de-dependances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Arbre de dépendances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-notes-sur-les-algorithmes-embarques-sans-librairie-externe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Notes sur les algorithmes embarqués (sans librairie externe)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="safari-adcs-architecture-v2">SAFARI ADCS — Architecture V2<a class="headerlink" href="#safari-adcs-architecture-v2" title="Permanent link">&para;</a></h1>
+<p><strong>Project</strong>: Satellite Attitude &amp; Formation Control — RP2040 Attitude Determination &amp; Control System<br />
+<strong>Board</strong>: Raspberry Pi Pico (RP2040)<br />
+<strong>Framework</strong>: Arduino (PlatformIO, Mbed variant)<br />
+<strong>Revision</strong>: V2 — 2026-05-28</p>
+<h3 id="diagrammes-plantuml">Diagrammes PlantUML<a class="headerlink" href="#diagrammes-plantuml" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../diagrams/01_hardware.puml">diagrams/01_hardware.puml</a></td>
+<td>Connexions matérielles RP2040 ↔ capteurs</td>
+</tr>
+<tr>
+<td><a href="../diagrams/02_classes.puml">diagrams/02_classes.puml</a></td>
+<td>Hiérarchie de classes firmware</td>
+</tr>
+<tr>
+<td><a href="../diagrams/03_sequence_init.puml">diagrams/03_sequence_init.puml</a></td>
+<td>Séquence d'initialisation <code>setup()</code></td>
+</tr>
+<tr>
+<td><a href="../diagrams/04_sequence_loop.puml">diagrams/04_sequence_loop.puml</a></td>
+<td>Cycle de mesure <code>loop()</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-systeme-global">1. Système global<a class="headerlink" href="#1-systeme-global" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                                   ┌───────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                   │         RP2040 (Pico)             │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                   │                                   │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  Connecteur 4 pins ──────────────►│ GPIO15, GPIO16, GPIO17, GPIO18    │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  (relié au connecteur USB)        │                                   │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  USB (CLK ext, Reset) ───────────►│ GPIO19 (CLK ext), RUN             │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  USB Host (I2C) ─────────────────►│ GPIO4 (SDA), GPIO5 (SCL)          │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                   │                                   │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  Mux ────────────────────────────►│ GPIO0 (A0), GPIO1 (A1), GPIO2 (A2)│
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  Switch Pt1000 ──────────────────►│ GPIO3 (SW)                        │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  Ampli-op ───────────────────────►│ GPIO26 (ADC)                      │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                   │                                   │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  Altimètre (SPI) ────────────────►│ GPIO8 (SDO), GPIO9 (CSB)          │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                   ◄───────────────┤ GPIO10 (SCLK), GPIO11 (SDI)       │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                                   │                                   │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  IMU ────────────────────────────►│ GPIO12 (AD0), GPIO13 (INT1),      │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                                   │ GPIO14 (Fsync)                    │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>       ◄───────────────────────────┤ GPIO6 (SDA), GPIO7 (SCL)          │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                                   └───────────────────────────────────┘ 
+</code></pre></div>
+<hr />
+<h2 id="2-carte-des-gpios">2. Carte des GPIOs<a class="headerlink" href="#2-carte-des-gpios" title="Permanent link">&para;</a></h2>
+<h3 id="21-tableau-complet">2.1 Tableau complet<a class="headerlink" href="#21-tableau-complet" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>GPIO</th>
+<th>Dir MCU</th>
+<th>Connecté à</th>
+<th>Signal</th>
+<th>Sous-système</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIO0</td>
+<td>OUT</td>
+<td>Mux — broche A0</td>
+<td>Sélection Pt1000</td>
+<td>Pt1000 / Mux</td>
+</tr>
+<tr>
+<td>GPIO1</td>
+<td>OUT</td>
+<td>Mux — broche A1</td>
+<td>Sélection Pt1000</td>
+<td>Pt1000 / Mux</td>
+</tr>
+<tr>
+<td>GPIO2</td>
+<td>OUT</td>
+<td>Mux — broche A2</td>
+<td>Sélection Pt1000</td>
+<td>Pt1000 / Mux</td>
+</tr>
+<tr>
+<td>GPIO3</td>
+<td>OUT</td>
+<td>Switch</td>
+<td>ON/OFF Pt1000</td>
+<td>Pt1000 / Mux</td>
+</tr>
+<tr>
+<td>GPIO4</td>
+<td>IN/OUT</td>
+<td>watchdog</td>
+<td>SDA Output ADCS</td>
+<td>Com ext</td>
+</tr>
+<tr>
+<td>GPIO5</td>
+<td>IN/OUT</td>
+<td>watchdog</td>
+<td>SCL Output ADCS</td>
+<td>Com ext</td>
+</tr>
+<tr>
+<td>GPIO6</td>
+<td>OUT</td>
+<td>IMU — broche SDA</td>
+<td>SDA (I2C)</td>
+<td>IMU</td>
+</tr>
+<tr>
+<td>GPIO7</td>
+<td>OUT</td>
+<td>IMU — broche SCL</td>
+<td>SCL (I2C)</td>
+<td>IMU</td>
+</tr>
+<tr>
+<td>GPIO8</td>
+<td>IN</td>
+<td>Altimètre — broche SDO</td>
+<td>SDO (Alt → MCU)</td>
+<td>Altimètre</td>
+</tr>
+<tr>
+<td>GPIO9</td>
+<td>OUT</td>
+<td>Altimètre — broche CSB</td>
+<td>CSB / CS</td>
+<td>Altimètre</td>
+</tr>
+<tr>
+<td>GPIO10</td>
+<td>OUT</td>
+<td>Altimètre — broche SCLK</td>
+<td>SCLK</td>
+<td>Altimètre</td>
+</tr>
+<tr>
+<td>GPIO11</td>
+<td>OUT</td>
+<td>Altimètre — broche SDI</td>
+<td>SDI (SPI)</td>
+<td>Altimètre</td>
+</tr>
+<tr>
+<td>GPIO12</td>
+<td>OUT</td>
+<td>IMU — broche AD0/SDO</td>
+<td>AD0 : sélection adresse I2C (LOW → 0x68)</td>
+<td>IMU</td>
+</tr>
+<tr>
+<td>GPIO13</td>
+<td>IN</td>
+<td>IMU — broche INT1</td>
+<td>Interruption données prêtes (actif bas)</td>
+<td>IMU</td>
+</tr>
+<tr>
+<td>GPIO14</td>
+<td>IN</td>
+<td>IMU — broche Fsync</td>
+<td>Frame Sync (latch accéléro sur front ext.)</td>
+<td>IMU</td>
+</tr>
+<tr>
+<td>GPIO15</td>
+<td>IN/OUT</td>
+<td>Connecteur 4 pins → TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr>
+<td>GPIO16</td>
+<td>OUT</td>
+<td>Connecteur 4 pins → TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr>
+<td>GPIO17</td>
+<td>IN</td>
+<td>Connecteur 4 pins → TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr>
+<td>GPIO18</td>
+<td>IN/OUT</td>
+<td>Connecteur 4 pins → TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr>
+<td>GPIO19</td>
+<td>IN/OUT</td>
+<td>watchdog</td>
+<td>CLK ext output ADCS</td>
+<td>Com ext</td>
+</tr>
+<tr>
+<td>GPIO26</td>
+<td>IN (ADC)</td>
+<td>Sortie ampli-op</td>
+<td>MES Pt1000</td>
+<td>Pt1000 / Mux</td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>OUT MCU</td>
+<td>Connecteur USB</td>
+<td>Reset externe</td>
+<td>Communication USB</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-sous-systemes-materiels">3. Sous-systèmes matériels<a class="headerlink" href="#3-sous-systemes-materiels" title="Permanent link">&para;</a></h2>
+<h3 id="31-communication-usb">3.1 Communication USB<a class="headerlink" href="#31-communication-usb" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Connecteur 4 pins 
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    ├── GPIO15 ←→ TBD
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ├── GPIO16 ←→ TBD
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    ├── GPIO17 ←→ TBD
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    └── GPIO18 ←→ TBD
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Connecteur USB (direct)
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    ├── GPIO4  ←→ SDA (I2C0)
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    ├── GPIO5  ←→ SCL (I2C0)
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    ├── GPIO19 ──► CLK ext
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    └── RUN    ◄── Reset MCU
+</code></pre></div>
+<ul>
+<li><strong>GPIO15/18</strong> : signaux non encore définis sur le connecteur 4 pins</li>
+<li><strong>GPIO16/17</strong> : signaux non encore définis sur le connecteur 4 pins</li>
+<li><strong>GPIO4/5</strong> : I2C0 — bus accessible depuis le connecteur USB</li>
+<li><strong>GPIO19</strong> : horloge externe USB</li>
+<li><strong>RUN</strong> : reset hardware du RP2040 depuis le connecteur USB</li>
+</ul>
+<hr />
+<h3 id="32-pt1000-multiplexeur-analogique">3.2 Pt1000 — Multiplexeur analogique<a class="headerlink" href="#32-pt1000-multiplexeur-analogique" title="Permanent link">&para;</a></h3>
+<p>Architecture : MCU → MUX (8 canaux) → Pt1000 (1 parmi 8) → Ampli-op → MCU (ADC)</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>RP2040
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  ├── GPIO0 (A0) ─┐
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  ├── GPIO1 (A1) ─┼──► MUX 8:1 ──► Pt1000 sélectionné (S1 … S8)
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  ├── GPIO2 (A2) ─┘         │
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  │                         └──► Ampli-op ──► GPIO26 (ADC0)
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  └── GPIO3 ────────────────────► Switch ON/OFF (tous les Pt1000)
+</code></pre></div>
+<p><strong>Logique de sélection (A2:A1:A0) :</strong></p>
+<table>
+<thead>
+<tr>
+<th>A2</th>
+<th>A1</th>
+<th>A0</th>
+<th>Pt1000 sélectionné</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>S1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>S3</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>S4</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>S5</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>S6</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>S7</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>S8</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>GPIO3 met tous les Pt1000 hors tension (LOW = OFF) — permet d'économiser l'énergie entre mesures</li>
+<li>GPIO26 (ADC0) lit la tension de sortie de l'ampli-op proportionnelle à la résistance du Pt1000 actif</li>
+<li>La conversion résistance → température se fait en firmware (courbe de calibration Pt1000 standard)</li>
+</ul>
+<hr />
+<h3 id="33-altimetre-ms5607-02ba03-50-te-connectivity">3.3 Altimètre — MS5607-02BA03-50 (TE Connectivity)<a class="headerlink" href="#33-altimetre-ms5607-02ba03-50-te-connectivity" title="Permanent link">&para;</a></h3>
+<p>Communication exclusivement en <strong>SPI mode 0</strong> (CPOL=0, CPHA=0) à <strong>1 MHz</strong> :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>RP2040                         MS5607
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  │                               │
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  ├── GPIO10 (SCLK) ─────────────►│ SCLK
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  ├── GPIO11 (SDI / MOSI) ───────►│ SDI    (commandes MCU → capteur)
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  ├── GPIO8  (SDO / MISO) ◄───────│ SDO    (données capteur → MCU)
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  └── GPIO9  (CSB)  ─────────────►│ CS     (actif bas)
+</code></pre></div>
+<p><strong>Commandes firmware (OSR = 4096, précision maximale) :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Octet</th>
+<th>Délai</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reset</td>
+<td><code>0x1E</code></td>
+<td>3 ms</td>
+<td>Initialisation obligatoire</td>
+</tr>
+<tr>
+<td>Convert D1 (P)</td>
+<td><code>0x48</code></td>
+<td>10 ms</td>
+<td>Lance conversion pression</td>
+</tr>
+<tr>
+<td>Convert D2 (T)</td>
+<td><code>0x58</code></td>
+<td>10 ms</td>
+<td>Lance conversion température</td>
+</tr>
+<tr>
+<td>ADC Read</td>
+<td><code>0x00</code></td>
+<td>—</td>
+<td>Lit résultat 24 bits</td>
+</tr>
+<tr>
+<td>PROM Read C_i</td>
+<td><code>0xA0 + 2i</code></td>
+<td>—</td>
+<td>Lit coefficient calibration</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Séquence d'initialisation :</strong>
+1. CS haut → Reset → attendre 3 ms
+2. Lire PROM : 8 mots de 16 bits (C0…C7), vérifier C1…C6 ≠ 0</p>
+<p><strong>Cycle de mesure :</strong>
+1. Conv D1 → attendre 10 ms → ADC Read → D1 (pression brute)
+2. Conv D2 → attendre 10 ms → ADC Read → D2 (température brute)
+3. Compensation 2nd ordre (algo datasheet MS5607 rev. 1.2) → P (hPa), T (°C)
+4. Altitude : <code>44330 × (1 − (P / P₀)^0.190295)</code> m</p>
+<p><strong>Plages de mesure :</strong>
+- Pression : 10 – 1200 hPa
+- Température : −40°C à +85°C</p>
+<hr />
+<h3 id="34-imu-icm-20948-adafruit-4554">3.4 IMU — ICM-20948 (Adafruit #4554)<a class="headerlink" href="#34-imu-icm-20948-adafruit-4554" title="Permanent link">&para;</a></h3>
+<p>9 axes : accéléromètre + gyroscope (ICM-20948) + magnétomètre AK09916 intégré.<br />
+Bus <strong>I2C1</strong> à <strong>400 kHz</strong> (Wire1, GPIO6/7) :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>RP2040                         ICM-20948
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  │                               │
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  ├── GPIO6  (SDA) ◄─────────────►│ SDA
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  ├── GPIO7  (SCL) ──────────────►│ SCL
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  ├── GPIO12 (AD0) ──────────────►│ AD0    (LOW → adresse I2C 0x68)
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  ├── GPIO13       ◄──────────────│ INT1   (actif bas — données prêtes)
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  └── GPIO14       ──────────────►│ FSYNC  (latch accéléro sur front montant)
+</code></pre></div>
+<p><strong>Détection firmware :</strong>
+- Registre WHO_AM_I (0x00, bank 0) → réponse attendue <code>0xEA</code></p>
+<p><strong>Paramètres d'initialisation (Adafruit ICM20X) :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Valeur configurée</th>
+<th>Plage possible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plage accéléro</td>
+<td>±4 g</td>
+<td>±2 / ±4 / ±8 / ±16 g</td>
+</tr>
+<tr>
+<td>Plage gyroscope</td>
+<td>±500 °/s</td>
+<td>±250 / ±500 / ±1000 / ±2000 °/s</td>
+</tr>
+<tr>
+<td>Fréquence magnéto</td>
+<td>10 Hz (AK09916)</td>
+<td>10 / 20 / 50 / 100 Hz</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Signaux de contrôle :</strong>
+- <strong>INT1</strong> (GPIO13, actif bas) : déclenche une interruption quand un échantillon est prêt — permet la lecture sans polling
+- <strong>FSYNC</strong> (GPIO14) : synchronise le timestamp accéléro sur un événement externe (GPS PPS, caméra…)
+- <strong>AD0</strong> (GPIO12) : fixé LOW au démarrage → adresse fixe <code>0x68</code>, ne change pas en cours d'exécution</p>
+<p><strong>Données produites :</strong>
+- Accélération 3 axes (g)
+- Vitesse angulaire 3 axes (°/s)
+- Champ magnétique 3 axes (µT) — AK09916 via bus I2C secondaire interne
+- Température interne (°C)</p>
+<p><strong>Représentation d'attitude — quaternion unitaire <code>q = [w, x, y, z]</code> :</strong></p>
+<p>Les données brutes des 3 capteurs sont fusionnées pour produire un quaternion représentant la rotation du repère corps vers le repère de référence :</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Rôle dans la fusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gyroscope (°/s)</td>
+<td>Intégration de la vitesse angulaire → propagation du quaternion à haute fréquence</td>
+</tr>
+<tr>
+<td>Accéléromètre (g)</td>
+<td>Correction du tangage et du roulis à basse fréquence (référence gravité)</td>
+</tr>
+<tr>
+<td>Magnétomètre (µT)</td>
+<td>Correction du lacet (référence champ magnétique terrestre)</td>
+</tr>
+</tbody>
+</table>
+<p>Le quaternion évite le blocage de cardan (<em>gimbal lock</em>) inhérent aux angles d'Euler. L'algorithme de fusion (filtre complémentaire, Madgwick ou Mahony) sera sélectionné après caractérisation des capteurs.</p>
+<hr />
+<h2 id="4-architecture-firmware-modularite">4. Architecture firmware — Modularité<a class="headerlink" href="#4-architecture-firmware-modularite" title="Permanent link">&para;</a></h2>
+<h3 id="41-principe">4.1 Principe<a class="headerlink" href="#41-principe" title="Permanent link">&para;</a></h3>
+<p>Chaque capteur est un module <strong>totalement indépendant</strong>. L'absence d'un capteur sur le PCB ne doit jamais provoquer de crash ou de blocage. Le firmware détecte la présence de chaque capteur à l'initialisation et désactive silencieusement les modules absents.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>main.cpp
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  │
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  ├── sensor_manager        ← orchestre les modules, aucune logique capteur ici
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  │     ├── imu_module      ← optionnel
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  │     ├── altimeter_module← optionnel
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  │     ├── pt1000_module   ← optionnel
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  │     └── usb_module      ← optionnel
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>  │
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>  └── data_bus             ← structure de données partagée (lecture seule depuis les modules)
+</code></pre></div>
+<h3 id="42-interface-commune-sensormodule">4.2 Interface commune (<code>SensorModule</code>)<a class="headerlink" href="#42-interface-commune-sensormodule" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>V2 — rupture avec le code existant.</strong> L'ancienne classe <code>Sensor</code> (<code>begin()</code> / <code>update()</code> / <code>getData()</code>) est remplacée par <code>SensorModule</code>. Toutes les implémentations V2 dérivent exclusivement de <code>SensorModule</code>.</p>
+</blockquote>
+<p>Chaque module implémente la même interface minimaliste :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SensorModule</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w">        </span><span class="n">init</span><span class="p">()</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// false si capteur absent/défaillant</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w">        </span><span class="nf">read</span><span class="p">()</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// false si lecture échoue</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w">        </span><span class="nf">isReady</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="nf">name</span><span class="p">()</span><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">SensorModule</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">};</span>
+</code></pre></div>
+<p>Règles :
+- <code>init()</code> ne bloque <strong>jamais</strong> si le capteur ne répond pas (timeout ≤ 50 ms)
+- <code>read()</code> ne bloque <strong>jamais</strong> (retourne <code>false</code> si donnée non disponible)
+- Aucun module n'appelle un autre module directement</p>
+<h3 id="421-codes-derreur">4.2.1 Codes d'erreur<a class="headerlink" href="#421-codes-derreur" title="Permanent link">&para;</a></h3>
+<p><code>init()</code> et <code>read()</code> retournent un <code>bool</code> pour la compatibilité avec <code>SensorManager</code>, mais chaque module doit exposer un code d'erreur détaillé via <code>lastError()</code> :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">SensorError</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="n">OK</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">NOT_FOUND</span><span class="p">,</span><span class="w">       </span><span class="c1">// pas de réponse sur le bus (I2C NACK, SPI timeout)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">BAD_ID</span><span class="p">,</span><span class="w">          </span><span class="c1">// WHO_AM_I inattendu ou CRC PROM invalide</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="n">DATA_INVALID</span><span class="p">,</span><span class="w">    </span><span class="c1">// valeur hors plage physique</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="n">READ_FAIL</span><span class="w">        </span><span class="c1">// lecture partielle ou corrompue</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">};</span>
+</code></pre></div>
+<h3 id="422-politique-de-recuperation">4.2.2 Politique de récupération<a class="headerlink" href="#422-politique-de-recuperation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Événement</th>
+<th>Réaction immédiate</th>
+<th>Réaction après 3 échecs consécutifs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init()</code> → false</td>
+<td>module marqué non-prêt, log Serial</td>
+<td>aucune — le module reste désactivé</td>
+</tr>
+<tr>
+<td><code>read()</code> → false</td>
+<td>donnée ignorée, <code>valid = false</code></td>
+<td>notification via <code>WatchdogComm</code> (USB)</td>
+</tr>
+<tr>
+<td>Bus I2C bloqué</td>
+<td>reset du bus (<code>Wire.end()</code> / <code>Wire.begin()</code>)</td>
+<td>module désactivé définitivement</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Watchdog externe</strong> : le module watchdog est un système séparé, codé indépendamment, qui communique avec l'ADCS <strong>via USB</strong>. <code>WatchdogComm</code> est l'interface côté ADCS qui gère cette liaison — réception des données du watchdog et émission de notifications d'état. Le protocole USB applicatif est défini du côté du module watchdog.</p>
+</blockquote>
+<h3 id="43-gestionnaire-de-capteurs-sensormanager">4.3 Gestionnaire de capteurs (<code>SensorManager</code>)<a class="headerlink" href="#43-gestionnaire-de-capteurs-sensormanager" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SensorManager</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="n">SensorModule</span><span class="o">*</span><span class="w"> </span><span class="n">modules</span><span class="p">[</span><span class="n">MAX_MODULES</span><span class="p">];</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w">       </span><span class="n">count</span><span class="p">;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">registerModule</span><span class="p">(</span><span class="n">SensorModule</span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">initAll</span><span class="p">();</span><span class="w">   </span><span class="c1">// init() sur chacun, log les absents</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">readAll</span><span class="p">();</span><span class="w">   </span><span class="c1">// read() sur les présents seulement</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li><code>initAll()</code> itère sur les modules enregistrés, marque <code>isReady = false</code> si <code>init()</code> échoue</li>
+<li><code>readAll()</code> ignore silencieusement les modules non prêts</li>
+<li><code>main.cpp</code> choisit quels modules enregistrer (via <code>#define ENABLE_IMU</code>, etc.)</li>
+</ul>
+<h3 id="44-bus-de-donnees-partage">4.4 Bus de données partagé<a class="headerlink" href="#44-bus-de-donnees-partage" title="Permanent link">&para;</a></h3>
+<p>Structure en lecture seule entre modules (chaque module écrit uniquement sa propre section) :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">AdcsData</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">ax</span><span class="p">,</span><span class="w"> </span><span class="n">ay</span><span class="p">,</span><span class="w"> </span><span class="n">az</span><span class="p">;</span><span class="w">       </span><span class="c1">// m/s²</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">gx</span><span class="p">,</span><span class="w"> </span><span class="n">gy</span><span class="p">,</span><span class="w"> </span><span class="n">gz</span><span class="p">;</span><span class="w">       </span><span class="c1">// °/s</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="n">mz</span><span class="p">;</span><span class="w">       </span><span class="c1">// µT</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">        </span><span class="kt">bool</span><span class="w">  </span><span class="n">valid</span><span class="p">;</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">imu</span><span class="p">;</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">pressure</span><span class="p">;</span><span class="w">         </span><span class="c1">// hPa</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">temperature</span><span class="p">;</span><span class="w">      </span><span class="c1">// °C</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">altitude</span><span class="p">;</span><span class="w">         </span><span class="c1">// m</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">        </span><span class="kt">bool</span><span class="w">  </span><span class="n">valid</span><span class="p">;</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">altimeter</span><span class="p">;</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">temps</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span><span class="w">         </span><span class="c1">// °C, index 0..7 = S1..S8</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">        </span><span class="kt">bool</span><span class="w">  </span><span class="n">valid</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">        </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">active_count</span><span class="p">;</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">pt1000</span><span class="p">;</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">        </span><span class="kt">bool</span><span class="w">  </span><span class="n">connected</span><span class="p">;</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">usb</span><span class="p">;</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="p">};</span>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="k">extern</span><span class="w"> </span><span class="n">AdcsData</span><span class="w"> </span><span class="n">g_adcs</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="45-configuration-par-define">4.5 Configuration par <code>#define</code><a class="headerlink" href="#45-configuration-par-define" title="Permanent link">&para;</a></h3>
+<p>Dans <code>config.h</code>, chaque capteur est activable/désactivable à la compilation :</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Activer/désactiver les modules capteurs</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="cp">#define ENABLE_IMU        1</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="cp">#define ENABLE_ALTIMETER  1</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="cp">#define ENABLE_PT1000     1</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="cp">#define ENABLE_USB        1</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// Nombre de Pt1000 connectés (1 à 8)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="cp">#define PT1000_COUNT  8</span>
+</code></pre></div>
+<hr />
+<h2 id="5-flux-dexecution">5. Flux d'exécution<a class="headerlink" href="#5-flux-dexecution" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>setup()
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  └── SensorManager::initAll()
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>        ├── IMU::init()        → détecte sur I2C 0x68/0x69, timeout 50 ms
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        ├── Altimeter::init()  → détecte sur SPI (CSB GPIO9), timeout 50 ms
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>        ├── Pt1000::init()     → vérifie ADC GPIO26 lisible, teste GPIO0-3
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        └── USB::init()        → vérifie GPIO4/5 bus I2C
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>loop()
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>  └── SensorManager::readAll()   ← exécuté à la fréquence souhaitée
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>        ├── IMU::read()          → lit via I2C → g_adcs.imu
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>        ├── Altimeter::read()    → lit via SPI → g_adcs.altimeter
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>        ├── Pt1000::read()       → séquence mux A0-A2, lit ADC → g_adcs.pt1000
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>        └── USB::read()          → sondage état bus → g_adcs.usb
+</code></pre></div>
+<hr />
+<h2 id="6-dependances-inter-modules">6. Dépendances inter-modules<a class="headerlink" href="#6-dependances-inter-modules" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Aucune dépendance directe entre modules capteurs.
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Module      Dépend de
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>──────────  ──────────────────────────────────────────────────────
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>imu         GPIO6, GPIO7, GPIO12, GPIO13, GPIO14
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>altimeter   GPIO8 (SDO), GPIO9 (CSB), GPIO10 (SCLK), GPIO11 (SDI)
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>pt1000      GPIO0 (A0), GPIO1 (A1), GPIO2 (A2), GPIO3 (SW), GPIO26
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>usb         GPIO4, GPIO5, GPIO15–18, GPIO19, RUN
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>main        SensorManager, AdcsData (g_adcs)
+</code></pre></div>
+<p>Si un GPIO est absent ou en court-circuit, seul le module correspondant est marqué non prêt. Les autres continuent de fonctionner normalement.</p>
+<hr />
+<h2 id="7-resume-des-bus-de-communication">7. Résumé des bus de communication<a class="headerlink" href="#7-resume-des-bus-de-communication" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Bus</th>
+<th>GPIOs</th>
+<th>Périphérique</th>
+<th>Vitesse / protocole</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I2C0</td>
+<td>GPIO4, GPIO5</td>
+<td>Connecteur USB (SDA/SCL)</td>
+<td>400 kHz</td>
+</tr>
+<tr>
+<td>I2C1</td>
+<td>GPIO6, GPIO7</td>
+<td>IMU ICM-20948 (0x68)</td>
+<td>400 kHz</td>
+</tr>
+<tr>
+<td>SPI</td>
+<td>GPIO8–11</td>
+<td>Altimètre MS5607 (CS=GPIO9)</td>
+<td>1 MHz, mode 0 (CPOL=0,CPHA=0)</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO16, GPIO17</td>
+<td>Connecteur 4 pins → USB (TBD)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ADC</td>
+<td>GPIO26</td>
+<td>Pt1000 via Mux + Ampli-op</td>
+<td>12 bits, Vref 3.3 V</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO0–3</td>
+<td>Mux A0/A1/A2 + Switch Pt1000</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO12</td>
+<td>IMU AD0 (adresse I2C fixe)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO13</td>
+<td>IMU INT1 (interruption données prêtes)</td>
+<td>actif bas</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO14</td>
+<td>IMU FSYNC (latch accéléro)</td>
+<td>front montant</td>
+</tr>
+<tr>
+<td>GPIO</td>
+<td>GPIO15, GPIO18</td>
+<td>Connecteur 4 pins → USB (TBD)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-librairies-et-dependances">8. Librairies et dépendances<a class="headerlink" href="#8-librairies-et-dependances" title="Permanent link">&para;</a></h2>
+<h3 id="81-librairies-externes-platformio-lib_deps">8.1 Librairies externes — PlatformIO (<code>lib_deps</code>)<a class="headerlink" href="#81-librairies-externes-platformio-lib_deps" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Librairie</th>
+<th>Version</th>
+<th>Rôle dans le firmware</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Adafruit ICM20X</code></td>
+<td><code>^2.0.5</code></td>
+<td>Driver ICM-20948 : lecture accéléro / gyro / magnéto</td>
+</tr>
+<tr>
+<td><code>Adafruit BusIO</code></td>
+<td><code>^1.14.1</code></td>
+<td>Abstraction I2C et SPI — dépendance d'ICM20X</td>
+</tr>
+<tr>
+<td><code>Adafruit Unified Sensor</code></td>
+<td><code>^1.1.9</code></td>
+<td>Interface capteur générique — dépendance d'ICM20X</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>Adafruit BusIO</code> et <code>Adafruit Unified Sensor</code> sont des dépendances transitives : elles sont installées automatiquement par PlatformIO avec <code>Adafruit ICM20X</code>.</p>
+</blockquote>
+<hr />
+<h3 id="82-framework-et-bibliotheques-sdk">8.2 Framework et bibliothèques SDK<a class="headerlink" href="#82-framework-et-bibliotheques-sdk" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Composant</th>
+<th>Fourni par</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Arduino.h</code></td>
+<td>Platform <code>raspberrypi</code>, board <code>pico</code></td>
+<td>Core Arduino : <code>millis()</code>, <code>delay()</code>, <code>pinMode()</code>, <code>digitalWrite()</code>, <code>analogRead()</code></td>
+</tr>
+<tr>
+<td><code>Wire.h</code></td>
+<td>Arduino-Mbed / arduino-pico</td>
+<td>I2C0 (GPIO4/5) et I2C1 (GPIO6/7)</td>
+</tr>
+<tr>
+<td><code>SPI.h</code></td>
+<td>Arduino-Mbed / arduino-pico</td>
+<td>SPI vers MS5607 (GPIO8–11)</td>
+</tr>
+<tr>
+<td><code>math.h</code></td>
+<td>Toolchain ARM (libc)</td>
+<td><code>powf()</code> pour le calcul d'altitude barométrique</td>
+</tr>
+<tr>
+<td><code>stdint.h</code></td>
+<td>Toolchain ARM (libc)</td>
+<td>Types <code>uint8_t</code>, <code>uint16_t</code>, <code>uint32_t</code>, <code>int64_t</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="83-modules-internes">8.3 Modules internes<a class="headerlink" href="#83-modules-internes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Fichiers</th>
+<th>Dépend de</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config</code></td>
+<td><code>include/config.h</code></td>
+<td><code>stdint.h</code></td>
+</tr>
+<tr>
+<td><code>sensors</code></td>
+<td><code>include/sensors.h</code></td>
+<td><code>stdint.h</code> — définit <code>SensorModule</code> (V2, remplace l'ancienne classe <code>Sensor</code>)</td>
+</tr>
+<tr>
+<td><code>imu</code></td>
+<td><code>include/imu.h</code>, <code>src/imu.cpp</code></td>
+<td><code>sensors.h</code>, <code>config.h</code>, <code>Wire.h</code>, <code>Adafruit ICM20X</code></td>
+</tr>
+<tr>
+<td><code>altimeter</code></td>
+<td><code>include/altimeter.h</code>, <code>src/altimeter.cpp</code></td>
+<td><code>sensors.h</code>, <code>config.h</code>, <code>SPI.h</code>, <code>math.h</code></td>
+</tr>
+<tr>
+<td><code>pt1000</code></td>
+<td><code>include/pt1000.h</code>, <code>src/pt1000.cpp</code></td>
+<td><code>sensors.h</code>, <code>config.h</code>, <code>Arduino.h</code></td>
+</tr>
+<tr>
+<td><code>watchdog</code></td>
+<td><code>include/watchdog.h</code>, <code>src/watchdog.cpp</code></td>
+<td><code>stdint.h</code> — interface USB vers le module watchdog externe (codé séparément)</td>
+</tr>
+<tr>
+<td><code>printStatus</code></td>
+<td><code>include/printStatus.h</code>, <code>src/printStatus.cpp</code></td>
+<td><code>sensors.h</code>, <code>imu.h</code>, <code>altimeter.h</code>, <code>pt1000.h</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="84-arbre-de-dependances">8.4 Arbre de dépendances<a class="headerlink" href="#84-arbre-de-dependances" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>main.cpp
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  ├── Arduino.h
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>  ├── Wire.h
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  ├── SPI.h
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>  ├── config.h
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>  ├── sensors.h
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>  │
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>  ├── imu.h / imu.cpp
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>  │     ├── sensors.h
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>  │     ├── config.h
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>  │     ├── Wire.h
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>  │     └── Adafruit_ICM20948.h
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>  │           ├── Adafruit ICM20X       ^2.0.5
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>  │           ├── Adafruit BusIO        ^1.14.1  (transitive)
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>  │           └── Adafruit Unified Sensor ^1.1.9  (transitive)
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>  │
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>  ├── altimeter.h / altimeter.cpp
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>  │     ├── sensors.h
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>  │     ├── config.h
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>  │     ├── SPI.h
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>  │     └── math.h
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>  │
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>  ├── pt1000.h / pt1000.cpp
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>  │     ├── sensors.h
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>  │     ├── config.h
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>  │     └── Arduino.h
+<a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a>  │
+<a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a>  ├── watchdog.h / watchdog.cpp
+<a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>  │     └── stdint.h
+<a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a>  │
+<a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a>  └── printStatus.h / printStatus.cpp
+<a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>        ├── sensors.h
+<a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>        ├── imu.h
+<a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>        ├── altimeter.h
+<a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a>        └── pt1000.h
+</code></pre></div>
+<hr />
+<h3 id="85-notes-sur-les-algorithmes-embarques-sans-librairie-externe">8.5 Notes sur les algorithmes embarqués (sans librairie externe)<a class="headerlink" href="#85-notes-sur-les-algorithmes-embarques-sans-librairie-externe" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Algorithme</th>
+<th>Module</th>
+<th>Norme / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compensation pression/température 2nd ordre</td>
+<td><code>altimeter</code></td>
+<td>Datasheet MS5607 rev. 1.2</td>
+</tr>
+<tr>
+<td>Équation maison tension → T</td>
+<td><code>pt1000</code></td>
+<td>Calibration propre au circuit (ampli-op + Mux) — remplace Callendar-Van Dusen</td>
+</tr>
+<tr>
+<td>Loi barométrique P → altitude</td>
+<td><code>altimeter</code></td>
+<td>Formule hypsométrique standard</td>
+</tr>
+<tr>
+<td>Fusion IMU → quaternion</td>
+<td><code>imu</code></td>
+<td>Algorithme à définir après caractérisation capteurs (Madgwick / Mahony / complémentaire)</td>
+</tr>
+<tr>
+<td>Filtres numériques</td>
+<td>tous modules</td>
+<td>À ajouter après tests sur capteurs réels (passe-bas, moyenne glissante…)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,49 @@
+Warning: 'ozone-platform-hint' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-gpu-memory-buffer-video-frames' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-vulkan' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'enable-wayland-ime' is not in the list of known options, but still passed to Electron/Chromium.
+[1253941:0405/191519.298609:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wl_seat version 8 but version 9 is available.
+[1253941:0405/191519.298669:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wl_shm version 1 but version 2 is available.
+[1253941:0405/191519.298682:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to wp_cursor_shape_manager_v1 version 1 but version 2 is available.
+[1253941:0405/191519.298696:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to zwp_pointer_gestures_v1 version 1 but version 3 is available.
+[1253941:0405/191519.298757:WARNING:ui/ozone/platform/wayland/common/wayland_object.cc:119] Binding to zwp_linux_dmabuf_v1 version 4 but version 5 is available.
+[90m[main 2026-04-05T23:15:19.466Z][0m PolicyConfiguration#initialize
+[90m[main 2026-04-05T23:15:19.468Z][0m PolicyConfiguration#updatePolicyDefinitions [
+  'update.mode',
+  'update.channel',
+  'update.showReleaseNotes',
+  'http.useLocalProxyConfiguration',
+  'http.electronFetch',
+  'http.proxy',
+  'http.proxyStrictSSL',
+  'http.proxyKerberosServicePrincipal',
+  'http.noProxy',
+  'http.proxyAuthorization',
+  'http.proxySupport',
+  'http.systemCertificates',
+  'http.systemCertificatesNode',
+  'http.experimental.systemCertificatesV2',
+  'http.fetchAdditionalSupport',
+  'http.experimental.networkInterfaceCheckInterval',
+  'telemetry.telemetryLevel',
+  'telemetry.feedback.enabled',
+  'telemetry.enableTelemetry',
+  'extensions.allowed'
+]
+[90m[main 2026-04-05T23:15:19.481Z][0m [File Watcher (node.js)] Request to start watching: /etc/vscode/policy.json (excludes: <none>, includes: <all>, filter: <none>, correlationId: <none>),/home/ouazo/.config/Code/User (excludes: <none>, includes: <all>, filter: <none>, correlationId: <none>),/home/ouazo/.config/Code/User/settings.json (excludes: <none>, includes: <all>, filter: <none>, correlationId: <none>)
+[90m[main 2026-04-05T23:15:19.484Z][0m PolicyConfiguration#update [
+  'update.mode',
+  'telemetry.telemetryLevel',
+  'telemetry.feedback.enabled',
+  'extensions.allowed'
+]
+[90m[main 2026-04-05T23:15:19.484Z][0m PolicyConfiguration#updatePolicyDefinitions [ 'update.enableWindowsBackgroundUpdates' ]
+[90m[main 2026-04-05T23:15:19.484Z][0m PolicyConfiguration#update []
+[90m[main 2026-04-05T23:15:19.485Z][0m [File Watcher (node.js)] ignoring a path for watching who's stat info failed to resolve: /etc/vscode/policy.json (error: Error: ENOENT: no such file or directory, stat '/etc/vscode/policy.json')
+[90m[main 2026-04-05T23:15:19.485Z][0m [File Watcher (node.js)] starting fs.watchFile() on /etc/vscode/policy.json (correlationId: undefined)
+[90m[main 2026-04-05T23:15:19.533Z][0m Sending env to running instance...
+[90m[main 2026-04-05T23:15:19.536Z][0m [File Watcher (node.js)] Started watching: '/home/ouazo/.config/Code/User'
+[90m[main 2026-04-05T23:15:19.537Z][0m [File Watcher (node.js)] Started watching: '/home/ouazo/.config/Code/User/settings.json'
+[90m[main 2026-04-05T23:15:19.560Z][0m Sent env to running instance. Terminating...
+[90m[main 2026-04-05T23:15:19.560Z][0m Lifecycle#kill()
+[90m[main 2026-04-05T23:15:19.560Z][0m Lifecycle#onWillShutdown.fire()

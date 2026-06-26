@@ -1,0 +1,68 @@
+@startuml Sensor_Update_Sequence
+
+skinparam sequenceArrowColor #2E7D32
+skinparam sequenceParticipantBackgroundColor #E8F5E9
+skinparam sequenceParticipantBorderColor #2E7D32
+skinparam sequenceLifeLineBorderColor #A5D6A7
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+participant "Main Loop"      as main
+participant "SensorManager"  as mgr
+participant "Pt1000Sensor"   as pt1000
+participant "IMUSensor"      as imu
+participant "AltimeterSensor"as alt
+
+main --> mgr : updateAll()
+activate mgr
+
+  mgr --> pt1000 : update()
+  activate pt1000
+    pt1000 --> pt1000 : Read MAX31865 (SPI/ADC)
+    pt1000 --> pt1000 : Resistance → Temperature (°C)
+    pt1000 --> pt1000 : Store in Pt1000Data\n{ tempC, resistanceOhm, valid, timestamp }
+  deactivate pt1000
+  mgr --> mgr : next sensor
+
+  mgr --> imu : update()
+  activate imu
+    imu --> imu : Read I2C 0x68
+    imu --> imu : Parse accel XYZ (m/s²)\n+ gyro XYZ (°/s) + die temp
+    imu --> imu : Store in IMUData\n{ accelX..Z, gyroX..Z, tempC, valid, timestamp }
+  deactivate imu
+  mgr --> mgr : next sensor
+
+  mgr --> alt : update()
+  activate alt
+    alt --> alt : Read I2C 0x77
+    alt --> alt : Parse raw pressure (hPa)
+    alt --> alt : Barometric altitude = f(P, P0)
+    alt --> alt : Store in AltimeterData\n{ pressureHPa, altitudeM, tempC, valid, timestamp }
+  deactivate alt
+
+deactivate mgr
+
+mgr --> main : return
+
+note right of mgr
+  Sensors called in registration order.
+  Any sensor can set valid=false
+  on read failure — display shows "---".
+end note
+
+note right of pt1000
+  Driver TBD:
+  Adafruit_MAX31865 or direct ADC
+end note
+
+note right of imu
+  Driver TBD:
+  MPU6050 / ICM42688P / LSM6DSx
+end note
+
+note right of alt
+  Driver TBD:
+  Adafruit_BMP280 / MS5611 / LPS22HB
+end note
+
+@enduml

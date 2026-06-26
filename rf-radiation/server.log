@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/ouazo/Desktop/ASSFID/server2/server2/app.py", line 9, in <module>
+    from flask import Flask, jsonify, request, send_from_directory
+ModuleNotFoundError: No module named 'flask'

@@ -1,0 +1,3840 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://your-org.github.io/docs/wdm-firmware/WATCHDOG_REPORT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Watchdog System Report -- WDM OBC - Your Project Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#watchdog-system-report-wdm-obc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Your Project Documentation" class="md-header__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Your Project Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Watchdog System Report -- WDM OBC
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Your Project Documentation" class="md-nav__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Your Project Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fire Risk Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/training-ecology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 1 — Ecology Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/training-fire-risk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 2 — Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fire-risk-model/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProtoSat CAN-SBX
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ProtoSat CAN-SBX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protosat-cansbx/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADCS Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADCS Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adcs-firmware/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WDM Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    WDM Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAO ProtoSat
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAO ProtoSat
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cao-protosat/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cariboulite
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cariboulite
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cariboulite/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RF Radiation Pattern Simulator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RF Radiation Pattern Simulator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rf-radiation/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Camera Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../camera/conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../camera/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration Procedure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Calibration Procedure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/cwb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    White Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/colorchecker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ColorChecker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/wavelengths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wavelength Characterization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/regression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regression Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Selection
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Index Selection
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/index-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NDVI vs NDRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../calibration/imagej/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImageJ Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-tps1h200-hardware-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. TPS1H200 Hardware Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-per-channel-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Per-Channel Parameters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Per-Channel Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-recommended-disable-priority-fault-storm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Recommended Disable Priority (fault storm)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-diag-en-current-sensing-optional-hardware-mod-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. DIAG EN Current Sensing (optional -- hardware mod required)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-fault-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Fault Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-watchdog-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Watchdog Levels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-fault-behavior-per-flight-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Fault Behavior per Flight State
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-functions-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Functions Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Functions Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#legende" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legende
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#71-initialisation-boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Initialisation &amp; Boot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-power-watchdog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Power &amp; Watchdog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-telemetrie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Telemetrie
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-flight-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Flight State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-command-terminal-commandes-au-sol-banc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Command Terminal (commandes au sol / banc)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-power-on-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Power-On Sequence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Power-On Sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Requirement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-power-up-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Power-Up Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-failure-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Failure Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-telemetry-data-acquisition-packet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Telemetry -- Data Acquisition &amp; Packet
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Telemetry -- Data Acquisition &amp; Packet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Data Sources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.2 Data Sources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#req-daq-01-ibnav-gps-i2c0-gpio-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DAQ-01 -- IbNav GPS (I2C0, GPIO 0/1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-daq-02-adcs-uart1-gpio-8-tx-9-rx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DAQ-02 -- ADCS (UART1, GPIO 8 TX / 9 RX)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-daq-05-jetson-i2c1-wire1-gpio-1415" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DAQ-05 -- Jetson (I2C1 -- Wire1, GPIO 14/15)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-daq-06-obc-health-rp2040-internal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DAQ-06 -- OBC Health (RP2040 internal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-telemetry-packet-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Telemetry Packet Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-rfd900x-transmission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 RFD900x Transmission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-repartition-dual-core-implementee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Repartition dual-core (implementee)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-flight-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Flight State Machine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Flight State Machine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-states-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 States &amp; Transitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-subsystem-power-profile-per-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Subsystem Power Profile per State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-phase-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Phase Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.3 Phase Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BOOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ascent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASCENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apogee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        APOGEE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DESCENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#landing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LANDING
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-state-detection-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. State Detection Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. State Detection Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-binary-signals-available-on-obc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 Binary Signals Available on OBC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-detection-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Detection Techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.3 Detection Techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-pps-temporal-analysis-gpio-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A -- PPS Temporal Analysis (GPIO 4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-fault-count-on-sliding-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B -- Fault Count on Sliding Window
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-cross-channel-correlation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C -- Cross-Channel Correlation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-fault-duration-analysis-time-in-fault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D -- Fault Duration Analysis (time-in-fault)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-hybrid-state-machine-binary-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E -- Hybrid State Machine: binary + time
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-recommended-detection-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 Recommended Detection Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-additional-useful-signals-if-hardware-permits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Additional Useful Signals (if hardware permits)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="watchdog-system-report-wdm-obc">Watchdog System Report -- WDM OBC<a class="headerlink" href="#watchdog-system-report-wdm-obc" title="Permanent link">&para;</a></h1>
+<p><strong>Platform:</strong> RP2040 + TPS1H200AQDGNRQ1 x5<br />
+<strong>Subsystems:</strong> IbNav . ADCS . Jetson . TT&amp;C . A7Sii</p>
+<hr />
+<h2 id="1-tps1h200-hardware-capabilities">1. TPS1H200 Hardware Capabilities<a class="headerlink" href="#1-tps1h200-hardware-capabilities" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Pin</th>
+<th>Direction</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IN (EN_xxx)</td>
+<td>RP2040 -&gt; chip</td>
+<td>HIGH = power ON, LOW = power OFF</td>
+</tr>
+<tr>
+<td>FAULT (F1_xxx)</td>
+<td>chip -&gt; RP2040</td>
+<td>Open-drain, LOW = fault active</td>
+</tr>
+<tr>
+<td>DIAG EN</td>
+<td>hardwired HIGH</td>
+<td>Diagnostics always active</td>
+</tr>
+<tr>
+<td>CL</td>
+<td>hardware (resistor)</td>
+<td>Current limit set per channel</td>
+</tr>
+<tr>
+<td>DELAY</td>
+<td>hardware (capacitor)</td>
+<td>Auto-retry delay after fault (~0.2s)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-per-channel-parameters">2. Per-Channel Parameters<a class="headerlink" href="#2-per-channel-parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>EN Pin</th>
+<th>F1 Pin</th>
+<th>Output</th>
+<th>Current Limit</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IbNav</td>
+<td>GPIO 6</td>
+<td>GPIO 5</td>
+<td>5V</td>
+<td>2A</td>
+<td>GPS/Nav -- PPS watchable</td>
+</tr>
+<tr>
+<td>ADCS</td>
+<td>GPIO 12</td>
+<td>GPIO 11</td>
+<td>5V</td>
+<td>1A</td>
+<td>UART bus -- heartbeat watchable</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>GPIO 18</td>
+<td>GPIO 17</td>
+<td>15V</td>
+<td>4A</td>
+<td>High power -- thermal risk</td>
+</tr>
+<tr>
+<td>TT&amp;C</td>
+<td>GPIO 23</td>
+<td>GPIO 22</td>
+<td>5V</td>
+<td>3.3A</td>
+<td>Comms link -- last to disable</td>
+</tr>
+<tr>
+<td>A7Sii</td>
+<td>GPIO 24</td>
+<td>GPIO 26</td>
+<td>5V</td>
+<td>1.5A</td>
+<td>Camera -- non-critical</td>
+</tr>
+</tbody>
+</table>
+<h3 id="21-recommended-disable-priority-fault-storm">2.1 Recommended Disable Priority (fault storm)<a class="headerlink" href="#21-recommended-disable-priority-fault-storm" title="Permanent link">&para;</a></h3>
+<ol>
+<li>A7Sii -- non-critical payload</li>
+<li>Jetson -- high power, disable first if thermal issue</li>
+<li>ADCS -- disable only if OBC stability assured</li>
+<li>IbNav -- disable only if GPS not needed</li>
+<li>TT&amp;C -- <strong>last resort</strong>, needed for ground communication</li>
+</ol>
+<hr />
+<h2 id="3-diag-en-current-sensing-optional-hardware-mod-required">3. DIAG EN Current Sensing (optional -- hardware mod required)<a class="headerlink" href="#3-diag-en-current-sensing-optional-hardware-mod-required" title="Permanent link">&para;</a></h2>
+<p>The TPS1H200 outputs a current on the FAULT pin proportional to the load current when DIAG EN is HIGH. To use this as an ADC input:</p>
+<ol>
+<li>Free the DIAG EN pin from hardwire -&gt; connect to a GPIO</li>
+<li>Add a sense resistor (e.g. 10kOhm) from FAULT to GND</li>
+<li>Connect FAULT to an RP2040 ADC pin (GPIO 26-29)</li>
+<li>Read: <code>analogRead(pinFault)</code> -&gt; convert to current</li>
+</ol>
+<p>This enables <strong>per-channel power consumption monitoring</strong> without external current sensors.</p>
+<blockquote>
+<p>Note: Requires PCB rework on current hardware since DIAG EN is hardwired.</p>
+</blockquote>
+<hr />
+<h2 id="4-fault-scenarios">4. Fault Scenarios<a class="headerlink" href="#4-fault-scenarios" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Scenario</th>
+<th>Source</th>
+<th>FAULT pin</th>
+<th>Recommended Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>Overcurrent</td>
+<td>Load draws &gt; CL limit</td>
+<td>LOW</td>
+<td>Power cycle, log fault count</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>Overtemperature</td>
+<td>Junction temp &gt; threshold</td>
+<td>LOW</td>
+<td>Disable channel, wait cooldown</td>
+</tr>
+<tr>
+<td>F3</td>
+<td>Open load</td>
+<td>No load detected (DIAG EN active)</td>
+<td>LOW</td>
+<td>Log warning, check connection</td>
+</tr>
+<tr>
+<td>F4</td>
+<td>Undervoltage on VS</td>
+<td>Input rail drops</td>
+<td>LOW</td>
+<td>Disable channel, alert TT&amp;C</td>
+</tr>
+<tr>
+<td>F5</td>
+<td>Repeated fault (&gt;3x)</td>
+<td>Software counter</td>
+<td>--</td>
+<td>Extended disable, escalate</td>
+</tr>
+<tr>
+<td>F6</td>
+<td>Recovery failure (&gt;5x)</td>
+<td>Software counter</td>
+<td>--</td>
+<td>Permanent disable, flag to TT&amp;C</td>
+</tr>
+<tr>
+<td>F7</td>
+<td>OBC loop hang</td>
+<td>RP2040 WDT timeout</td>
+<td>--</td>
+<td>Full RP2040 reset</td>
+</tr>
+<tr>
+<td>F8</td>
+<td>PPS signal lost</td>
+<td>IbNav timeout</td>
+<td>--</td>
+<td>Power cycle IbNav</td>
+</tr>
+<tr>
+<td>F9</td>
+<td>Subsystem silent</td>
+<td>No heartbeat on CLK/SDA</td>
+<td>--</td>
+<td>Power cycle subsystem</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-watchdog-levels">5. Watchdog Levels<a class="headerlink" href="#5-watchdog-levels" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Level 1 -- Hardware (TPS1H200)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>          Overcurrent / overtemp -&gt; auto shutdown + auto-retry (0.2s delay cap)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Level 2 -- Software fault detection (RP2040)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>          checkAllFaults() lit les F1 sur front montant -&gt; log + incremente
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>          _faultCounters[ch], puis appelle faultHandler(ch)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>Level 3 -- Reponse graduee (escalate(), pilotee par _faultCounters[ch])
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          cnt &lt; 5   (FAULT_EXT_THRESHOLD)  -&gt; power cycle   (cycle 500ms, POWER_CYCLE_MS)
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>          cnt &gt;= 5  (FAULT_EXT_THRESHOLD)  -&gt; disable prolonge 30s NON bloquant
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                             (EXTENDED_DISABLE_MS, re-enable auto)
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>          cnt &gt;= 10 (FAULT_PERM_THRESHOLD) -&gt; disable definitif + alerte TT&amp;C
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                                             (markDisabled, irreversible)
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>Level 4 -- Recuperation
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>          Canal sain depuis 60s (RECOVERY_RESET_MS) -&gt; resetFaultCounter(ch)
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>          Re-enable auto a l&#39;expiration du disable prolonge
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>Level 5 -- OBC self-watchdog (surveillance inter-coeurs)
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>          Core 0 appelle notifyAlive() a chaque tour de loop() (horodatage).
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>          Core 1 (loop1) appelle kick() : nourrit le WDT hardware UNIQUEMENT si
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>          Core 0 a signale depuis &lt; CORE0_ALIVE_TIMEOUT_MS (4s).
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>          Si Core 0 hang -&gt; kick() appelle fullSystemReset() -&gt; reboot RP2040.
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>          Filet de securite ultime : si Core 1 hang aussi, le WDT hardware (8s)
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>          expire seul et reboot la puce.
+</code></pre></div>
+<blockquote>
+<p>Notes d'implementation :
+- Le disable prolonge est <strong>non bloquant</strong> : <code>escalate()</code> pose un timer
+  <code>_disableUntil[ch]</code> et <code>checkAllFaults()</code> re-active le canal a expiration.
+  Aucun <code>delay(30000)</code> (qui ferait expirer le WDT 8s du Core 1).
+- L'escalade se declenche sur la repetition des fronts montants : les retries
+  auto du TPS1H200 (0.2s) font osciller FAULT -&gt; <code>_faultCounters[ch]</code> monte.
+- <strong>Reboot centralise</strong> : <code>fullSystemReset()</code> est le point d'entree unique de
+  reboot (coupe tous les canaux -&gt; <code>watchdog_reboot()</code>). <code>kick()</code> l'appelle
+  quand Core 0 est silencieux, au lieu d'inhiber passivement le WDT.
+- <strong>Surveillance inter-coeurs</strong> : <code>_core0AliveAt</code> est <code>volatile</code> (visibilite
+  entre Core 0 et Core 1). <code>isCore0Alive()</code> compare a <code>CORE0_ALIVE_TIMEOUT_MS</code>.
+- Seuils ajustables dans <code>Watchdog.h</code> (<code>FAULT_EXT_THRESHOLD</code>,
+  <code>FAULT_PERM_THRESHOLD</code>, <code>POWER_CYCLE_MS</code>, <code>EXTENDED_DISABLE_MS</code>,
+  <code>RECOVERY_RESET_MS</code>, <code>HEARTBEAT_TIMEOUT_MS</code>, <code>CORE0_ALIVE_TIMEOUT_MS</code>).</p>
+</blockquote>
+<hr />
+<h2 id="6-fault-behavior-per-flight-state">6. Fault Behavior per Flight State<a class="headerlink" href="#6-fault-behavior-per-flight-state" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Fault</th>
+<th>ASCENT</th>
+<th>APOGEE</th>
+<th>DESCENT</th>
+<th>LANDING</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IbNav fault</td>
+<td>Power cycle x3 -&gt; alert TT&amp;C</td>
+<td>Power cycle x3 -&gt; alert</td>
+<td>Power cycle immediat</td>
+<td>Log only</td>
+</tr>
+<tr>
+<td>ADCS fault</td>
+<td>Power cycle -&gt; escalade</td>
+<td>Power cycle -&gt; escalade</td>
+<td>Power cycle -&gt; disable</td>
+<td>N/A (OFF)</td>
+</tr>
+<tr>
+<td>Jetson fault</td>
+<td>Power cycle x3 -&gt; disable</td>
+<td>Power cycle x3 -&gt; disable</td>
+<td>N/A (OFF)</td>
+<td>N/A (OFF)</td>
+</tr>
+<tr>
+<td>TT&amp;C fault</td>
+<td>Power cycle x3 -&gt; reset OBC</td>
+<td>Power cycle x3</td>
+<td>Power cycle continu</td>
+<td>Power cycle continu</td>
+</tr>
+<tr>
+<td>A7Sii fault</td>
+<td>Power cycle -&gt; disable</td>
+<td>Power cycle -&gt; disable</td>
+<td>N/A (OFF)</td>
+<td>N/A (OFF)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Etat cible (TODO) : <code>escalate()</code> est actuellement <strong>state-agnostic</strong> -- il
+applique la meme reponse graduee (cycle / disable prolonge / disable definitif)
+quel que soit l'etat de vol. Rendre la reponse dependante de <code>flightState</code>
+(priorites de la table ci-dessus) reste a implementer.</p>
+</blockquote>
+<hr />
+<h2 id="7-functions-reference">7. Functions Reference<a class="headerlink" href="#7-functions-reference" title="Permanent link">&para;</a></h2>
+<h3 id="legende">Legende<a class="headerlink" href="#legende" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>DONE</strong> -- implemented in current code</li>
+<li><strong>TODO</strong> -- to implement</li>
+<li>Priority: <strong>HIGH</strong> / <strong>MED</strong> / <strong>LOW</strong></li>
+</ul>
+<hr />
+<h3 id="71-initialisation-boot">7.1 Initialisation &amp; Boot<a class="headerlink" href="#71-initialisation-boot" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IbNav::init()</code></td>
+<td>IbNav.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init GPIO + I2C0 (<code>_ibnavWire.begin</code>)</td>
+</tr>
+<tr>
+<td><code>IbNav::wire()</code></td>
+<td>IbNav.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Expose <code>TwoWire&amp;</code> I2C0 pour sondage raw</td>
+</tr>
+<tr>
+<td><code>IbNav::forwardRaw()</code></td>
+<td>IbNav.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Sondage I2C 1 Hz, recopie les trames NMEA vers Serial</td>
+</tr>
+<tr>
+<td><code>ADCS::init()</code></td>
+<td>ADCS.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init GPIO + UART1 (<code>_adcsUart.begin</code>)</td>
+</tr>
+<tr>
+<td><code>ADCS::stream()</code></td>
+<td>ADCS.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Expose <code>HardwareSerial&amp;</code> UART1 pour lecture raw</td>
+</tr>
+<tr>
+<td><code>ADCS::forwardRaw()</code></td>
+<td>ADCS.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Recopie le flux ADCS brut vers Serial</td>
+</tr>
+<tr>
+<td><code>Jetson::init()</code></td>
+<td>Jetson.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init GPIO + I2C1 (<code>_jetsonWire.begin</code>)</td>
+</tr>
+<tr>
+<td><code>Jetson::wire()</code></td>
+<td>Jetson.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Expose <code>TwoWire&amp;</code> I2C1 pour sondage raw</td>
+</tr>
+<tr>
+<td><code>Jetson::forwardRaw()</code></td>
+<td>Jetson.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Sondage I2C 1 Hz, recopie les octets vers Serial</td>
+</tr>
+<tr>
+<td><code>TTC::init()</code></td>
+<td>TTC.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init GPIO TT&amp;C</td>
+</tr>
+<tr>
+<td><code>A7Sii::init()</code></td>
+<td>A7Sii.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init GPIO A7Sii</td>
+</tr>
+<tr>
+<td><code>BootSequence::run()</code></td>
+<td>BootSequence.cpp</td>
+<td>DONE (partial)</td>
+<td>HIGH</td>
+<td>Allumage ordonne + propagation masque desactive vers Watchdog</td>
+</tr>
+<tr>
+<td><code>BootSequence::_bootModule()</code></td>
+<td>BootSequence.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Power ON + delai stabilisation</td>
+</tr>
+<tr>
+<td><code>testTTC()</code></td>
+<td>BootSequence.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Test communication RFD900x</td>
+</tr>
+<tr>
+<td><code>testIbNav()</code></td>
+<td>BootSequence.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Test reception NMEA/UBX</td>
+</tr>
+<tr>
+<td><code>testADCS()</code></td>
+<td>BootSequence.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Test reception flux UART1 (raw)</td>
+</tr>
+<tr>
+<td><code>testJetson()</code></td>
+<td>BootSequence.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Test ping I2C Jetson</td>
+</tr>
+<tr>
+<td><code>testA7Sii()</code></td>
+<td>BootSequence.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Test F1 pin etat nominal</td>
+</tr>
+<tr>
+<td><code>BootSequence::_markDisabled()</code></td>
+<td>BootSequence.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Exclure module du watchdog si boot fail</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="72-power-watchdog">7.2 Power &amp; Watchdog<a class="headerlink" href="#72-power-watchdog" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PowerChannel::enable()</code></td>
+<td>PowerChannel.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>EN HIGH -&gt; channel ON</td>
+</tr>
+<tr>
+<td><code>PowerChannel::disable()</code></td>
+<td>PowerChannel.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>EN LOW -&gt; channel OFF</td>
+</tr>
+<tr>
+<td><code>PowerChannel::isFault()</code></td>
+<td>PowerChannel.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Returns true if FAULT LOW</td>
+</tr>
+<tr>
+<td><code>PowerChannel::cycle()</code></td>
+<td>PowerChannel.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>EN LOW -&gt; delay -&gt; EN HIGH</td>
+</tr>
+<tr>
+<td><code>Watchdog::init()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Init etat (dont <code>_core0AliveAt</code>) + demarre WDT RP2040 (<code>watchdog_enable</code>)</td>
+</tr>
+<tr>
+<td><code>Watchdog::notifyAlive()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Core 0 signale sa vitalite (<code>_core0AliveAt = millis()</code>), appele dans <code>loop()</code></td>
+</tr>
+<tr>
+<td><code>Watchdog::isCore0Alive()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>true si Core 0 a signale depuis &lt; <code>CORE0_ALIVE_TIMEOUT_MS</code> (4s)</td>
+</tr>
+<tr>
+<td><code>Watchdog::kick()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Nourrit WDT (<code>watchdog_update</code>) SEULEMENT si Core 0 vivant, sinon <code>fullSystemReset()</code></td>
+</tr>
+<tr>
+<td><code>Watchdog::checkAllFaults()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Poll 5 canaux, re-enable des disables prolonges, log + appel <code>faultHandler</code> sur front montant, RAZ apres recuperation</td>
+</tr>
+<tr>
+<td><code>Watchdog::markDisabled()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Exclude channel from monitoring</td>
+</tr>
+<tr>
+<td><code>Watchdog::setChannels()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Inject test channels (DI for unit tests)</td>
+</tr>
+<tr>
+<td><code>Watchdog::faultHandler(channel)</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Point d'entree unique sur faute -&gt; <code>escalate()</code></td>
+</tr>
+<tr>
+<td><code>Watchdog::escalate(channel)</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>&lt;5 fautes: power cycle ; &gt;=5: disable prolonge 30s (non bloquant) ; &gt;=10: disable definitif + alerte</td>
+</tr>
+<tr>
+<td><code>Watchdog::resetFaultCounter(channel)</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>RAZ compteur (recuperation durable ou commande sol)</td>
+</tr>
+<tr>
+<td><code>disablePermanent(channel)</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>MED</td>
+<td>Integre dans la branche &gt;=10 de <code>escalate()</code> (disable + markDisabled)</td>
+</tr>
+<tr>
+<td><code>Watchdog::fullSystemReset()</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>LOW</td>
+<td><strong>Point de reboot unique</strong> : coupe tous les canaux -&gt; delay -&gt; <code>watchdog_reboot()</code> (ne boucle plus en attente)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="73-monitoring">7.3 Monitoring<a class="headerlink" href="#73-monitoring" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>monitorPPS()</code></td>
+<td>IbNav.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Verify PPS pulse arrives within 1100ms</td>
+</tr>
+<tr>
+<td><code>Watchdog::monitorHeartbeat(channel)</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>MED</td>
+<td>Toggle CLK detecte -&gt; alive ; silence &gt; HEARTBEAT_TIMEOUT_MS (5s) -&gt; mort. ADCS(1)/Jetson(2)/A7Sii(4) lisent leur CLK ; IbNav(0)/TTC(3) renvoient true (pas de CLK en entree). Appele pour les 5 canaux dans <code>loop1()</code> -&gt; <code>faultHandler</code> si mort</td>
+</tr>
+<tr>
+<td><code>logFaultEvent</code></td>
+<td>Watchdog.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Integre dans <code>checkAllFaults()</code> -- format <code>[FAULT] t=Xs ch=X cnt=N state=X</code> / <code>[CLEAR] dur=Nms</code></td>
+</tr>
+<tr>
+<td><code>monitorCurrentADC(pin, diagEN)</code></td>
+<td>PowerChannel.cpp</td>
+<td>TODO</td>
+<td>LOW</td>
+<td>Read load current via ADC FAULT pin</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="74-telemetrie">7.4 Telemetrie<a class="headerlink" href="#74-telemetrie" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>computeCRC16(buf, len)</code></td>
+<td>Telemetry.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>CRC-16 CCITT over packet</td>
+</tr>
+<tr>
+<td><code>collectGPS(pkt)</code></td>
+<td>IbNav.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Parse flux I2C NMEA -&gt; GPS fields</td>
+</tr>
+<tr>
+<td><code>collectADCS(pkt)</code></td>
+<td>ADCS.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Parse flux texte ADCS -&gt; IMU + baro + temp</td>
+</tr>
+<tr>
+<td><code>collectJetson(pkt)</code></td>
+<td>Jetson.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Read I2C Jetson -&gt; status, CPU, temp</td>
+</tr>
+<tr>
+<td><code>Telemetry::collectOBCHealth(pkt)</code></td>
+<td>Telemetry.cpp</td>
+<td>DONE (partial)</td>
+<td>HIGH</td>
+<td>flightState + uptime + faultFlags ; battVoltage TODO (pas de broche ADC)</td>
+</tr>
+<tr>
+<td><code>Telemetry::buildPacket(pkt)</code></td>
+<td>Telemetry.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Remplit sync 0xAA55 + version + CRC-16</td>
+</tr>
+<tr>
+<td><code>Telemetry::transmit(pkt)</code></td>
+<td>Telemetry.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Envoi 124 octets via <code>TTC::transmit()</code></td>
+</tr>
+<tr>
+<td><code>TTC::transmit(buf, len)</code></td>
+<td>TTC.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Ecriture binaire brute sur UART RFD900x</td>
+</tr>
+<tr>
+<td><code>TTC::stream()</code></td>
+<td>TTC.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Expose <code>HardwareSerial&amp;</code> UART TT&amp;C</td>
+</tr>
+<tr>
+<td><code>alertTTC(message)</code></td>
+<td>Telemetry.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Send text alert to ground</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="75-flight-state">7.5 Flight State<a class="headerlink" href="#75-flight-state" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FlightState::init()</code></td>
+<td>FlightState.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Set state = BOOT, init ring buffer <code>_altHistory[16]</code></td>
+</tr>
+<tr>
+<td><code>FlightState::name()</code></td>
+<td>FlightState.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Return current state as string</td>
+</tr>
+<tr>
+<td><code>FlightState::current()</code></td>
+<td>FlightState.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Return current State enum</td>
+</tr>
+<tr>
+<td><code>FlightState::update(alt, vspeed)</code></td>
+<td>FlightState.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Evaluate state transitions</td>
+</tr>
+<tr>
+<td><code>FlightState::applyProfile()</code></td>
+<td>FlightState.cpp</td>
+<td>TODO</td>
+<td>HIGH</td>
+<td>Enable/disable subsystems per state</td>
+</tr>
+<tr>
+<td><code>detectApogee()</code></td>
+<td>FlightState.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Fenetre glissante sur <code>_altHistory[16]</code> interne</td>
+</tr>
+<tr>
+<td><code>detectLanding(alt, vspeed, ms)</code></td>
+<td>FlightState.cpp</td>
+<td>TODO</td>
+<td>MED</td>
+<td>Low alt + low speed sustained &gt; threshold</td>
+</tr>
+<tr>
+<td><code>setTelemetryRate(state)</code></td>
+<td>FlightState.cpp</td>
+<td>TODO</td>
+<td>LOW</td>
+<td>Adjust TT&amp;C TX frequency per state</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="76-command-terminal-commandes-au-sol-banc">7.6 Command Terminal (commandes au sol / banc)<a class="headerlink" href="#76-command-terminal-commandes-au-sol-banc" title="Permanent link">&para;</a></h3>
+<p>Interpreteur de commandes non bloquant, lit caractere par caractere depuis un
+<code>HardwareSerial</code> (Serial USB au banc, <code>ttc.stream()</code> RFD900x en vol). Le dispatch
+se declenche sur <code>\n</code> ou <code>\r</code>. Appele via <code>terminal.poll()</code> dans <code>loop()</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>File</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CommandTerminal::init(port)</code></td>
+<td>CommandTerminal.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Associe le terminal a un <code>HardwareSerial&amp;</code> (USB ou TT&amp;C)</td>
+</tr>
+<tr>
+<td><code>CommandTerminal::poll()</code></td>
+<td>CommandTerminal.cpp</td>
+<td>DONE</td>
+<td>HIGH</td>
+<td>Lecture non bloquante, accumule jusqu'a <code>\n</code>/<code>\r</code> puis <code>dispatch()</code></td>
+</tr>
+<tr>
+<td><code>CommandTerminal::dispatch()</code></td>
+<td>CommandTerminal.cpp</td>
+<td>DONE</td>
+<td>--</td>
+<td>Analyse la ligne et execute la commande</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Effet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>help</code></td>
+<td>Liste les commandes</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>faults</code>, <code>mask</code>, Core 0 vivant, <code>uptime</code></td>
+</tr>
+<tr>
+<td><code>counters</code></td>
+<td>Compteur + etat par canal (OK / disable prolonge / DEFINITIF)</td>
+</tr>
+<tr>
+<td><code>reset &lt;0-4&gt;</code></td>
+<td><code>resetFaultCounter(ch)</code></td>
+</tr>
+<tr>
+<td><code>disable &lt;0-4&gt;</code></td>
+<td><code>markDisabled(ch)</code></td>
+</tr>
+<tr>
+<td><code>kick</code></td>
+<td><code>kick()</code> manuel</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>Etat de vol courant + uptime</td>
+</tr>
+<tr>
+<td><code>reboot confirm</code></td>
+<td><code>fullSystemReset()</code> (mot <code>confirm</code> obligatoire)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Securite : <code>reboot</code> sans <code>confirm</code> est traite comme une commande inconnue.
+Le buffer d'entree est borne (<code>CMD_BUF_SIZE</code> 64) : au-dela, les octets excess
+sont ignores sans debordement.</p>
+</blockquote>
+<hr />
+<h2 id="8-power-on-sequence">8. Power-On Sequence<a class="headerlink" href="#8-power-on-sequence" title="Permanent link">&para;</a></h2>
+<h3 id="81-requirement">8.1 Requirement<a class="headerlink" href="#81-requirement" title="Permanent link">&para;</a></h3>
+<p>All modules must not power up simultaneously to avoid inrush current spikes that could trip fuses or brown out the supply.</p>
+<p>Each module is powered individually, followed by a stabilization delay and a <strong>communication test</strong> to confirm the module responds before moving to the next. On failure, the module is marked disabled and the sequence continues without it.</p>
+<h3 id="82-power-up-order">8.2 Power-Up Order<a class="headerlink" href="#82-power-up-order" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Module</th>
+<th>Stabilization</th>
+<th>Communication Test</th>
+<th>Test Timeout</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>TT&amp;C</td>
+<td>500 ms</td>
+<td>Send UART ping to RFD900x, wait ACK</td>
+<td>2 s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>IbNav</td>
+<td>1000 ms</td>
+<td>Read NMEA bytes on I2C0 (addr <code>IBNAV_I2C_ADDR</code>)</td>
+<td>3 s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ADCS</td>
+<td>500 ms</td>
+<td>Wait for any byte on UART1 (raw text stream)</td>
+<td>3 s</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Jetson</td>
+<td>2000 ms</td>
+<td>Ping I2C address <code>JETSON_I2C_ADDR</code>, wait Wire ACK</td>
+<td>5 s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>A7Sii</td>
+<td>500 ms</td>
+<td>Check F1 HIGH (no TPS1H200 fault)</td>
+<td>500 ms</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>TT&amp;C powered first -- required to log boot results to ground.<br />
+Jetson 2 s delay -- Linux boot time on embedded module.</p>
+</blockquote>
+<h3 id="83-failure-behavior">8.3 Failure Behavior<a class="headerlink" href="#83-failure-behavior" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Test passed  -&gt; log &quot;[BOOT] &lt;module&gt; OK&quot; -&gt; continue sequence
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Test failed  -&gt; log &quot;[BOOT] &lt;module&gt; FAIL -- skipped&quot;
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>             -&gt; module marked DISABLED in watchdog _disabledMask
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>             -&gt; watchdog configured to skip this module
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>             -&gt; TT&amp;C alerts ground
+</code></pre></div>
+<p>A module that fails the boot test can be retried via TT&amp;C ground command.</p>
+<hr />
+<h2 id="9-telemetry-data-acquisition-packet">9. Telemetry -- Data Acquisition &amp; Packet<a class="headerlink" href="#9-telemetry-data-acquisition-packet" title="Permanent link">&para;</a></h2>
+<h3 id="91-overview">9.1 Overview<a class="headerlink" href="#91-overview" title="Permanent link">&para;</a></h3>
+<p>The RP2040 OBC collects data from all subsystems, builds a structured packet, and transmits it via RFD900x (TT&amp;C) to ground.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[IbNav GPS]  --I2C0 (GPIO 0/1)-----&gt;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>[ADCS]       --UART1 (GPIO 8/9)----&gt;  [RP2040 OBC]  --&gt; Packet Builder --&gt; [RFD900x TT&amp;C] --&gt; Ground
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  +- IMU                                                  (UART0, GPIO 28/29)
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  +- Baro
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  +- 8x Temp
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>[Jetson]     --I2C1 (Wire1, 14/15)&gt;
+</code></pre></div>
+<blockquote>
+<p>Allocation des peripheriques RP2040 : I2C0 = IbNav, I2C1 = Jetson,
+UART0 = TT&amp;C (RFD900x), UART1 = ADCS. Les 2 I2C et 2 UART sont distincts.</p>
+</blockquote>
+<h3 id="92-data-sources">9.2 Data Sources<a class="headerlink" href="#92-data-sources" title="Permanent link">&para;</a></h3>
+<h4 id="req-daq-01-ibnav-gps-i2c0-gpio-01">REQ-DAQ-01 -- IbNav GPS (I2C0, GPIO 0/1)<a class="headerlink" href="#req-daq-01-ibnav-gps-i2c0-gpio-01" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Format</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Latitude</td>
+<td>float, decimal degrees</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Longitude</td>
+<td>float, decimal degrees</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Altitude (MSL)</td>
+<td>float, metres</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Ground speed</td>
+<td>float, m/s</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Heading</td>
+<td>float, degrees</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Fix quality</td>
+<td>uint8 (0=none, 1=GPS, 2=DGPS)</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Satellites</td>
+<td>uint8</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>PPS health</td>
+<td>bool (pulse present &lt; 1100ms)</td>
+<td>continuous</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Protocol: NMEA 0183 (GGA, RMC sentences) lu via le bus I2C/DDC du module.
+Adresse I2C : <code>IBNAV_I2C_ADDR</code> (TODO a confirmer). 1PPS materiel sur GPIO 4.</p>
+</blockquote>
+<h4 id="req-daq-02-adcs-uart1-gpio-8-tx-9-rx">REQ-DAQ-02 -- ADCS (UART1, GPIO 8 TX / 9 RX)<a class="headerlink" href="#req-daq-02-adcs-uart1-gpio-8-tx-9-rx" title="Permanent link">&para;</a></h4>
+<p>The ADCS has its own processor that aggregates IMU, barometer, and 8 temperature probes, then streams a structured UART packet to the RP2040.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Format</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accelerometer X/Y/Z</td>
+<td>float, m/s^2</td>
+<td>10 Hz</td>
+</tr>
+<tr>
+<td>Gyroscope X/Y/Z</td>
+<td>float, deg/s</td>
+<td>10 Hz</td>
+</tr>
+<tr>
+<td>Roll / Pitch / Yaw</td>
+<td>float, degrees</td>
+<td>10 Hz</td>
+</tr>
+<tr>
+<td>Absolute pressure</td>
+<td>float, hPa</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Barometric altitude</td>
+<td>float, metres</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Temp[0..7]</td>
+<td>float x8, degC</td>
+<td>0.5 Hz</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>TEMPORARY FORMAT -- to be replaced per protocol agreed with ADCS team.</strong><br />
+Baud rate: 115200. Liaison UART en texte brut (raw), pas de paquet binaire.<br />
+Pas de sync bytes : sur une liaison UART point a point, les octets sont lus
+directement via <code>ADCS::forwardRaw()</code>. Le parsing en champs viendra avec
+<code>collectADCS()</code> une fois le format texte confirme.<br />
+GPIO 7 (CLK_ADCS) used as sync/interrupt signal from ADCS.<br />
+GPIO 10 (RUN_ADCS): start/stop command for ADCS processor.</p>
+</blockquote>
+<h4 id="req-daq-05-jetson-i2c1-wire1-gpio-1415">REQ-DAQ-05 -- Jetson (I2C1 -- Wire1, GPIO 14/15)<a class="headerlink" href="#req-daq-05-jetson-i2c1-wire1-gpio-1415" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Format</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operational status</td>
+<td>uint8 (enum)</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>CPU load</td>
+<td>uint8, %</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>GPU/CPU temperature</td>
+<td>float, degC</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Science data (summary)</td>
+<td>bytes[N]</td>
+<td>on event</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Dedicated Wire1 bus (I2C1) -- isolated from ADCS bus to avoid conflicts.<br />
+GPIO 13 (CLK_Jetson) used as sync/interrupt/heartbeat from Jetson.<br />
+Heartbeat absence &gt; 5s -&gt; watchdog reacts.<br />
+I2C address to confirm with Jetson firmware.</p>
+</blockquote>
+<h4 id="req-daq-06-obc-health-rp2040-internal">REQ-DAQ-06 -- OBC Health (RP2040 internal)<a class="headerlink" href="#req-daq-06-obc-health-rp2040-internal" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Format</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flight state</td>
+<td>uint8 (enum)</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Fault flags (5 bits)</td>
+<td>uint8 bitmask</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Uptime</td>
+<td>uint32, seconds</td>
+<td>1 Hz</td>
+</tr>
+<tr>
+<td>Battery voltage</td>
+<td>float, V (ADC)</td>
+<td>0.5 Hz</td>
+</tr>
+<tr>
+<td>RP2040 temperature</td>
+<td>float, degC (internal ADC)</td>
+<td>0.5 Hz</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-telemetry-packet-structure">9.3 Telemetry Packet Structure<a class="headerlink" href="#93-telemetry-packet-structure" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Offset  Size   Field
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>--------------------------------------------------
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>0       2B     Sync header         0xAA 0x55
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>2       1B     Packet version      0x01
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>3       1B     FlightState         enum uint8
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>4       4B     Uptime              uint32 seconds
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>8       4B     Latitude            float             (offset  8 % 4 = 0 [x])
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>12      4B     Longitude           float
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>16      4B     Altitude GPS        float metres
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>20      4B     Ground speed        float m/s
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>24      4B     Heading             float degrees
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>28      1B     GPS fix quality     uint8
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>29      1B     GPS satellites      uint8
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>30      2B     _pad0               alignment padding
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>32      4B     Baro altitude       float metres      (offset 32 % 4 = 0 [x])
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>36      4B     Pressure            float hPa
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>40      4B     Accel X             float m/s^2
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>44      4B     Accel Y             float m/s^2
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>48      4B     Accel Z             float m/s^2
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>52      4B     Gyro X              float deg/s
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>56      4B     Gyro Y              float deg/s
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>60      4B     Gyro Z              float deg/s
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>64      4B     Roll                float deg
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>68      4B     Pitch               float deg
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>72      4B     Yaw                 float deg
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>76      32B    Temp[0..7]          float x8 degC       (offset 76 % 4 = 0 [x])
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>108     1B     Jetson status       uint8
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>109     1B     Jetson CPU %        uint8
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>110     2B     _pad1               alignment padding
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>112     4B     Jetson temp         float degC          (offset 112 % 4 = 0 [x])
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>116     4B     Battery voltage     float V           (offset 116 % 4 = 0 [x])
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>120     1B     Fault flags         bitmask
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>121     1B     _pad2               alignment padding
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>122     2B     CRC-16              CCITT
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>--------------------------------------------------
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>Total: 124 bytes  (CRC covers bytes 0-121)
+</code></pre></div>
+<blockquote>
+<p>All <code>float</code> fields are at 4-byte-aligned offsets -- required by Cortex-M0+ (no unaligned multi-byte access).</p>
+</blockquote>
+<h3 id="94-rfd900x-transmission">9.4 RFD900x Transmission<a class="headerlink" href="#94-rfd900x-transmission" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interface</td>
+<td>UART0 -&gt; TX GPIO 28 / RX GPIO 29</td>
+</tr>
+<tr>
+<td>Baud rate</td>
+<td>57600 bps (<code>TTC_BAUD</code>)</td>
+</tr>
+<tr>
+<td>TX frequency</td>
+<td>1 Hz nominal, 0.2 Hz in LANDING</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>Transparent serial (no MAVLink required)</td>
+</tr>
+<tr>
+<td>Packet size</td>
+<td>124 bytes -&gt; ~17ms at 57600 bps</td>
+</tr>
+<tr>
+<td>Redundancy</td>
+<td>Packet repeated 2x if no ground ACK within 2s</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="95-repartition-dual-core-implementee">9.5 Repartition dual-core (implementee)<a class="headerlink" href="#95-repartition-dual-core-implementee" title="Permanent link">&para;</a></h3>
+<p><strong>Core 0</strong> (<code>loop()</code>) : collecte raw + telemetrie + terminal. Chaque subsystem
+gere son flux et recopie ses octets vers <code>Serial</code> sans parsing.
+<strong>Core 1</strong> (<code>loop1()</code>) : surveillance Watchdog dediee, independante de Core 0.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">                 </span><span class="c1">// ---- Core 0 ----</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="n">watchdog</span><span class="p">.</span><span class="n">notifyAlive</span><span class="p">();</span><span class="w">     </span><span class="c1">// signale la vitalite a Core 1 (surveillance croisee)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="n">terminal</span><span class="p">.</span><span class="n">poll</span><span class="p">();</span><span class="w">            </span><span class="c1">// lecture non bloquante des commandes (USB/TT&amp;C)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="c1">// 1) Recopie raw de chaque subsystem vers Serial (debug)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="n">ibNav</span><span class="p">.</span><span class="n">forwardRaw</span><span class="p">();</span><span class="w">         </span><span class="c1">// trames NMEA (I2C0, sondage 1 Hz)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="n">adcs</span><span class="p">.</span><span class="n">forwardRaw</span><span class="p">();</span><span class="w">          </span><span class="c1">// flux ADCS  (UART1)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="n">jetson</span><span class="p">.</span><span class="n">forwardRaw</span><span class="p">();</span><span class="w">        </span><span class="c1">// sondage I2C1 a 1 Hz</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="c1">// 2) Assemblage + transmission telemetrie au sol a 1 Hz</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lastTx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">millis</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastTx</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">lastTx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="n">TelemetryPacket</span><span class="w"> </span><span class="n">pkt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w">        </span><span class="c1">// zero-init : champs non collectes = 0</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="n">collectOBCHealth</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span><span class="w"> </span><span class="c1">// etat de vol, uptime, fautes, batterie</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="n">buildPacket</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span><span class="w">      </span><span class="c1">// sync 0xAA55 + version + CRC-16</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="n">telemetry</span><span class="p">.</span><span class="n">transmit</span><span class="p">(</span><span class="n">pkt</span><span class="p">);</span><span class="w">         </span><span class="c1">// 124 octets vers RFD900x (TT&amp;C)</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="p">}</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="kt">void</span><span class="w"> </span><span class="nf">loop1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">                </span><span class="c1">// ---- Core 1 ----</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="n">watchdog</span><span class="p">.</span><span class="n">kick</span><span class="p">();</span><span class="w">            </span><span class="c1">// nourrit le WDT SI Core 0 vivant, sinon fullSystemReset</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="n">watchdog</span><span class="p">.</span><span class="n">checkAllFaults</span><span class="p">();</span><span class="w">  </span><span class="c1">// poll des 5 pins FAULT + escalade</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">  </span><span class="c1">// Surveillance CLK : ADCS(1)/Jetson(2)/A7Sii(4) generent un signal d&#39;activite.</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">  </span><span class="c1">// IbNav(0)/TTC(3) renvoient true (pas de CLK en entree).</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">watchdog</span><span class="p">.</span><span class="n">monitorHeartbeat</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="n">watchdog</span><span class="p">.</span><span class="n">faultHandler</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span><span class="w">                </span><span class="c1">// Core 1 dedie : delay acceptable a 1 Hz</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Securite inter-coeurs</strong> : si <code>loop()</code> (Core 0) se bloque, <code>notifyAlive()</code>
+n'est plus appele ; apres <code>CORE0_ALIVE_TIMEOUT_MS</code> (4s), <code>kick()</code> cesse de
+nourrir le WDT et declenche <code>fullSystemReset()</code>. Detection d'un blocage Core 0
+en ~4-8s. Si les deux coeurs gelent, le WDT hardware (8s) reboot seul.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Methode</th>
+<th>Mecanisme</th>
+<th>Liaison</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IbNav (GPS)</td>
+<td><code>IbNav::forwardRaw()</code></td>
+<td><code>requestFrom(IBNAV_ADDR, 32)</code> @ 1 Hz (timer interne), puis recopie</td>
+<td>I2C0</td>
+</tr>
+<tr>
+<td>ADCS</td>
+<td><code>ADCS::forwardRaw()</code></td>
+<td><code>while (available()) Serial.write(read())</code></td>
+<td>UART1, texte brut</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td><code>Jetson::forwardRaw()</code></td>
+<td><code>requestFrom(0x42, 8)</code> @ 1 Hz (timer interne), puis recopie</td>
+<td>I2C1</td>
+</tr>
+<tr>
+<td>Telemetrie</td>
+<td><code>collectOBCHealth</code> -&gt; <code>buildPacket</code> -&gt; <code>transmit</code></td>
+<td>timer 1 Hz, paquet 124 B</td>
+<td>UART TT&amp;C (RFD900x)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flux en texte brut :</strong> pas de sync bytes, pas d'accumulation, pas de parsing
+binaire. Les octets recus (UART ADCS, ou I2C IbNav/Jetson) sont recopies tels
+quels. L'ancienne structure binaire <code>ADCSPacket</code> et les sync bytes <code>0xAD 0xC5</code>
+ont ete retires.</p>
+<p><strong>Non bloquant :</strong> <code>IbNav::forwardRaw()</code> et <code>Jetson::forwardRaw()</code> embarquent
+chacun leur propre timer <code>millis()</code> 1 Hz (sondage I2C), donc <code>loop()</code> ne bloque
+jamais. ADCS lit son UART de maniere non bloquante (<code>available()</code>).</p>
+<p><strong>Telemetrie implementee :</strong> <code>collectOBCHealth()</code> remplit flightState + uptime +
+faultFlags ; <code>buildPacket()</code> ajoute sync/version/CRC-16 ; <code>transmit()</code> envoie les
+124 octets via <code>TTC::transmit()</code> sur l'UART RFD900x.</p>
+<p><strong>Prochaine etape :</strong> implementer <code>collectGPS</code> / <code>collectADCS</code> / <code>collectJetson</code>
+(parsing des flux texte vers les champs de <code>TelemetryPacket</code>) et la lecture
+<code>battVoltage</code> via une broche ADC dediee.</p>
+<hr />
+<h2 id="10-flight-state-machine">10. Flight State Machine<a class="headerlink" href="#10-flight-state-machine" title="Permanent link">&para;</a></h2>
+<h3 id="101-states-transitions">10.1 States &amp; Transitions<a class="headerlink" href="#101-states-transitions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>[BOOT] --&gt; [ASCENT] --&gt; [APOGEE] --&gt; [DESCENT] --&gt; [LANDING]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Trigger</th>
+<th>Detection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BOOT</td>
+<td>Power on</td>
+<td>Startup init complete</td>
+</tr>
+<tr>
+<td>ASCENT</td>
+<td>After boot</td>
+<td>Vertical speed &gt; +1 m/s sustained</td>
+</tr>
+<tr>
+<td>APOGEE</td>
+<td>Peak altitude</td>
+<td>Vertical speed crosses 0, altitude max</td>
+</tr>
+<tr>
+<td>DESCENT</td>
+<td>Balloon burst</td>
+<td>Vertical speed &lt; -2 m/s sustained</td>
+</tr>
+<tr>
+<td>LANDING</td>
+<td>Ground contact</td>
+<td>Altitude &lt; threshold + speed ~ 0 for &gt;30s</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Detection source: IbNav GPS altitude + computed vertical speed (Deltaaltitude / Deltatime)</p>
+</blockquote>
+<h3 id="102-subsystem-power-profile-per-state">10.2 Subsystem Power Profile per State<a class="headerlink" href="#102-subsystem-power-profile-per-state" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>BOOT</th>
+<th>ASCENT</th>
+<th>APOGEE</th>
+<th>DESCENT</th>
+<th>LANDING</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IbNav</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+</tr>
+<tr>
+<td>ADCS</td>
+<td>OFF</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>OFF</td>
+<td>ON</td>
+<td>ON</td>
+<td>OFF</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>TT&amp;C</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+<td>ON</td>
+</tr>
+<tr>
+<td>A7Sii</td>
+<td>OFF</td>
+<td>ON</td>
+<td>ON</td>
+<td>OFF</td>
+<td>OFF</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>TT&amp;C always active -- critical ground link in all phases.<br />
+IbNav always active -- needed for localization and recovery.</p>
+</blockquote>
+<h3 id="103-phase-details">10.3 Phase Details<a class="headerlink" href="#103-phase-details" title="Permanent link">&para;</a></h3>
+<h4 id="boot">BOOT<a class="headerlink" href="#boot" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Estimated duration: &lt; 30s</li>
+<li>Objective: GPIO init, fault check, TT&amp;C handshake with ground</li>
+<li>Watchdog: active but tolerant (long delays, no power cycles during init)</li>
+</ul>
+<h4 id="ascent">ASCENT<a class="headerlink" href="#ascent" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Estimated duration: 90-120 min (0 -&gt; ~30 km)</li>
+<li>All subsystems active</li>
+<li>A7Sii recording</li>
+<li>Jetson processing science data</li>
+<li>TT&amp;C telemetry rate: nominal (1 Hz)</li>
+<li>Watchdog: fully active, all faults monitored</li>
+<li>IbNav PPS monitored: GPS loss -&gt; immediate alert</li>
+</ul>
+<h4 id="apogee">APOGEE<a class="headerlink" href="#apogee" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Estimated duration: a few minutes around altitude peak</li>
+<li>Detection: vertical speed ~ 0 +/- 0.5 m/s over 10s sliding window</li>
+<li>A7Sii: highest priority (maximum field of view)</li>
+<li>TT&amp;C: burst telemetry -- transmit compressed science data</li>
+<li>Watchdog: normal</li>
+</ul>
+<h4 id="descent">DESCENT<a class="headerlink" href="#descent" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Estimated duration: 30-60 min (burst -&gt; ~5 km/min)</li>
+<li>Jetson OFF -&gt; power and thermal savings</li>
+<li>A7Sii OFF</li>
+<li>ADCS active for parachute stabilization</li>
+<li>TT&amp;C: recovery beacon active (GPS position repeated)</li>
+<li>Watchdog: IbNav critical, fault -&gt; immediate power cycle</li>
+</ul>
+<h4 id="landing">LANDING<a class="headerlink" href="#landing" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Detection: altitude &lt; 500m + speed &lt; 1 m/s for 30 consecutive seconds</li>
+<li>Jetson OFF, ADCS OFF, A7Sii OFF</li>
+<li>IbNav: broadcast position every 10s via TT&amp;C</li>
+<li>Power: maximum savings mode</li>
+<li>Watchdog: relaxed (no aggressive power cycles on ground)</li>
+<li>RP2040 WDT: always active to prevent freeze during recovery wait</li>
+</ul>
+<hr />
+<h2 id="11-state-detection-strategy">11. State Detection Strategy<a class="headerlink" href="#11-state-detection-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="111-problem">11.1 Problem<a class="headerlink" href="#111-problem" title="Permanent link">&para;</a></h3>
+<p>The TPS1H200 FAULT pins are purely binary: HIGH (nominal) or LOW (fault). They give no direct information about altitude or speed. The strategy is to <strong>cross-correlate multiple binary sources</strong> and apply <strong>temporal analysis</strong> to infer flight state.</p>
+<h3 id="112-binary-signals-available-on-obc">11.2 Binary Signals Available on OBC<a class="headerlink" href="#112-binary-signals-available-on-obc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>GPIO</th>
+<th>Type</th>
+<th>What it can indicate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PPS_IbNav</td>
+<td>4</td>
+<td>Pulse 1 Hz</td>
+<td>GPS lock active -&gt; valid position</td>
+</tr>
+<tr>
+<td>F1_IbNav</td>
+<td>5</td>
+<td>Fault LOW</td>
+<td>IbNav power problem</td>
+</tr>
+<tr>
+<td>F1_ADCS</td>
+<td>11</td>
+<td>Fault LOW</td>
+<td>ADCS power problem</td>
+</tr>
+<tr>
+<td>F1_Jetson</td>
+<td>17</td>
+<td>Fault LOW</td>
+<td>Jetson overcurrent (CPU load)</td>
+</tr>
+<tr>
+<td>F1_TTC</td>
+<td>22</td>
+<td>Fault LOW</td>
+<td>TT&amp;C power problem</td>
+</tr>
+<tr>
+<td>F1_A7Sii</td>
+<td>26</td>
+<td>Fault LOW</td>
+<td>Camera power problem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="113-detection-techniques">11.3 Detection Techniques<a class="headerlink" href="#113-detection-techniques" title="Permanent link">&para;</a></h3>
+<h4 id="a-pps-temporal-analysis-gpio-4">A -- PPS Temporal Analysis (GPIO 4)<a class="headerlink" href="#a-pps-temporal-analysis-gpio-4" title="Permanent link">&para;</a></h4>
+<p>The GPS PPS signal is a precise 1 Hz pulse when fix is valid.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Measure: interval between two rising edges of PPS
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>PPS present + stable interval ~1000ms -&gt; GPS lock -&gt; altitude available via IbNav I2C
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>PPS absent                             -&gt; GPS lost -&gt; fall back to time-based
+</code></pre></div>
+<p>Implementation: <code>pulseIn(PIN_PPS_IBNAV, HIGH)</code> or rising-edge interrupt + timestamp.</p>
+<h4 id="b-fault-count-on-sliding-window">B -- Fault Count on Sliding Window<a class="headerlink" href="#b-fault-count-on-sliding-window" title="Permanent link">&para;</a></h4>
+<p>A single binary fault means little. Its <strong>frequency over a time window</strong> is informative:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>10s window -- Jetson fault count:
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  0 faults   -&gt; subsystem stable, normal load
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  1-2 faults -&gt; transient overload (intensive compute -&gt; apogee?)
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  &gt;3 faults  -&gt; real problem -&gt; watchdog escalates
+</code></pre></div>
+<h4 id="c-cross-channel-correlation">C -- Cross-Channel Correlation<a class="headerlink" href="#c-cross-channel-correlation" title="Permanent link">&para;</a></h4>
+<p>Flight state generates <strong>consistent load patterns</strong> across multiple subsystems simultaneously:</p>
+<table>
+<thead>
+<tr>
+<th>Observed pattern</th>
+<th>Probable state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All nominal, PPS stable</td>
+<td>Normal ASCENT</td>
+</tr>
+<tr>
+<td>Jetson transient fault + A7Sii nominal</td>
+<td>Apogee data processing</td>
+</tr>
+<tr>
+<td>F1_Jetson LOW permanent + PPS ok</td>
+<td>Jetson overconsumption -&gt; descent (cold, low battery)</td>
+</tr>
+<tr>
+<td>F1_ADCS LOW after shock</td>
+<td>LANDING (parachute impact)</td>
+</tr>
+<tr>
+<td>All nominal + PPS lost</td>
+<td>Altitude &gt; 40 km (GPS signal loss) -- near apogee</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d-fault-duration-analysis-time-in-fault">D -- Fault Duration Analysis (time-in-fault)<a class="headerlink" href="#d-fault-duration-analysis-time-in-fault" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Brief fault  (&lt; 200ms)  -&gt; transient, TPS1H200 auto-retry sufficient
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Medium fault (200ms-2s) -&gt; overload, software power cycle
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Long fault   (&gt; 5s)     -&gt; failure -&gt; escalate + change power profile
+</code></pre></div>
+<p>Measure with <code>millis()</code> at F1 falling edge and rising edge.</p>
+<h4 id="e-hybrid-state-machine-binary-time">E -- Hybrid State Machine: binary + time<a class="headerlink" href="#e-hybrid-state-machine-binary-time" title="Permanent link">&para;</a></h4>
+<p>Without parsed GPS, state can be inferred via <strong>mission timer + subsystem health</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>t=0          -&gt; BOOT
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>t &gt; 60s + all subsystems nominal        -&gt; ASCENT (assumed)
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>t &gt; 5400s (90 min) OR repeated Jetson faults -&gt; APOGEE (assumed)
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Jetson permanent fault + brief ADCS fault    -&gt; DESCENT (burst detected)
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>Brief F1_ADCS LOW + all silent &gt; 30s         -&gt; LANDING
+</code></pre></div>
+<blockquote>
+<p>This mode is the <strong>fallback</strong> if IbNav I2C is not yet parsed.</p>
+</blockquote>
+<h3 id="114-recommended-detection-architecture">11.4 Recommended Detection Architecture<a class="headerlink" href="#114-recommended-detection-architecture" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Level 1 (primary)   : Parse IbNav I2C -&gt; altitude + vspeed GPS
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>                      Accurate ASCENT/APOGEE/DESCENT/LANDING detection
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Level 2 (secondary) : PPS timing -&gt; confirms GPS lock
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>                      Consistent with Level 1
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>Level 3 (fallback)  : Mission timer + binary fault patterns
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>                      Used if IbNav I2C silent or GPS lost
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>2-of-3 vote         : If Level 1 and Level 3 diverge -&gt; keep current state,
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>                      log divergence via TT&amp;C, do not change state
+</code></pre></div>
+<h3 id="115-additional-useful-signals-if-hardware-permits">11.5 Additional Useful Signals (if hardware permits)<a class="headerlink" href="#115-additional-useful-signals-if-hardware-permits" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Source</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accelerometer ADCS</td>
+<td>ADCS UART</td>
+<td>Balloon burst detection (brief acceleration spike), landing impact</td>
+</tr>
+<tr>
+<td>RP2040 internal temp</td>
+<td>Internal ADC</td>
+<td>Altitude correlation (cold = high altitude)</td>
+</tr>
+<tr>
+<td>Battery voltage</td>
+<td>ADC GPIO 26-29</td>
+<td>Power health, coherent with flight phase</td>
+</tr>
+<tr>
+<td>TT&amp;C RSSI</td>
+<td>Via TT&amp;C serial</td>
+<td>Ground signal loss -&gt; confirms high altitude</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

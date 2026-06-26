@@ -1,0 +1,22 @@
+rabbitmq_user: ffed
+rabbitmq_password: "{{ vault_rabbitmq_password }}"
+rabbitmq_vhost: /
+rabbitmq_port: 5672
+capture_interval_secs: 60
+
+app_dir: /opt/ffed_protosat
+app_image_registry: ghcr.io
+app_image_repo: safari-labs/protosat-ffed-rs
+app_build_local: false
+app_skip_local_build: false
+app_local_build_platform: linux/arm64
+app_local_image_name: ffed_rs:local
+app_local_image_archive: /tmp/ffed_rs-jetson-image.tar
+portainer_agent_secret: "{{ vault_portainer_agent_secret }}"
+
+fire_risk_image_registry: ghcr.io
+fire_risk_image_repo: safari-labs/protosat-fire-risk-model
+fire_risk_build_local: false
+fire_risk_skip_local_build: false
+fire_risk_local_image_name: fire_risk_model:local
+fire_risk_local_image_archive: /tmp/fire_risk_model-jetson-image.tar

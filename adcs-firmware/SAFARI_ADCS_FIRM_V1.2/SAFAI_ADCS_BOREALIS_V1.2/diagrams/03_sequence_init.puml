@@ -1,0 +1,58 @@
+@startuml Sequence_Init
+
+skinparam sequenceArrowColor #1565C0
+skinparam sequenceParticipantBackgroundColor #E3F2FD
+skinparam sequenceParticipantBorderColor #1565C0
+skinparam sequenceLifeLineBorderColor #90CAF9
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+participant "main.cpp"        as main
+participant "SensorManager"   as mgr
+participant "ImuModule"       as imu
+participant "AltimeterModule" as alt
+participant "Pt1000Module"    as pt1000
+participant "WatchdogModule"  as wd
+
+main -> main : Serial.begin(115200)
+main -> main : Wire.begin()  — I2C0 GPIO4/5\nWire1.begin() — I2C1 GPIO6/7
+
+main -> mgr : registerModule(imu)
+main -> mgr : registerModule(alt)
+main -> mgr : registerModule(pt1000)
+main -> mgr : registerModule(wd)
+
+main -> mgr : initAll()
+activate mgr
+
+  mgr -> imu : init()
+  activate imu
+  note right : icm.begin_I2C() — I2C1 addr 0x68\ntimeout 50 ms\nsetAccelRange / setGyroRange / setMagDataRate
+  imu --> mgr : true / false
+  deactivate imu
+
+  mgr -> alt : init()
+  activate alt
+  note right : P_Sens.begin() — SPI CS=GPIO9\ntimeout 50 ms
+  alt --> mgr : true / false
+  deactivate alt
+
+  mgr -> pt1000 : init()
+  activate pt1000
+  note right : verify GPIO26 ADC readable\ntest GPIO0-3 (Mux + Switch)
+  pt1000 --> mgr : true / false
+  deactivate pt1000
+
+  mgr -> wd : init()
+  activate wd
+  note right : verify GPIO4/5 I2C0 bus\n(watchdog external module)
+  wd --> mgr : true / false
+  deactivate wd
+
+deactivate mgr
+
+note over mgr : modules that returned false\nare marked not-ready — skipped in readAll()
+
+main -> main : enter loop()
+
+@enduml

@@ -1,0 +1,53 @@
+@startuml I2C_Topology
+
+skinparam rectangle {
+  BackgroundColor #E0E0E0
+  BorderColor #424242
+  FontColor #212121
+}
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+rectangle "RP2040\nI2C Master" {
+  rectangle "GPIO 4 — SDA\nGPIO 5 — SCL\n400 kHz" as master
+}
+
+rectangle "I2C Bus Devices" {
+  rectangle "M9N u-blox GNSS\nAddress : 0x42\n(NMEA via I2C DDC)" as m9n
+  rectangle "IMU\nAddress : 0x68\n(MPU-6050 / ICM-42688P / LSM6DSx)" as imu
+  rectangle "Barometer\nAddress : 0x77\n(BMP280 / MS5611 / LPS22HB)" as baro
+}
+
+rectangle "SPI / ADC Interface" {
+  rectangle "PT1000 RTD\nvia MAX31865\n(SPI) or direct ADC" as pt1000
+}
+
+master --> m9n   : I2C
+master --> imu   : I2C
+master --> baro  : I2C
+master --> pt1000 : SPI / ADC
+
+note right of m9n
+  Pull-up resistors required
+  on SDA & SCL lines
+end note
+
+note right of imu
+  Address selectable via AD0 pin:
+  AD0=0 → 0x68
+  AD0=1 → 0x69
+end note
+
+note right of baro
+  Address selectable via SDO pin:
+  SDO=0 → 0x76
+  SDO=1 → 0x77
+end note
+
+note right of pt1000
+  Not on I2C bus.
+  MAX31865 uses 4-wire SPI.
+  Direct ADC also possible.
+end note
+
+@enduml

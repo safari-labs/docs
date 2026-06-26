@@ -1,0 +1,97 @@
+@startuml Sensor_ClassDiagram
+
+skinparam classBackgroundColor #E8F5E9
+skinparam classArrowColor #2E7D32
+skinparam classBorderColor #2E7D32
+skinparam classFontColor #1B5E20
+
+abstract class Sensor {
+  {abstract} +begin() : bool
+  {abstract} +update() : void
+  {abstract} +getData() : const SensorData&
+}
+
+class SensorData {
+  +value     : float
+  +valid     : bool
+  +timestamp : uint32_t
+}
+
+struct Pt1000Data {
+  +tempC         : float
+  +resistanceOhm : float
+  +valid         : bool
+  +timestamp     : uint32_t
+}
+
+struct IMUData {
+  +accelX    : float
+  +accelY    : float
+  +accelZ    : float
+  +gyroX     : float
+  +gyroY     : float
+  +gyroZ     : float
+  +tempC     : float
+  +valid     : bool
+  +timestamp : uint32_t
+}
+
+struct AltimeterData {
+  +pressureHPa : float
+  +altitudeM   : float
+  +tempC       : float
+  +valid       : bool
+  +timestamp   : uint32_t
+}
+
+class Pt1000Sensor {
+  -data    : Pt1000Data
+  -generic : SensorData
+  +begin()      : bool
+  +update()     : void
+  +getData()    : const SensorData&
+  +getPt1000()  : const Pt1000Data&
+}
+
+class IMUSensor {
+  -data    : IMUData
+  -generic : SensorData
+  +begin()   : bool
+  +update()  : void
+  +getData() : const SensorData&
+  +getIMU()  : const IMUData&
+}
+
+class AltimeterSensor {
+  -data          : AltimeterData
+  -generic       : SensorData
+  -seaLevelHPa   : float
+  +begin()                       : bool
+  +update()                      : void
+  +getData()                     : const SensorData&
+  +getAltimeter()                : const AltimeterData&
+  +setSeaLevelPressure(hPa:float): void
+}
+
+class SensorManager {
+  -sensors[MAX_SENSORS] : Sensor*
+  -sensorCount          : uint8_t
+  +addSensor(s:Sensor*) : bool
+  +updateAll()          : void
+  +getSensorData(idx:uint8_t) : const SensorData&
+  +getSensor(idx:uint8_t)     : Sensor*
+  +getSensorCount()           : uint8_t
+}
+
+Sensor         <|-- Pt1000Sensor
+Sensor         <|-- IMUSensor
+Sensor         <|-- AltimeterSensor
+
+Pt1000Sensor   --> Pt1000Data
+IMUSensor      --> IMUData
+AltimeterSensor --> AltimeterData
+
+Sensor         --> SensorData
+SensorManager  "1" --> "1..4" Sensor
+
+@enduml

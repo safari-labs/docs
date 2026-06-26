@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Jetson",
+    "url": "jetson.local:9001"
+  },
+  {
+    "name": "Jetson A603",
+    "url": "jetson-a603.local:9001"
+  }
+]

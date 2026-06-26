@@ -1,0 +1,106 @@
+@startuml 01_hardware
+left to right direction
+skinparam defaultFontName Courier
+skinparam defaultFontSize 11
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 80
+
+skinparam node {
+  BackgroundColor #FFFDE7
+  BorderColor     #F57F17
+  FontStyle       bold
+  FontSize        12
+}
+skinparam component {
+  BackgroundColor #E3F2FD
+  BorderColor     #1565C0
+  FontSize        11
+}
+skinparam rectangle {
+  BackgroundColor #F3E5F5
+  BorderColor     #6A1B9A
+  FontSize        11
+}
+skinparam note {
+  BackgroundColor #F9FBE7
+  BorderColor     #827717
+  FontSize        10
+}
+
+title SAFARI ADCS — Connexions matérielles RP2040
+
+node "RP2040\n(Pico)" as MCU
+
+' ── Capteurs ─────────────────────────────────────────────
+component "ICM-20948\n(IMU 9 axes)" as IMU
+component "MS5607\n(Altimètre)" as ALT
+
+rectangle "Pt1000 Chain" {
+  component "Mux 8:1" as MUX
+  component "Ampli-op" as AMP
+  component "Pt1000 ×8" as PT
+}
+
+rectangle "USB" {
+  component "Conn. 4 pins" as C4
+  component "Conn. USB" as CUSB
+}
+
+' ── Liaisons principales (labels courts) ─────────────────
+MCU <--> IMU  : I2C1
+MCU  --> IMU  : AD0
+IMU  --> MCU  : INT1
+MCU  --> IMU  : FSYNC
+
+MCU <--> ALT  : SPI
+MCU  --> ALT  : CS
+
+MCU  --> MUX  : A0/A1/A2
+MCU  --> MUX  : SW
+PT   --> AMP
+AMP  --> MCU  : ADC0
+MUX <--> PT
+
+MCU <--> CUSB : I2C0
+MCU  --> CUSB : GPIO19 / RUN
+MCU <--> C4   : GPIO15–18
+C4   --> CUSB
+
+' ── Notes de détail GPIO ─────────────────────────────────
+note right of IMU
+  I2C1  : SDA=GPIO6, SCL=GPIO7, 400 kHz
+  AD0   : GPIO12 — LOW → addr 0x68
+  INT1  : GPIO13 — actif bas
+  FSYNC : GPIO14 — latch accéléro
+end note
+
+note right of ALT
+  SPI mode 0, 1 MHz
+  MOSI/SDI : GPIO11
+  MISO/SDO : GPIO8
+  SCLK     : GPIO10
+  CS       : GPIO9 — actif bas
+end note
+
+note bottom of MUX
+  A0 = GPIO0
+  A1 = GPIO1
+  A2 = GPIO2
+  SW = GPIO3 (ON/OFF)
+  ADC0 = GPIO26 (12 bits, 3.3 V)
+end note
+
+note bottom of CUSB
+  I2C0 : SDA=GPIO4, SCL=GPIO5
+  CLK ext : GPIO19
+  Reset   : RUN
+end note
+
+note bottom of C4
+  GPIO15, GPIO16,
+  GPIO17, GPIO18
+  (signaux TBD)
+end note
+
+@enduml

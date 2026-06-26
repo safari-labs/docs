@@ -1,0 +1,60 @@
+FROM nvcr.io/nvidia/l4t-cuda:12.2.12-runtime
+
+# system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        python3-dev \
+        build-essential \
+        gdal-bin \
+        libgdal-dev \
+        python3-gdal \
+        python3-pkg-resources \
+        cython3 \
+        libopenblas0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# cuDNN 9 (required by the PyTorch JetPack wheel)
+RUN wget -q https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/arm64/cuda-keyring_1.1-1_all.deb \
+    && dpkg -i cuda-keyring_1.1-1_all.deb \
+    && rm cuda-keyring_1.1-1_all.deb \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends libcudnn9-cuda-12 \
+    && rm -rf /var/lib/apt/lists/*
+
+# bootstrap uv (10-100x faster Python package installer)
+RUN pip3 install --no-cache-dir uv
+
+WORKDIR /app
+
+# layer 1: Jetson PyTorch wheel (large, changes rarely)
+# uv validates wheel filename vs internal metadata; NVIDIA's JetPack wheel has a
+# minor mismatch so skip the check (pip would have silently ignored it).
+RUN UV_SKIP_WHEEL_FILENAME_CHECK=1 uv pip install --system \
+        https://developer.download.nvidia.com/compute/redist/jp/v61/pytorch/torch-2.5.0a0+872d972e41.nv24.08.17622132-cp310-cp310-linux_aarch64.whl
+
+# layer 2: pure-Python / binary wheels (fast, cached until deps change)
+RUN uv pip install --system \
+        "numpy>=1.24.0,<2.0" \
+        "matplotlib>=3.7.0" \
+        "pika>=1.3.0" \
+        "scipy>=1.10.0"
+
+# layer 3: rasterio (compiled from source against system GDAL — slow but rarely changes)
+RUN uv pip install --system --no-build-isolation --no-binary rasterio \
+        "rasterio>=1.3.0,<1.4.0"
+
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda-12.2/lib64:/usr/local/cuda-12.2/targets/aarch64-linux/lib:/usr/local/cuda/targets/aarch64-linux/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+COPY infer.py .
+
+RUN mkdir -p /app/weights
+
+CMD ["sh", "-c", \
+     "python3 infer.py \
+        --pipeline \
+        --amqp-url    ${AMQP_URL} \
+        --tiff-exchange ${TIFF_EXCHANGE} \
+        --out-exchange  ${OUT_EXCHANGE} \
+        --weights       ${WEIGHTS_PATH} \
+        --device        ${DEVICE}"]

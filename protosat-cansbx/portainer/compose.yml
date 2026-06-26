@@ -1,0 +1,31 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    environment:
+      AGENT_SECRET: ${PORTAINER_AGENT_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    command: caddy reverse-proxy --from http://portainer.localhost --to portainer:9000
+
+  portainer-init:
+    image: python:3-alpine
+    restart: "no"
+    depends_on:
+      - portainer
+    environment:
+      PORTAINER_ADMIN_PASSWORD: ${PORTAINER_ADMIN_PASSWORD}
+    volumes:
+      - ./init.py:/init.py:ro
+      - ./endpoints.json:/endpoints.json:ro
+    entrypoint: ["python3", "/init.py"]
+
+volumes:
+  portainer_data:

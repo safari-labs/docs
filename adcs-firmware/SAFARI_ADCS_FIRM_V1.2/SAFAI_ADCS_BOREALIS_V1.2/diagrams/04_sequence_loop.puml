@@ -1,0 +1,59 @@
+@startuml Sequence_Loop
+
+skinparam sequenceArrowColor #2E7D32
+skinparam sequenceParticipantBackgroundColor #E8F5E9
+skinparam sequenceParticipantBorderColor #2E7D32
+skinparam sequenceLifeLineBorderColor #A5D6A7
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+participant "main.cpp"        as main
+participant "SensorManager"   as mgr
+participant "ImuModule"       as imu
+participant "AltimeterModule" as alt
+participant "Pt1000Module"    as pt1000
+participant "WatchdogModule"  as wd
+participant "g_adcs\n(AdcsData)" as data
+
+main -> mgr : readAll()
+activate mgr
+
+  mgr -> imu : read()
+  activate imu
+  imu -> imu : icm.getEvent(&accel, &gyro, &temp, &mag)
+  imu -> data : g_adcs.imu\n{ ax,ay,az (m/s²), gx,gy,gz (rad/s), mx,my,mz (µT), valid }
+  imu --> mgr : true / false
+  deactivate imu
+
+  mgr -> alt : read()
+  activate alt
+  alt -> alt : P_Sens.readDigitalValue()
+  alt -> alt : getTemperature() / getPressure() / getAltitude()
+  alt -> data : g_adcs.altimeter\n{ pressure (hPa), temperature (°C), altitude (m), valid }
+  alt --> mgr : true / false
+  deactivate alt
+
+  mgr -> pt1000 : read()
+  activate pt1000
+  pt1000 -> pt1000 : GPIO3 HIGH — power Pt1000s ON
+  loop i = 0 … PT1000_COUNT-1
+    pt1000 -> pt1000 : GPIO0-2 ← i (A2:A1:A0)\nsettling delay
+    pt1000 -> pt1000 : analogRead(GPIO26)\nV → T (calibration eq.)
+  end
+  pt1000 -> pt1000 : GPIO3 LOW — power OFF
+  pt1000 -> data : g_adcs.pt1000\n{ temps[8] (°C), valid[8], active_count }
+  pt1000 --> mgr : true / false
+  deactivate pt1000
+
+  mgr -> wd : read()
+  activate wd
+  wd -> wd : poll I2C0 (GPIO4/5) bus state
+  wd -> data : g_adcs.watchdog.connected
+  wd --> mgr : true / false
+  deactivate wd
+
+deactivate mgr
+
+note over mgr : modules not ready are silently skipped\nfailed reads set valid = false in g_adcs
+
+@enduml

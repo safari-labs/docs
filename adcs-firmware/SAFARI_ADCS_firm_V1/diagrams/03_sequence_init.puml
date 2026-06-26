@@ -1,0 +1,59 @@
+@startuml 03_sequence_init
+skinparam defaultFontName Courier
+skinparam defaultFontSize 10
+skinparam ParticipantPadding 8
+skinparam BoxPadding 4
+skinparam sequenceArrowThickness 1
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+
+title Initialisation — setup()
+
+participant "main"   as M  #FFFDE7
+participant "MGR"    as MGR #E8F5E9
+participant "IMU"    as IMU #E3F2FD
+participant "ALT"    as ALT #E3F2FD
+participant "PT"     as PT  #E3F2FD
+participant "WD"     as WD  #F3E5F5
+participant "ICM-20948" as CI #BBDEFB
+participant "MS5607"    as CA #BBDEFB
+
+M  -> M   : Wire.begin() / Wire.setClock(400 kHz)
+M  -> M   : SPI.begin()
+
+M  -> MGR : addSensor(&imu)
+MGR -> IMU : begin()
+IMU -> IMU : pinMode AD0=OUT, LOW\npinMode INT1/FSYNC=IN
+IMU -> CI  : I2C probe 0x68 — WHO_AM_I
+CI --> IMU : 0xEA ✓
+IMU -> CI  : AccelRange ±4g / GyroRange ±500°/s\nMagRate 10 Hz
+IMU --> MGR : true
+MGR --> M  : true
+
+M  -> MGR : addSensor(&altimeter)
+MGR -> ALT : begin()
+ALT -> ALT : pinMode CS=OUT, CS=HIGH
+ALT -> CA  : cmd 0x1E Reset
+ALT -> ALT : delay 3 ms
+loop i = 0..7
+  ALT -> CA  : PROM Read C[i] (0xA0+2i)
+  CA --> ALT : uint16_t
+end
+ALT -> ALT : vérif C1..C6 ≠ 0
+ALT --> MGR : true
+MGR --> M  : true
+
+M  -> MGR : addSensor(&pt1000)
+MGR -> PT  : begin()
+PT  -> PT  : pinMode A0/A1/A2/SW=OUT\nanalogReadResolution(12)
+PT  -> PT  : SW = HIGH  [Pt1000 ON]
+PT --> MGR : true
+MGR --> M  : true
+
+M  -> WD  : begin()
+WD --> M  : true
+M  -> M   : Serial "Système prêt !"
+
+@enduml

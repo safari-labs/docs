@@ -1,0 +1,65 @@
+- name: Load fire_risk_model deploy.env defaults
+  community.general.read_csv:
+    path: "{{ playbook_dir }}/../fire_risk_model/deploy.env"
+    fieldnames: key,value
+    delimiter: "="
+  register: fire_risk_deploy_env_raw
+  delegate_to: localhost
+  become: false
+
+- name: Parse fire_risk_model deploy.env into dict
+  ansible.builtin.set_fact:
+    fire_risk_deploy_env: "{{ fire_risk_deploy_env_raw.list | selectattr('key', 'match', '^[^#]') | items2dict(key_name='key', value_name='value') }}"
+
+- name: Resolve fire risk model image
+  ansible.builtin.set_fact:
+    resolved_fire_risk_image: "{{ (fire_risk_build_local | bool) | ternary(fire_risk_local_image_name, fire_risk_image_registry ~ '/' ~ fire_risk_image_repo ~ ':' ~ (fire_risk_image_tag | default(fire_risk_deploy_env.FIRE_RISK_IMAGE_TAG) | default('latest'))) }}"
+
+- name: Log into GHCR
+  community.docker.docker_login:
+    registry: "{{ fire_risk_image_registry }}"
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+  when: not (fire_risk_build_local | bool)
+
+- name: Pull fire risk model image
+  community.docker.docker_image:
+    name: "{{ resolved_fire_risk_image }}"
+    source: pull
+    force_source: true
+  when: not (fire_risk_build_local | bool)
+
+- name: Copy locally built fire risk model image archive to Jetson
+  ansible.builtin.copy:
+    src: "{{ fire_risk_local_image_archive }}"
+    dest: "/tmp/{{ fire_risk_local_image_archive | basename }}"
+    mode: "0644"
+  when: fire_risk_build_local | bool
+
+- name: Load locally built fire risk model image on Jetson
+  ansible.builtin.command:
+    argv:
+      - docker
+      - load
+      - -i
+      - "/tmp/{{ fire_risk_local_image_archive | basename }}"
+  changed_when: true
+  when: fire_risk_build_local | bool
+
+- name: Remove transferred fire risk model image archive from Jetson
+  ansible.builtin.file:
+    path: "/tmp/{{ fire_risk_local_image_archive | basename }}"
+    state: absent
+  when: fire_risk_build_local | bool
+
+- name: Create weights directory on Jetson
+  ansible.builtin.file:
+    path: "{{ app_dir }}/weights"
+    state: directory
+    mode: "0755"
+
+- name: Copy model weights to Jetson
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../fire_risk_model/weights/fire_risk.pt"
+    dest: "{{ app_dir }}/weights/fire_risk.pt"
+    mode: "0644"

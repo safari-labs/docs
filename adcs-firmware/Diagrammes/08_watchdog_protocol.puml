@@ -1,0 +1,50 @@
+@startuml Watchdog_Protocol
+
+skinparam sequenceArrowColor #6A1B9A
+skinparam sequenceParticipantBackgroundColor #F3E5F5
+skinparam sequenceParticipantBorderColor #6A1B9A
+skinparam sequenceLifeLineBorderColor #CE93D8
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+participant "RP2040\nmain loop" as rp2040
+participant "WatchdogComm\n(watchdog.cpp)" as wdmod
+participant "External Watchdog\nController" as wdhw
+
+== Normal operation ==
+
+rp2040 --> wdmod : sendHeartbeat()\nevery 5 seconds
+activate wdmod
+  wdmod --> wdhw  : heartbeat packet\n(timestamp + health code)
+  wdhw  --> wdmod : ACK
+  wdmod --> wdmod : status.lastHeartbeat = millis()
+  wdmod --> wdmod : status.isAlive = true
+deactivate wdmod
+
+== Watchdog timeout (RP2040 hung) ==
+
+wdhw  --> wdhw  : no heartbeat > threshold (~10–15 s)
+wdhw  --> wdhw  : trigger recovery action\n(reset / power cycle)
+
+== Emergency alert ==
+
+rp2040 --> wdmod : sendAlert(code)
+activate wdmod
+  wdmod --> wdmod : status.healthCode = code
+  wdmod --> wdhw  : alert packet (priority)
+  wdhw  --> wdhw  : log code, take action
+deactivate wdmod
+
+== Status query ==
+
+rp2040 --> wdmod : isWatchdogAlive()
+wdmod  --> rp2040 : return status.isAlive
+
+note right of wdmod
+  Communication protocol TBD:
+  UART / I2C / CAN
+  Heartbeat interval : 5 s
+  Timeout threshold  : ~10–15 s
+end note
+
+@enduml

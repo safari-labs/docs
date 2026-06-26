@@ -1,0 +1,84 @@
+- name: Create app directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create capture directory on Jetson host
+  ansible.builtin.file:
+    path: "{{ app_dir }}/captures"
+    state: directory
+    mode: "0775"
+
+- name: Load deploy.env defaults
+  community.general.read_csv:
+    path: "{{ playbook_dir }}/../ffed_rs/deploy.env"
+    fieldnames: key,value
+    delimiter: "="
+  register: deploy_env_raw
+  delegate_to: localhost
+  become: false
+
+- name: Parse deploy.env into dict
+  ansible.builtin.set_fact:
+    deploy_env: "{{ deploy_env_raw.list | selectattr('key', 'match', '^[^#]') | items2dict(key_name='key', value_name='value') }}"
+
+- name: Resolve image
+  ansible.builtin.set_fact:
+    resolved_image: "{{ (app_build_local | bool) | ternary(app_local_image_name, app_image_registry ~ '/' ~ app_image_repo ~ ':' ~ (app_image_tag | default(deploy_env.APP_IMAGE_TAG) | default('latest'))) }}"
+
+- name: Log into GHCR
+  community.docker.docker_login:
+    registry: "{{ app_image_registry }}"
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+  when: not (app_build_local | bool)
+
+- name: Pull app image
+  community.docker.docker_image:
+    name: "{{ resolved_image }}"
+    source: pull
+    force_source: true
+  when: not (app_build_local | bool)
+
+- name: Copy locally built app image archive to Jetson
+  ansible.builtin.copy:
+    src: "{{ app_local_image_archive }}"
+    dest: "/tmp/{{ app_local_image_archive | basename }}"
+    mode: "0644"
+  when: app_build_local | bool
+
+- name: Load locally built app image on Jetson
+  ansible.builtin.command:
+    argv:
+      - docker
+      - load
+      - -i
+      - "/tmp/{{ app_local_image_archive | basename }}"
+  changed_when: true
+  when: app_build_local | bool
+
+- name: Remove transferred app image archive from Jetson
+  ansible.builtin.file:
+    path: "/tmp/{{ app_local_image_archive | basename }}"
+    state: absent
+  when: app_build_local | bool
+
+- name: Deploy Docker Compose file
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ app_dir }}/compose.yml"
+    mode: "0644"
+
+- name: Deploy app config
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: "{{ app_dir }}/config.toml"
+    mode: "0644"
+
+- name: Start services
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_dir }}"
+    files:
+      - compose.yml
+    state: present

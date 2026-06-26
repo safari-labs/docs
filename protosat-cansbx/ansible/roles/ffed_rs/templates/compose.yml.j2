@@ -1,0 +1,70 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - {{ app_dir }}/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - {{ app_dir }}/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      start_period: 45s
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  app:
+    image: {{ resolved_image }}
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    volumes:
+      - {{ app_dir }}/captures:/captures
+      - {{ app_dir }}/config.toml:/etc/ffed/config.toml:ro
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  fire_risk_model:
+    image: {{ resolved_fire_risk_image }}
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      AMQP_URL: "amqp://{{ rabbitmq_user | urlencode }}:{{ rabbitmq_password | urlencode }}@rabbitmq:{{ rabbitmq_port }}/%2f"
+      TIFF_EXCHANGE: tiff_queue
+      OUT_EXCHANGE: model_data_queue
+      WEIGHTS_PATH: /app/weights/fire_risk.pt
+      DEVICE: cuda
+    volumes:
+      - {{ app_dir }}/weights:/app/weights:ro
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  portainer_agent:
+    image: portainer/agent:latest
+    restart: unless-stopped
+    environment:
+      AGENT_SECRET: "{{ portainer_agent_secret }}"
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+
+volumes:
+  rabbitmq_data:

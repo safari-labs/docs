@@ -1,0 +1,2625 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://your-org.github.io/docs/adcs-firmware/SAFARI_ADCS_firm_V1/DIAGRAMS/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SAFARI ADCS — PlantUML Diagrams & Explanations - Your Project Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#safari-adcs-plantuml-diagrams-explanations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Your Project Documentation" class="md-header__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Your Project Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SAFARI ADCS — PlantUML Diagrams &amp; Explanations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Your Project Documentation" class="md-nav__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Your Project Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fire Risk Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/training-ecology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 1 — Ecology Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/training-fire-risk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 2 — Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProtoSat CAN-SBX
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ProtoSat CAN-SBX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../protosat-cansbx/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADCS Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADCS Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WDM Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    WDM Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../wdm-firmware/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAO ProtoSat
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAO ProtoSat
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cao-protosat/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cariboulite
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cariboulite
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cariboulite/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RF Radiation Pattern Simulator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RF Radiation Pattern Simulator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rf-radiation/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Camera Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../camera/conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../camera/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration Procedure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Calibration Procedure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/cwb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    White Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/colorchecker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ColorChecker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/wavelengths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wavelength Characterization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/regression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regression Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Selection
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Index Selection
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/index-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NDVI vs NDRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/imagej/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImageJ Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-system-architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. System Architecture Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. System Architecture Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sensor-framework-class-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sensor Framework Class Hierarchy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Sensor Framework Class Hierarchy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gnss-module-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GNSS Module Data Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. GNSS Module Data Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-main-loop-execution-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Main Loop Execution Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Main Loop Execution Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-i2c-bus-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. I2C Bus Topology
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. I2C Bus Topology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-status-display-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Status Display Layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Status Display Layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-sensor-update-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Sensor Update Sequence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Sensor Update Sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-watchdog-communication-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Watchdog Communication Protocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Watchdog Communication Protocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-initialization-flow-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Initialization Flow (setup())
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Initialization Flow (setup())">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-error-handling-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Error Handling &amp; Recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Error Handling &amp; Recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explanation_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explanation:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="safari-adcs-plantuml-diagrams-explanations">SAFARI ADCS — PlantUML Diagrams &amp; Explanations<a class="headerlink" href="#safari-adcs-plantuml-diagrams-explanations" title="Permanent link">&para;</a></h1>
+<p>This document provides visual representations of the SAFARI ADCS firmware architecture using PlantUML.</p>
+<hr />
+<h2 id="1-system-architecture-overview">1. System Architecture Overview<a class="headerlink" href="#1-system-architecture-overview" title="Permanent link">&para;</a></h2>
+<p>Shows all major modules and their interconnections within the RP2040.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>@startuml SAFARI_ADCS_Architecture
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>!define RECTANGLE_COLOR #E1F5FE
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>!define PROCESS_COLOR #B3E5FC
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>!define EXTERNAL_COLOR #FFF9C4
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>skinparam rectangle {
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  BackgroundColor RECTANGLE_COLOR
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  BorderColor #01579B
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  FontColor #01579B
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>}
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>package &quot;RP2040 Microcontroller&quot; {
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  rectangle &quot;Main Orchestrator\n(main.cpp)&quot; as main {
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  }
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  package &quot;Communication Interfaces&quot; {
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    rectangle &quot;I2C Bus\n(GPIO 4, 5 @ 400kHz)&quot; as i2c
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    rectangle &quot;UART0 Serial\n(GPIO 0, 1 @ 115200)&quot; as serial
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  }
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  package &quot;Hardware Modules&quot; {
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    rectangle &quot;GNSS Module\n(gnss.h/cpp)&quot; as gnss
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    rectangle &quot;Sensor Manager\n(sensors.h/cpp)&quot; as sensorMgr
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    rectangle &quot;Watchdog Module\n(watchdog.h/cpp)&quot; as watchdog
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    rectangle &quot;Status Display\n(printStatus.h/cpp)&quot; as display
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>  }
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>  package &quot;Concrete Sensors&quot; {
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    rectangle &quot;Pt1000\nThermometer&quot; as pt1000
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    rectangle &quot;IMU\n(6-axis)&quot; as imu
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    rectangle &quot;Altimeter\n(Barometric)&quot; as altimeter
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    rectangle &quot;Sensor Slot 4\n(Reserved)&quot; as slot4
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>  }
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>  package &quot;Configuration&quot; {
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    rectangle &quot;config.h\n(Pins, Addresses, Constants)&quot; as config
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>  }
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>}
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>package &quot;External Hardware&quot; {
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>  rectangle &quot;M9N u-blox\nGNSS Receiver\n(I2C 0x42)&quot; as m9n
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>  rectangle &quot;MPU-6050 or\nICM-42688P\n(I2C 0x68)&quot; as imuHW
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>  rectangle &quot;BMP280 or\nMS5611\n(I2C 0x77)&quot; as altimeterHW
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>  rectangle &quot;PT1000 RTD\nwith MAX31865\n(ADC/SPI)&quot; as pt1000HW
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>  rectangle &quot;External Watchdog\nController&quot; as watchdogHW
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>}
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>main --&gt; gnss
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>main --&gt; sensorMgr
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>main --&gt; watchdog
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>main --&gt; display
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>gnss --&gt; i2c
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>gnss --&gt; m9n
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>sensorMgr --&gt; pt1000
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>sensorMgr --&gt; imu
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>sensorMgr --&gt; altimeter
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>sensorMgr --&gt; slot4
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>pt1000 --&gt; i2c
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>imu --&gt; i2c
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>altimeter --&gt; i2c
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>pt1000 --&gt; pt1000HW
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>imu --&gt; imuHW
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>altimeter --&gt; altimeterHW
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>i2c --&gt; m9n
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>i2c --&gt; imuHW
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>i2c --&gt; altimeterHW
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>display --&gt; serial
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>watchdog --&gt; watchdogHW
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>config -.-&gt; main
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>config -.-&gt; gnss
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>config -.-&gt; sensorMgr
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>@enduml
+</code></pre></div>
+<h3 id="explanation">Explanation:<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Main Orchestrator</strong>: Central loop (<code>main.cpp</code>) controls all subsystems</li>
+<li><strong>Communication Buses</strong>: I2C for all sensors (400 kHz), UART for debug/status</li>
+<li><strong>Modules</strong>: GNSS, Sensor Manager, Watchdog, and Status Display operate independently but coordinated</li>
+<li><strong>Hardware Devices</strong>: Each module interfaces with physical devices via I2C/ADC</li>
+<li><strong>Configuration</strong>: Central <code>config.h</code> provides all tunable parameters</li>
+</ul>
+<hr />
+<h2 id="2-sensor-framework-class-hierarchy">2. Sensor Framework Class Hierarchy<a class="headerlink" href="#2-sensor-framework-class-hierarchy" title="Permanent link">&para;</a></h2>
+<p>Demonstrates the polymorphic sensor architecture.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>@startuml Sensor_ClassDiagram
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>skinparam classBackgroundColor #E8F5E9
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>skinparam classArrowColor #2E7D32
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>skinparam classBorderColor #2E7D32
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>abstract class Sensor {
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  {abstract} +begin(): bool
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  {abstract} +update(): void
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  {abstract} +getData(): SensorData
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>}
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>class SensorData {
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  +value: float
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  +valid: bool
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  +timestamp: uint32_t
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>}
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>struct Pt1000Data {
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  +tempC: float
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  +resistanceOhm: float
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>}
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>struct IMUData {
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  +accelX: float
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>  +accelY: float
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>  +accelZ: float
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>  +gyroX: float
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>  +gyroY: float
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>  +gyroZ: float
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>  +tempC: float
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>}
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>struct AltimeterData {
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>  +pressureHPa: float
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>  +altitudeM: float
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>  +tempC: float
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>}
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>class Pt1000Sensor {
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>  -data: Pt1000Data
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>  +begin(): bool
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>  +update(): void
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>  +getData(): SensorData
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>  +getPt1000(): const Pt1000Data&amp;
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>}
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>class IMUSensor {
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>  -data: IMUData
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>  +begin(): bool
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>  +update(): void
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>  +getData(): SensorData
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>  +getIMU(): const IMUData&amp;
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>}
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>class AltimeterSensor {
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>  -data: AltimeterData
+<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>  -seaLevelPressure: float
+<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>  +begin(): bool
+<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>  +update(): void
+<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>  +getData(): SensorData
+<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a>  +getAltimeter(): const AltimeterData&amp;
+<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>}
+<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>
+<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a>class SensorManager {
+<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a>  -sensors[4]: Sensor*
+<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a>  -count: uint8_t
+<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a>  +addSensor(sensor: Sensor*): bool
+<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a>  +updateAll(): void
+<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>  +getSensorData(idx: uint8_t): SensorData
+<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a>  +getSensor(idx: uint8_t): Sensor*
+<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a>  +getCount(): uint8_t
+<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>}
+<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>
+<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>Sensor &lt;|-- Pt1000Sensor
+<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a>Sensor &lt;|-- IMUSensor
+<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a>Sensor &lt;|-- AltimeterSensor
+<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a>
+<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a>Pt1000Sensor --&gt; Pt1000Data
+<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a>IMUSensor --&gt; IMUData
+<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a>AltimeterSensor --&gt; AltimeterData
+<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a>
+<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a>Sensor --&gt; SensorData
+<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a>SensorManager --&gt; &quot;1..4&quot; Sensor
+<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a>SensorManager --&gt; SensorData
+<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a>
+<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_1">Explanation:<a class="headerlink" href="#explanation_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Sensor (base class)</strong>: Defines interface that all sensors must implement</li>
+<li><strong>Concrete Sensors</strong>: Pt1000Sensor, IMUSensor, AltimeterSensor each inherit from Sensor</li>
+<li><strong>Type-specific Data</strong>: Each sensor has its own data struct (Pt1000Data, IMUData, AltimeterData)</li>
+<li><strong>Generic Adapter</strong>: Each concrete class implements <code>getData()</code> returning SensorData for uniform display</li>
+<li><strong>SensorManager</strong>: Manages up to 4 sensor instances, can call updateAll() to refresh all simultaneously</li>
+</ul>
+<hr />
+<h2 id="3-gnss-module-data-flow">3. GNSS Module Data Flow<a class="headerlink" href="#3-gnss-module-data-flow" title="Permanent link">&para;</a></h2>
+<p>Details the GNSS receiver communication and NMEA parsing pipeline.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>@startuml GNSS_DataFlow
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>skinparam rectangle {
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  BackgroundColor #FFF3E0
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  BorderColor #E65100
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>}
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>rectangle &quot;GNSS Module (gnss.cpp)&quot; {
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  rectangle &quot;I2C Protocol Layer&quot; {
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    rectangle &quot;Read Register 0xFD\n(Byte Count)&quot; as reg_fd
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    rectangle &quot;Read Register 0xFE\n(Byte Count Hi)&quot; as reg_fe
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    rectangle &quot;Read I2C Data\n(up to 255 bytes)&quot; as read_data
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  }
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  rectangle &quot;NMEA Processing&quot; {
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    rectangle &quot;Feed bytes to\nState Machine&quot; as state_machine
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    rectangle &quot;Identify Sentence\nType&quot; as identify
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    rectangle &quot;Parse NMEA\nSentence&quot; as parse
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  }
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>  rectangle &quot;Sentence Parsers&quot; {
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    rectangle &quot;parseGGA()\nPosition, Fix, Sats&quot; as parser_gga
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    rectangle &quot;parseRMC()\nDate, Speed, Course&quot; as parser_rmc
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    rectangle &quot;parseGSA()\nFix Type (2D/3D)&quot; as parser_gsa
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>  }
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>  rectangle &quot;Data Storage&quot; {
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    rectangle &quot;Update GPSData\nStruct&quot; as update_struct
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>  }
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>}
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>rectangle &quot;M9N Receiver\n(External Hardware)&quot; {
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>  rectangle &quot;NMEA Sentence\nBuffer&quot; as buffer
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>}
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>buffer --&gt; reg_fd
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>buffer --&gt; reg_fe
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>reg_fd --&gt; read_data
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>reg_fe --&gt; read_data
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>read_data --&gt; state_machine
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>state_machine --&gt; identify
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>identify --&gt; parser_gga
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>identify --&gt; parser_rmc
+<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>identify --&gt; parser_gsa
+<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>
+<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>parser_gga --&gt; parse
+<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>parser_rmc --&gt; parse
+<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>parser_gsa --&gt; parse
+<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>
+<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>parse --&gt; update_struct
+<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>
+<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>update_struct --&gt; &quot;gnss.getData()&quot;
+<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>
+<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>note right of reg_fd
+<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>  Polls byte count
+<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>  from receiver
+<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>end note
+<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>
+<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a>note right of state_machine
+<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>  0xFF padding bytes
+<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>  skipped automatically
+<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>end note
+<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>
+<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>note right of parser_gga
+<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>  Extracts: Lat, Lon, Alt
+<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>  Fix quality, Satellite count
+<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>end note
+<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>
+<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_2">Explanation:<a class="headerlink" href="#explanation_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>I2C Protocol</strong>: Queries M9N byte count registers, reads up to 255 bytes per cycle</li>
+<li><strong>NMEA State Machine</strong>: Processes incoming bytes, identifies sentence boundaries</li>
+<li><strong>Sentence Identification</strong>: GGA (position/fix), RMC (date/speed), GSA (fix type)</li>
+<li><strong>Parsers</strong>: Each parser extracts relevant fields using field delimiters and coordinates conversion</li>
+<li><strong>Data Storage</strong>: Parsed values update the shared GPSData struct accessible to main loop</li>
+</ul>
+<hr />
+<h2 id="4-main-loop-execution-flow">4. Main Loop Execution Flow<a class="headerlink" href="#4-main-loop-execution-flow" title="Permanent link">&para;</a></h2>
+<p>Sequence diagram showing one iteration of the main control loop.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>@startuml Main_Loop_Sequence
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>participant &quot;main.cpp\nLoop&quot; as loop
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>participant &quot;GNSS Module&quot; as gnss
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>participant &quot;Sensor Manager&quot; as sensors
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>participant &quot;Display Module&quot; as display
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>participant &quot;Watchdog Module&quot; as watchdog
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>loop Every ~50ms
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>  loop Continuous Update
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    loop --&gt; gnss: update()
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    gnss --&gt; loop: (~10ms)
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    loop --&gt; sensors: updateAll()
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    sensors --&gt; loop: (&lt; 5ms)
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>  end
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>  alt Every 1 second (1Hz)
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    loop --&gt; display: printStatus()
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    display --&gt; loop: (~20ms)
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    note right of display
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>      Builds 4-column table,
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>      sends to Serial
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    end note
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>  end
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>  alt Every 5 seconds
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    loop --&gt; watchdog: sendHeartbeat()
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    watchdog --&gt; loop: (&lt;1ms)
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>    note right of watchdog
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>      Sends &quot;alive&quot; signal
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>      to external watchdog
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>    end note
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>  end
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>  loop --&gt; loop: delay(10ms)\n(yield to OS)
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>end
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>note over loop, watchdog
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>  Nominal cycle: ~50ms
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>  Margin: ~15ms for anomalies
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>  Total time budget: 50ms
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>end note
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>
+<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_3">Explanation:<a class="headerlink" href="#explanation_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Continuous Update</strong>: GNSS and Sensor updates run every cycle (~10 ms for GNSS, &lt;5 ms for sensors)</li>
+<li><strong>1 Hz Display</strong>: Status printed to serial every second without blocking</li>
+<li><strong>5 Hz Watchdog</strong>: Heartbeat sent every 5 seconds to external system</li>
+<li><strong>Timing Budget</strong>: 50 ms cycle with 15 ms margin maintains real-time responsiveness</li>
+</ul>
+<hr />
+<h2 id="5-i2c-bus-topology">5. I2C Bus Topology<a class="headerlink" href="#5-i2c-bus-topology" title="Permanent link">&para;</a></h2>
+<p>Physical layout of all I2C devices on the RP2040.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>@startuml I2C_Topology
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>skinparam rectangle {
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  BackgroundColor #E0E0E0
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  BorderColor #424242
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>}
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>rectangle &quot;RP2040 I2C Bus&quot; {
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  rectangle &quot;GPIO 4 (SDA)\nGPIO 5 (SCL)\n400 kHz&quot; as bus_control
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>}
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>rectangle &quot;Connected Devices&quot; {
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>  rectangle &quot;M9N GNSS\nI2C Address: 0x42\n(UART protocol via I2C)&quot; as m9n_dev
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>  rectangle &quot;IMU\nI2C Address: 0x68\n(MPU-6050, ICM-42688P, LSM6DS3)&quot; as imu_dev
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>  rectangle &quot;Altimeter\nI2C Address: 0x77\n(BMP280, MS5611, LPS22HB)&quot; as alt_dev
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>}
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>rectangle &quot;Other Interfaces&quot; {
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>  rectangle &quot;PT1000 RTD\nADC or SPI\n(MAX31865)&quot; as pt1000_dev
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>}
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>bus_control --&gt; m9n_dev
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>bus_control --&gt; imu_dev
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>bus_control --&gt; alt_dev
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>note right of m9n_dev
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>  Pull-up resistors on
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>  SDA/SCL required
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>end note
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>note right of imu_dev
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>  Address configurable
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>  via AD0 pin
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>end note
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>note right of alt_dev
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>  Address configurable
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>  via SDO pin
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>end note
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>note right of pt1000_dev
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>  Separate from I2C
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>  Uses ADC or dedicated SPI
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>end note
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_4">Explanation:<a class="headerlink" href="#explanation_4" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>I2C Master</strong>: RP2040 acts as master on GPIO 4 (SDA) and GPIO 5 (SCL)</li>
+<li><strong>Bus Speed</strong>: 400 kHz suitable for all connected devices</li>
+<li><strong>Device Addresses</strong>: M9N at 0x42, IMU at 0x68, Altimeter at 0x77</li>
+<li><strong>PT1000</strong>: Uses separate ADC or SPI interface (not on I2C bus)</li>
+<li><strong>Extensibility</strong>: Address lines can be configured to support multiple instances</li>
+</ul>
+<hr />
+<h2 id="6-status-display-layout">6. Status Display Layout<a class="headerlink" href="#6-status-display-layout" title="Permanent link">&para;</a></h2>
+<p>Visual representation of the 4-column status output to serial console.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>@startuml Status_Display_Layout
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>skinparam rectangle {
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  BackgroundColor #FFF8E1
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  BorderColor #FF6F00
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>}
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>rectangle &quot;Serial Console Output (115200 baud)&quot; {
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>  rectangle &quot;Column 1: GPS Data\n(11 lines)&quot; as col1 {
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    rectangle &quot;Fix quality&quot; as gps1
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    rectangle &quot;Fix type&quot; as gps2
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    rectangle &quot;Satellites&quot; as gps3
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    rectangle &quot;Valid&quot; as gps4
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    rectangle &quot;Date (UTC)&quot; as gps5
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    rectangle &quot;Time (UTC)&quot; as gps6
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    rectangle &quot;Latitude&quot; as gps7
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    rectangle &quot;Longitude&quot; as gps8
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    rectangle &quot;Altitude (MSL)&quot; as gps9
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    rectangle &quot;Speed&quot; as gps10
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    rectangle &quot;Course&quot; as gps11
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>  }
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>  rectangle &quot;Column 2: System Status\n(6 lines)&quot; as col2 {
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>    rectangle &quot;GNSS Fix&quot; as sys1
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    rectangle &quot;Satellites&quot; as sys2
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    rectangle &quot;Sensors Active&quot; as sys3
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>    rectangle &quot;Watchdog Status&quot; as sys4
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    rectangle &quot;[Spare]&quot; as sys5
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>    rectangle &quot;[Spare]&quot; as sys6
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>  }
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>  rectangle &quot;Column 3: Sensor 1 (Pt1000)\n(5 lines)&quot; as col3 {
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>    rectangle &quot;Name&quot; as sen1_1
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>    rectangle &quot;Temperature&quot; as sen1_2
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    rectangle &quot;Resistance&quot; as sen1_3
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>    rectangle &quot;Status&quot; as sen1_4
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>    rectangle &quot;[Spare]&quot; as sen1_5
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>  }
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>  rectangle &quot;Column 4: Sensor 2+ (IMU, Altimeter)\n(5 lines)&quot; as col4 {
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>    rectangle &quot;Name&quot; as sen2_1
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>    rectangle &quot;Primary Value&quot; as sen2_2
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>    rectangle &quot;Secondary Value&quot; as sen2_3
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>    rectangle &quot;Status&quot; as sen2_4
+<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>    rectangle &quot;[Spare]&quot; as sen2_5
+<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a>  }
+<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>}
+<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>
+<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a>note bottom of col1, col4
+<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>  Each column ~36 characters wide
+<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a>  Refresh rate: 1 second (1 Hz)
+<a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a>  Uses box-drawing characters (│─┌┐└┘)
+<a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a>end note
+<a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a>
+<a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_5">Explanation:<a class="headerlink" href="#explanation_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Column 1 (GPS)</strong>: 11 lines of position, time, velocity data from GNSS</li>
+<li><strong>Column 2 (System)</strong>: 6 lines showing overall system health and sensor count</li>
+<li><strong>Columns 3-4 (Sensors)</strong>: Up to 4 sensor columns, each 5 lines with sensor-specific data</li>
+<li><strong>Alignment</strong>: All columns printed horizontally with box-drawing borders</li>
+<li><strong>Refresh</strong>: Updates every 1 second without blocking main loop</li>
+</ul>
+<hr />
+<h2 id="7-sensor-update-sequence">7. Sensor Update Sequence<a class="headerlink" href="#7-sensor-update-sequence" title="Permanent link">&para;</a></h2>
+<p>Detailed timeline of how each sensor is queried and updated.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>@startuml Sensor_Update_Sequence
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>participant &quot;Main Loop&quot; as main
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>participant &quot;SensorMgr&quot; as mgr
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>participant &quot;Pt1000Sensor&quot; as pt1000
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>participant &quot;IMUSensor&quot; as imu
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>participant &quot;AltimeterSensor&quot; as alt
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>main --&gt; mgr: updateAll()
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>mgr --&gt; pt1000: update()
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>activate pt1000
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>pt1000 --&gt; pt1000: Read ADC/SPI
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>pt1000 --&gt; pt1000: Convert to Temperature
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>pt1000 --&gt; pt1000: Store in Pt1000Data
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>deactivate pt1000
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>mgr --&gt; imu: update()
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>activate imu
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>imu --&gt; imu: Read I2C (0x68)
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>imu --&gt; imu: Parse accel/gyro/temp
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>imu --&gt; imu: Store in IMUData
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>deactivate imu
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>mgr --&gt; alt: update()
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>activate alt
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>alt --&gt; alt: Read I2C (0x77)
+<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>alt --&gt; alt: Parse pressure
+<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>alt --&gt; alt: Convert to altitude
+<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>alt --&gt; alt: Store in AltimeterData
+<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>deactivate alt
+<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>
+<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>mgr --&gt; main: return
+<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>
+<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>note right of mgr
+<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a>  Total time: &lt; 5ms
+<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a>  (stub implementations)
+<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a>end note
+<a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a>
+<a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_6">Explanation:<a class="headerlink" href="#explanation_6" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Sequential Update</strong>: SensorManager calls <code>update()</code> on each sensor in order</li>
+<li><strong>Pt1000</strong>: Reads ADC/SPI and converts resistance to temperature</li>
+<li><strong>IMU</strong>: Queries I2C @ 0x68 for 6-axis accel/gyro + die temperature</li>
+<li><strong>Altimeter</strong>: Reads pressure from I2C @ 0x77 and calculates barometric altitude</li>
+<li><strong>Timing</strong>: All sensors update in &lt;5 ms per cycle</li>
+</ul>
+<hr />
+<h2 id="8-watchdog-communication-protocol">8. Watchdog Communication Protocol<a class="headerlink" href="#8-watchdog-communication-protocol" title="Permanent link">&para;</a></h2>
+<p>Interaction between RP2040 and external watchdog controller.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>@startuml Watchdog_Protocol
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>participant &quot;Main Loop\n(RP2040)&quot; as rp2040
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>participant &quot;External Watchdog\nController&quot; as watchdog
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>rp2040 --&gt; watchdog: sendHeartbeat()\nevery 5 seconds
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>activate watchdog
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>watchdog --&gt; watchdog: Update last_heartbeat timestamp
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>watchdog --&gt; watchdog: Check timeout threshold
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>watchdog --&gt; watchdog: Update WatchdogStatus
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>deactivate watchdog
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>alt Normal Operation
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>  watchdog --&gt; rp2040: OK (healthy)
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>else Timeout Detected
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>  watchdog --&gt; rp2040: ALERT (RP2040 hung)
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>  watchdog --&gt; watchdog: Trigger watchdog action\n(reset, power cycle, etc.)
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>end
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>rp2040 --&gt; watchdog: sendAlert(code)\nif emergency detected
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>activate watchdog
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>watchdog --&gt; watchdog: Log alert code
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>watchdog --&gt; watchdog: Take emergency action
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>deactivate watchdog
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>rp2040 --&gt; watchdog: isWatchdogAlive()\nquery status
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>activate watchdog
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>watchdog --&gt; rp2040: return WatchdogStatus
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>deactivate watchdog
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>note right of rp2040
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>  Heartbeat interval: 5 seconds
+<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>  Watchdog timeout: ~10-15 seconds (TBD)
+<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a>  Protocol: TBD (UART, I2C, CAN)
+<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a>end note
+<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a>
+<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_7">Explanation:<a class="headerlink" href="#explanation_7" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Heartbeat (5 sec)</strong>: RP2040 sends periodic "alive" signal to watchdog</li>
+<li><strong>Timeout Detection</strong>: Watchdog tracks last heartbeat; triggers if not received within threshold</li>
+<li><strong>Emergency Alerts</strong>: RP2040 can send alert codes for critical conditions</li>
+<li><strong>Status Query</strong>: RP2040 can query watchdog health to ensure external system is responsive</li>
+<li><strong>Protocol TBD</strong>: Communication method (UART, I2C, or CAN) to be defined in future</li>
+</ul>
+<hr />
+<h2 id="9-initialization-flow-setup">9. Initialization Flow (setup())<a class="headerlink" href="#9-initialization-flow-setup" title="Permanent link">&para;</a></h2>
+<p>Startup sequence that initializes all subsystems.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>@startuml Initialization_Flow
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>start
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>:Initialize Serial @ 115200;
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>:Initialize Wire (I2C);
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>:Wire.setClock(400kHz);
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>:gnss.begin();
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>if (M9N responds?) then (no)
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>  :Print error, halt;
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  stop
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>else (yes)
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>endif
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>:sensorMgr.addSensor(new Pt1000Sensor());
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>:sensorMgr.addSensor(new IMUSensor());
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>:sensorMgr.addSensor(new AltimeterSensor());
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>note right
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  Sensors call begin()
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>  in addSensor()
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>end note
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>:watchdog.begin();
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>:Print boot banner;
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>:Wait for GNSS first fix;
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>:Enter main loop;
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>stop
+<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>
+<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_8">Explanation:<a class="headerlink" href="#explanation_8" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Serial Init</strong>: Debug/status output at 115200 baud</li>
+<li><strong>I2C Init</strong>: Wire at 400 kHz on GPIO 4/5</li>
+<li><strong>GNSS Check</strong>: Must detect M9N at 0x42, otherwise halt</li>
+<li><strong>Sensor Registration</strong>: Sensors added to manager in order (calls their <code>begin()</code>)</li>
+<li><strong>Watchdog Init</strong>: External system interface initialized</li>
+<li><strong>Boot Banner</strong>: User notification that system is alive</li>
+<li><strong>First Fix Wait</strong>: Wait for initial GNSS position lock before entering main loop</li>
+</ul>
+<hr />
+<h2 id="10-error-handling-recovery">10. Error Handling &amp; Recovery<a class="headerlink" href="#10-error-handling-recovery" title="Permanent link">&para;</a></h2>
+<p>State diagram showing system responses to various failure conditions.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>@startuml Error_Handling
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>state &quot;Nominal&quot; as nominal {
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  state &quot;Update GNSS&quot;
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  state &quot;Update Sensors&quot;
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  state &quot;Print Status&quot;
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>}
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>state &quot;Error Detection&quot; as error_detect {
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>  state &quot;I2C Timeout&quot; as i2c_err
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>  state &quot;Sensor Fault&quot; as sensor_err
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>  state &quot;No GNSS Fix&quot; as gnss_err
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>  state &quot;Watchdog Timeout&quot; as watchdog_err
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>}
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>state &quot;Recovery&quot; as recovery {
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>  state &quot;Retry I2C&quot;
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>  state &quot;Mark Sensor Invalid&quot;
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>  state &quot;Alert Watchdog&quot;
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>  state &quot;Log Error Code&quot;
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>}
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>state &quot;Safe Mode&quot; as safe_mode {
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>  state &quot;Continue with available sensors&quot;
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>}
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>nominal --&gt; error_detect: Detect anomaly
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>error_detect --&gt; i2c_err
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>error_detect --&gt; sensor_err
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>error_detect --&gt; gnss_err
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>error_detect --&gt; watchdog_err
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>i2c_err --&gt; recovery: Attempt retry
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>sensor_err --&gt; recovery: Disable sensor
+<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>gnss_err --&gt; recovery: Continue (position optional)
+<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>watchdog_err --&gt; recovery: Reset watchdog
+<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
+<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>recovery --&gt; safe_mode: Mitigation complete
+<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>safe_mode --&gt; nominal: Resume operation
+<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>
+<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>note right of error_detect
+<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>  Errors detected via:
+<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>  - Timeout (I2C, GNSS read)
+<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>  - CRC failure (NMEA checksum)
+<a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>  - Data out of range (pressure, temp)
+<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>  - Watchdog not responding
+<a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>end note
+<a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>
+<a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>note right of safe_mode
+<a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>  System continues operating
+<a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>  with degraded functionality
+<a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a>  Status shows &quot;Invalid&quot; for
+<a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a>  failed sensors
+<a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a>end note
+<a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a>
+<a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>@enduml
+</code></pre></div>
+<h3 id="explanation_9">Explanation:<a class="headerlink" href="#explanation_9" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Nominal Operation</strong>: Normal GNSS/sensor update and display cycle</li>
+<li><strong>Error Detection</strong>: I2C timeouts, sensor faults, GNSS loss, watchdog unresponsive</li>
+<li><strong>Recovery Mechanisms</strong>: Retry I2C, mark sensors invalid, alert external system</li>
+<li><strong>Safe Mode</strong>: Continue with available sensors rather than crashing</li>
+<li><strong>Logging</strong>: Errors recorded for post-flight analysis</li>
+</ul>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>These diagrams provide a complete visual reference for understanding the SAFARI ADCS firmware:</p>
+<ol>
+<li><strong>Architecture</strong> – System organization and module interactions</li>
+<li><strong>Class Hierarchy</strong> – Sensor polymorphism and type relationships</li>
+<li><strong>Data Flow</strong> – GNSS parsing pipeline and data processing</li>
+<li><strong>Main Loop</strong> – Timing and execution of core operations</li>
+<li><strong>I2C Topology</strong> – Physical device connections and addresses</li>
+<li><strong>Status Display</strong> – Serial console output format</li>
+<li><strong>Sensor Updates</strong> – Sequential sensor read operations</li>
+<li><strong>Watchdog</strong> – External system communication protocol</li>
+<li><strong>Initialization</strong> – Boot-up sequence and checks</li>
+<li><strong>Error Handling</strong> – Fault detection and recovery strategies</li>
+</ol>
+<p>Refer to these diagrams when:
+- Onboarding new developers
+- Understanding data flow for debugging
+- Planning sensor integration
+- Verifying timing requirements
+- Documenting communication protocols</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

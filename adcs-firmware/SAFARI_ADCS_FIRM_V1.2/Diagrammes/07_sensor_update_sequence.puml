@@ -1,0 +1,70 @@
+@startuml Sensor_Update_Sequence
+
+skinparam sequenceArrowColor #2E7D32
+skinparam sequenceParticipantBackgroundColor #E8F5E9
+skinparam sequenceParticipantBorderColor #2E7D32
+skinparam sequenceLifeLineBorderColor #A5D6A7
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+participant "Main Loop"      as main
+participant "SensorManager"  as mgr
+participant "Pt1000Sensor"   as pt1000
+participant "IMUSensor"      as imu
+participant "AltimeterSensor"as alt
+
+main --> mgr : updateAll()
+activate mgr
+
+  mgr --> pt1000 : update()
+  activate pt1000
+    pt1000 --> pt1000 : GPIO3 HIGH — power Pt1000s ON
+    pt1000 --> pt1000 : Set Mux address A2:A1:A0\n(GPIO0-2) → select channel Si
+    pt1000 --> pt1000 : Settling delay (TBD ms)\n— wait for steady-state voltage
+    pt1000 --> pt1000 : ADC read GPIO26\n— V = f(R_Pt1000), non-linear\n  (function TBD by characterization)
+    pt1000 --> pt1000 : Apply calibration equation\nV → Temperature (°C)
+    pt1000 --> pt1000 : Repeat for each active channel (S1…S8)
+    pt1000 --> pt1000 : GPIO3 LOW — power Pt1000s OFF
+    pt1000 --> pt1000 : Store in AdcsData.pt1000\n{ temps[8], valid[8], active_count }
+  deactivate pt1000
+  mgr --> mgr : next sensor
+
+  mgr --> imu : update()
+  activate imu
+    imu --> imu : Read I2C 0x68
+    imu --> imu : Parse accel XYZ (m/s²)\n+ gyro XYZ (°/s) + die temp
+    imu --> imu : Store in IMUData\n{ accelX..Z, gyroX..Z, tempC, valid, timestamp }
+  deactivate imu
+  mgr --> mgr : next sensor
+
+  mgr --> alt : update()
+  activate alt
+    alt --> alt : Read I2C 0x77
+    alt --> alt : Parse raw pressure (hPa)
+    alt --> alt : Barometric altitude = f(P, P0)
+    alt --> alt : Store in AltimeterData\n{ pressureHPa, altitudeM, tempC, valid, timestamp }
+  deactivate alt
+
+deactivate mgr
+
+mgr --> main : return
+
+note right of mgr
+  Sensors called in registration order.
+  Any sensor can set valid=false
+  on read failure — display shows "---".
+end note
+
+note right of pt1000
+  V2 hardware: Mux 8:1 (GPIO0-2) +\n  op-amp output on GPIO26.\n  V = f(R) is non-linear (Mux\n  characteristics) — function and\n  settling delay TBD by bench\n  characterization.
+end note
+
+note right of imu
+  ICM-20948 (Adafruit #4554)\n  I2C1 @ 400 kHz (GPIO6/7)\n  Address 0x68 (AD0=GPIO12 LOW)
+end note
+
+note right of alt
+  MS5607-02BA03-50\n  SPI mode 0 @ 1 MHz (GPIO8-11)\n  CS = GPIO9
+end note
+
+@enduml

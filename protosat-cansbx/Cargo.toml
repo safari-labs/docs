@@ -1,0 +1,4 @@
+[workspace]
+members = ["ffed_rs", "xtask"]
+default-members = ["ffed_rs"]
+resolver = "2"

@@ -1,0 +1,110 @@
+- name: Pre-flight checks
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Fetch remote git state
+      ansible.builtin.command:
+        cmd: git fetch
+        chdir: "{{ playbook_dir }}/.."
+      changed_when: false
+
+    - name: Check if local branch is behind remote
+      ansible.builtin.command:
+        cmd: git status --porcelain=v2 --branch
+        chdir: "{{ playbook_dir }}/.."
+      register: git_status
+      changed_when: false
+
+    - name: Prompt to continue if behind remote
+      ansible.builtin.pause:
+        prompt: "Local branch is behind remote. Deploy anyway? (yes/no)"
+      register: user_confirm
+      when: "'behind' in git_status.stdout"
+
+    - name: Abort if user declined
+      ansible.builtin.fail:
+        msg: "Aborted by user."
+      when: "'behind' in git_status.stdout and user_confirm.user_input | lower != 'yes'"
+
+    - name: Verify Docker is available for local image build
+      ansible.builtin.command:
+        argv: [docker, version]
+      changed_when: false
+      when: (app_build_local | default(false) | bool) and not (app_skip_local_build | default(false) | bool)
+
+    - name: Verify Docker Buildx is available for local image build
+      ansible.builtin.command:
+        argv: [docker, buildx, version]
+      changed_when: false
+      when: (app_build_local | default(false) | bool) and not (app_skip_local_build | default(false) | bool)
+
+    - name: Build Jetson app image locally
+      ansible.builtin.command:
+        argv:
+          - docker
+          - buildx
+          - build
+          - --platform
+          - "{{ app_local_build_platform }}"
+          - --progress
+          - plain
+          - --load
+          - -f
+          - docker/Dockerfile.ffed_rs
+          - -t
+          - "{{ app_local_image_name }}"
+          - .
+        chdir: "{{ playbook_dir }}/.."
+      changed_when: true
+      when: (app_build_local | default(false) | bool) and not (app_skip_local_build | default(false) | bool)
+
+    - name: Export locally built Jetson image
+      ansible.builtin.command:
+        argv:
+          - docker
+          - save
+          - -o
+          - "{{ app_local_image_archive }}"
+          - "{{ app_local_image_name }}"
+      changed_when: true
+      when: (app_build_local | default(false) | bool) and not (app_skip_local_build | default(false) | bool)
+
+    - name: Build fire risk model image locally
+      ansible.builtin.command:
+        argv:
+          - docker
+          - buildx
+          - build
+          - --platform
+          - "{{ app_local_build_platform }}"
+          - --progress
+          - plain
+          - --load
+          - -f
+          - docker/Dockerfile.fire_risk_model
+          - -t
+          - "{{ fire_risk_local_image_name }}"
+          - fire_risk_model
+        chdir: "{{ playbook_dir }}/.."
+      changed_when: true
+      when: (fire_risk_build_local | default(false) | bool) and not (fire_risk_skip_local_build | default(false) | bool)
+
+    - name: Export locally built fire risk model image
+      ansible.builtin.command:
+        argv:
+          - docker
+          - save
+          - -o
+          - "{{ fire_risk_local_image_archive }}"
+          - "{{ fire_risk_local_image_name }}"
+      changed_when: true
+      when: (fire_risk_build_local | default(false) | bool) and not (fire_risk_skip_local_build | default(false) | bool)
+
+- name: Setup Jetson image pipeline
+  hosts: "{{ target | default('jetson') }}"
+  become: true
+  roles:
+    - docker
+    - rabbitmq
+    - fire_risk_model
+    - ffed_rs

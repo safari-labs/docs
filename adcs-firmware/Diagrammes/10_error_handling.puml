@@ -1,0 +1,74 @@
+@startuml Error_Handling
+
+skinparam stateBackgroundColor #FFF3E0
+skinparam stateBorderColor #E65100
+skinparam stateArrowColor #BF360C
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+state "Nominal Operation" as nominal {
+  state "gnss.update()"       as s_gnss
+  state "sensorMgr.updateAll()" as s_sens
+  state "printStatus()"       as s_disp
+  state "watchdog.sendHeartbeat()" as s_wd
+  s_gnss --> s_sens
+  s_sens --> s_disp
+  s_disp --> s_wd
+}
+
+state "Error Detection" as errors {
+  state "I2C timeout\n(sensor or GNSS)" as e_i2c
+  state "NMEA checksum fail"            as e_nmea
+  state "Sensor data out of range"      as e_range
+  state "Watchdog not responding"       as e_wd
+}
+
+state "Recovery" as recovery {
+  state "Retry I2C read\n(next cycle)"         as r_i2c
+  state "Discard sentence\n(keep last valid)"  as r_nmea
+  state "Set valid=false\nin SensorData"       as r_invalid
+  state "watchdog.sendAlert(code)"             as r_wd
+}
+
+state "Degraded / Safe Mode" as degraded {
+  state "Continue loop()\nwith available sensors" as safe
+  state "Display shows '---'\nfor failed sensors"  as disp_err
+}
+
+[*] --> nominal
+
+nominal --> errors : anomaly detected
+
+errors --> e_i2c
+errors --> e_nmea
+errors --> e_range
+errors --> e_wd
+
+e_i2c  --> r_i2c
+e_nmea --> r_nmea
+e_range --> r_invalid
+e_wd   --> r_wd
+
+r_i2c    --> degraded
+r_nmea   --> degraded
+r_invalid --> degraded
+r_wd     --> degraded
+
+degraded --> safe
+degraded --> disp_err
+
+safe     --> nominal : resume next cycle
+disp_err --> nominal : resume next cycle
+
+note right of nominal
+  Fatal error (GNSS missing at boot):
+  halt in setup(), never enters loop()
+end note
+
+note right of degraded
+  System never crashes mid-flight.
+  Degraded data flagged as invalid.
+  Errors logged via watchdog alert.
+end note
+
+@enduml

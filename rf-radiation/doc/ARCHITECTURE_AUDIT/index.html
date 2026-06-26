@@ -1,0 +1,2998 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://your-org.github.io/docs/rf-radiation/doc/ARCHITECTURE_AUDIT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>RF Link Budget Simulator — Full Architecture Audit & Refactor Plan - Your Project Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rf-link-budget-simulator-full-architecture-audit-refactor-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Your Project Documentation" class="md-header__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Your Project Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RF Link Budget Simulator — Full Architecture Audit &amp; Refactor Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Your Project Documentation" class="md-nav__button md-logo" aria-label="Your Project Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Your Project Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fire Risk Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/training-ecology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 1 — Ecology Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/training-fire-risk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stage 2 — Fire Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fire-risk-model/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProtoSat CAN-SBX
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ProtoSat CAN-SBX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../protosat-cansbx/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADCS Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADCS Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adcs-firmware/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WDM Firmware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    WDM Firmware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../wdm-firmware/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAO ProtoSat
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAO ProtoSat
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cao-protosat/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cariboulite
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cariboulite
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cariboulite/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RF Radiation Pattern Simulator
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RF Radiation Pattern Simulator
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Camera Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../camera/conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../camera/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration Procedure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Calibration Procedure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/cwb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    White Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/colorchecker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ColorChecker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/wavelengths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wavelength Characterization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/regression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regression Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Selection
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Index Selection
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/index-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NDVI vs NDRE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../calibration/imagej/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImageJ Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-critical-fix-completed-domain-layer-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Critical Fix Completed: Domain Layer Recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Critical Fix Completed: Domain Layer Recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-applied" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fix Applied
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-architecture-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Architecture Audit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Architecture Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-current-architecture-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Current Architecture Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-anti-patterns-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Anti-Patterns Found
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Anti-Patterns Found">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#p1-critical-massive-duplication-between-models-and-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P1 — CRITICAL: Massive Duplication Between Models and Domain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p2-fat-route-handlers-in-apppy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P2 — Fat Route Handlers in app.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p3-3784-line-monolithic-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P3 — 3,784-Line Monolithic Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p4-missing-static-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P4 — Missing Static Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p5-dead-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P5 — Dead Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p6-hardcoded-ground-station-in-multiple-places" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P6 — Hardcoded Ground Station in Multiple Places
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-target-architecture-redesign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Target Architecture Redesign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Target Architecture Redesign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proposed-lean-clean-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed: Lean Clean Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-backend-refactor-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Backend Refactor Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Backend Refactor Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-eliminate-dead-code-low-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Eliminate Dead Code (Low Risk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-consolidate-antenna-registration-medium-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Consolidate Antenna Registration (Medium Risk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-unify-rf-budget-state-medium-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Unify RF Budget State (Medium Risk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-extract-parameter-parsing-from-apppy-low-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Extract Parameter Parsing from app.py (Low Risk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-consolidate-ground-station-low-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Consolidate Ground Station (Low Risk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-frontend-refactor-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Frontend Refactor Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Frontend Refactor Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state-3784-lines-in-one-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State: 3,784 Lines in One File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-module-split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Module Split
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-decision-es-modules-vs-build-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Decision: ES Modules vs Build Tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-bug-fixes-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Bug Fixes Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Bug Fixes Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-1-duplicate-event-handlers-on-checkboxes-confirmed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-1: Duplicate Event Handlers on Checkboxes (CONFIRMED)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-2-missing-static-js-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-2: Missing Static JS Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-3-frame-counter-pattern-update-miss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-3: Frame Counter Pattern Update Miss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-4-telemetry-overwrite-on-budget-load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-4: Telemetry Overwrite on Budget Load
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-5-double-telemetry-upload-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-5: Double Telemetry Upload Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-6-footprintmodel-imported-but-unused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BUG-6: FootprintModel Imported But Unused
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-coupling-reduction-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Coupling Reduction Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Coupling Reduction Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-coupling-hot-spots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Coupling Hot Spots
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduction-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reduction Plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cohesion-improvement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Cohesion Improvement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Cohesion Improvement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-component-assessment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Component Assessment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-extensibility-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Extensibility Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Extensibility Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-new-antenna-types-already-plugin-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding New Antenna Types (Already Plugin-Ready!)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-new-rf-effects-already-plugin-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding New RF Effects (Already Plugin-Ready!)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extending-the-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending the Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-before-vs-after-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Before vs After Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Before vs After Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-apilink_budget-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 1: /api/link_budget Route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-antenna-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 2: Antenna Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-frontend-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 3: Frontend State
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Priority
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="rf-link-budget-simulator-full-architecture-audit-refactor-plan">RF Link Budget Simulator — Full Architecture Audit &amp; Refactor Plan<a class="headerlink" href="#rf-link-budget-simulator-full-architecture-audit-refactor-plan" title="Permanent link">&para;</a></h1>
+<p><strong>Date:</strong> 2025-01<br />
+<strong>Scope:</strong> Full codebase analysis of <code>server2/</code> (backend + frontend)</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-critical-fix-completed">Critical Fix Completed: Domain Layer Recovery</a></li>
+<li><a href="#2-architecture-audit">Architecture Audit</a></li>
+<li><a href="#3-target-architecture">Target Architecture Redesign</a></li>
+<li><a href="#4-backend-refactor">Backend Refactor Plan</a></li>
+<li><a href="#5-frontend-refactor">Frontend Refactor Plan</a></li>
+<li><a href="#6-bug-fixes">Bug Fixes Analysis</a></li>
+<li><a href="#7-coupling-reduction">Coupling Reduction Strategy</a></li>
+<li><a href="#8-cohesion-improvement">Cohesion Improvement</a></li>
+<li><a href="#9-extensibility">Extensibility Strategy</a></li>
+<li><a href="#10-before-after">Before vs After Examples</a></li>
+</ol>
+<hr />
+<h2 id="1-critical-fix-completed-domain-layer-recovery">1. Critical Fix Completed: Domain Layer Recovery <a id="1-critical-fix-completed"></a><a class="headerlink" href="#1-critical-fix-completed-domain-layer-recovery" title="Permanent link">&para;</a></h2>
+<h3 id="problem">Problem<a class="headerlink" href="#problem" title="Permanent link">&para;</a></h3>
+<p>The <strong>entire domain layer</strong> (<code>server2/domain/</code>) had no <code>.py</code> source files — only compiled <code>.pyc</code> bytecode in <code>__pycache__/</code>. This made the app <strong>completely non-functional</strong> (<code>ModuleNotFoundError</code> on startup).</p>
+<h3 id="fix-applied">Fix Applied<a class="headerlink" href="#fix-applied" title="Permanent link">&para;</a></h3>
+<p>All 8 domain source files were reconstructed from <code>.pyc</code> bytecode analysis:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Lines</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domain/__init__.py</code></td>
+<td>55</td>
+<td>Re-exports all domain objects</td>
+</tr>
+<tr>
+<td><code>domain/types.py</code></td>
+<td>133</td>
+<td>Dataclasses: <code>RFBudgetParams</code>, <code>LinkBudgetResult</code>, <code>FootprintResult</code>, <code>GroundStation</code>, <code>TelemetryPoint</code>, <code>LinkStatus</code></td>
+</tr>
+<tr>
+<td><code>domain/rf_math.py</code></td>
+<td>82</td>
+<td>Pure RF math: FSPL, EIRP, atmospheric loss, margin</td>
+</tr>
+<tr>
+<td><code>domain/coordinate_math.py</code></td>
+<td>150</td>
+<td>Geodetic transforms: Haversine, ENU, body-frame, quaternion rotation</td>
+</tr>
+<tr>
+<td><code>domain/antenna_registry.py</code></td>
+<td>203</td>
+<td>Pluggable antenna patterns: dipole, yagi, patch, helix, omni</td>
+</tr>
+<tr>
+<td><code>domain/rf_effects.py</code></td>
+<td>195</td>
+<td>Effect chain: multipath fading, pendulum swing, body shadowing, IMU variation</td>
+</tr>
+<tr>
+<td><code>domain/link_budget.py</code></td>
+<td>176</td>
+<td>Vectorized link budget computation</td>
+</tr>
+<tr>
+<td><code>domain/footprint.py</code></td>
+<td>131</td>
+<td>Ground power-grid computation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verification:</strong> App now starts, all 23 API routes register, all domain imports pass.</p>
+<hr />
+<h2 id="2-architecture-audit">2. Architecture Audit <a id="2-architecture-audit"></a><a class="headerlink" href="#2-architecture-audit" title="Permanent link">&para;</a></h2>
+<h3 id="21-current-architecture-map">2.1 Current Architecture Map<a class="headerlink" href="#21-current-architecture-map" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ Frontend: index2.html (3,784 lines — monolithic)             │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   CSS + HTML + 2,900 lines JS (Cesium, Plotly, state, API)   │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   References static/js/state.js + api.js (FILES DON&#39;T EXIST) │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>└──────────────┬───────────────────────────────────────────────┘
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>               │ fetch() — JSON REST
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>┌──────────────▼───────────────────────────────────────────────┐
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│ app.py (532 lines) — Flask Routes + Parameter Extraction     │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├─ Inline param parsing (30+ lines per route)              │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├─ Direct model access in some routes                      │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   └─ Helper functions (_make_plotly_pattern, etc.)            │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>├──────────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│ Controllers (5 files) — Thin adapters                        │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├─ footprint_controller → domain.footprint                 │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├─ antenna_controller → AntennaModel + AntennaRegistry     │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   ├─ link_budget_controller → domain.link_budget             │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   ├─ rf_budget_controller → RFBudgetModel (pass-through)     │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   └─ telemetry_controller → TelemetryModel (pass-through)    │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>├──────────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│ Models (4 files) — State containers + some business logic    │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   ├─ AntennaModel → CONFIGS dict + pattern computation       │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   ├─ TelemetryModel → XLSX parser + data store               │
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├─ RFBudgetModel → 28-parameter dict store                 │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   └─ FootprintModel → rotation_matrix + grid calc (DEAD)     │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>├──────────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│ Domain (8 files) — Pure business logic (numpy, no Flask)     │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   ├─ types.py: Dataclasses/DTOs                              │
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   ├─ rf_math.py: FSPL, EIRP, margin (stateless)             │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ├─ coordinate_math.py: Geodetic transforms (stateless)     │
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   ├─ antenna_registry.py: Pattern registry (class-level)     │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│   ├─ rf_effects.py: Composable effect chain                  │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│   ├─ link_budget.py: Full link budget computation            │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   └─ footprint.py: Ground power grid                         │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>├──────────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│ Services (1 file) — shared_service.py (DEPRECATED/DEAD)      │
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>└──────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="22-anti-patterns-found">2.2 Anti-Patterns Found<a class="headerlink" href="#22-anti-patterns-found" title="Permanent link">&para;</a></h3>
+<h4 id="p1-critical-massive-duplication-between-models-and-domain">P1 — CRITICAL: Massive Duplication Between Models and Domain<a class="headerlink" href="#p1-critical-massive-duplication-between-models-and-domain" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>In <code>models/</code></th>
+<th>In <code>domain/</code></th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Antenna patterns</td>
+<td><code>antenna_model.py</code> (170 lines)</td>
+<td><code>antenna_registry.py</code> (203 lines)</td>
+<td><strong>Both exist, both register patterns</strong></td>
+</tr>
+<tr>
+<td>Footprint grid</td>
+<td><code>footprint_model.py</code> (150 lines)</td>
+<td><code>footprint.py</code> (131 lines)</td>
+<td><code>footprint_model.py</code> is DEAD CODE</td>
+</tr>
+<tr>
+<td>RF params</td>
+<td><code>rf_budget_model.py</code> (plain dict)</td>
+<td><code>types.py</code> (RFBudgetParams dataclass)</td>
+<td><strong>Two sources of truth</strong></td>
+</tr>
+<tr>
+<td>Coordinate math</td>
+<td><code>footprint_model.py</code> (rotation matrix)</td>
+<td><code>coordinate_math.py</code></td>
+<td>Model version is DEAD</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Impact:</strong> <code>antenna_controller.py</code> does DUAL registration — it writes to both <code>AntennaModel</code> and <code>AntennaRegistry</code> on every custom antenna operation.</p>
+<h4 id="p2-fat-route-handlers-in-apppy">P2 — Fat Route Handlers in <code>app.py</code><a class="headerlink" href="#p2-fat-route-handlers-in-apppy" title="Permanent link">&para;</a></h4>
+<p>The <code>/api/link_budget</code> and <code>/api/statistics</code> routes each contain ~30 lines of parameter extraction that is nearly identical:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Repeated in BOTH routes:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">attitude_jitter_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attitude_jitter_deg&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">enable_multipath_fading</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_multipath_fading&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">multipath_fade_depth_db</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;multipath_fade_depth_db&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># ... 8 more parameters</span>
+</code></pre></div>
+<h4 id="p3-3784-line-monolithic-frontend">P3 — 3,784-Line Monolithic Frontend<a class="headerlink" href="#p3-3784-line-monolithic-frontend" title="Permanent link">&para;</a></h4>
+<p><code>index2.html</code> contains ALL frontend code:
+- ~200 lines CSS
+- ~600 lines HTML layout
+- ~2,900 lines JavaScript including:
+  - Cesium 3D globe rendering
+  - Plotly chart rendering
+  - State management (20+ global variables)
+  - API communication
+  - PDF report generation (~300 lines)
+  - CSV/JSON export
+  - Custom antenna management
+  - Playback loop with sub-frame interpolation
+  - Auto-refresh with debounced listeners</p>
+<p><strong>No separation of concerns whatsoever.</strong></p>
+<h4 id="p4-missing-static-files">P4 — Missing Static Files<a class="headerlink" href="#p4-missing-static-files" title="Permanent link">&para;</a></h4>
+<p><code>index2.html</code> loads:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;/static/js/state.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;/static/js/api.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre></div>
+But <code>server2/static/js/</code> directory is <strong>empty</strong> — these files don't exist.</p>
+<h4 id="p5-dead-code">P5 — Dead Code<a class="headerlink" href="#p5-dead-code" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>services/shared_service.py</code></td>
+<td>Explicitly marked DEPRECATED, imported by nothing</td>
+</tr>
+<tr>
+<td><code>models/footprint_model.py</code></td>
+<td>Superseded by <code>domain/footprint.py</code></td>
+</tr>
+<tr>
+<td>Most of <code>models/antenna_model.py</code></td>
+<td>Superseded by <code>domain/antenna_registry.py</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="p6-hardcoded-ground-station-in-multiple-places">P6 — Hardcoded Ground Station in Multiple Places<a class="headerlink" href="#p6-hardcoded-ground-station-in-multiple-places" title="Permanent link">&para;</a></h4>
+<p>Ground station coordinates appear in:
+1. <code>app.py</code> line 47: <code>GROUND_STATION = {"lat": 48.5678, ...}</code>
+2. <code>domain/types.py</code>: <code>GroundStation(lat=48.5678, ...)</code>
+3. <code>config.py</code> line ~100: <code>GROUND_STATION_LAT = 48.5678</code></p>
+<p>Three separate definitions of the same constant.</p>
+<hr />
+<h2 id="3-target-architecture-redesign">3. Target Architecture Redesign <a id="3-target-architecture"></a><a class="headerlink" href="#3-target-architecture-redesign" title="Permanent link">&para;</a></h2>
+<h3 id="proposed-lean-clean-architecture">Proposed: Lean Clean Architecture<a class="headerlink" href="#proposed-lean-clean-architecture" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>┌─────────────────────────────────────────────────────────┐
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│ Frontend (split into ES Modules)                         │
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   ├─ index.html (layout only, ~200 lines)                │
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   ├─ static/js/state.js    — reactive state store        │
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│   ├─ static/js/api.js      — fetch wrappers              │
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   ├─ static/js/cesium.js   — 3D globe rendering          │
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│   ├─ static/js/charts.js   — Plotly chart rendering      │
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│   ├─ static/js/report.js   — PDF/CSV/JSON export         │
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│   └─ static/js/app.js      — init, event wiring, playback│
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>└───────────────┬─────────────────────────────────────────┘
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>                │
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>┌───────────────▼─────────────────────────────────────────┐
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│ app.py (~200 lines) — THIN route definitions only        │
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│   - No parameter extraction logic                        │
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>│   - No helper functions                                  │
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>│   - Just: parse JSON/args → call controller → jsonify    │
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>└───────────────┬─────────────────────────────────────────┘
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>                │
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>┌───────────────▼─────────────────────────────────────────┐
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>│ Controllers (5 files) — Input validation + orchestration │
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>│   - Parse &amp; validate request parameters                  │
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>│   - Build domain DTOs (RFBudgetParams, etc.)             │
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>│   - Call domain functions                                │
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>│   - Format response                                      │
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>└───────────────┬─────────────────────────────────────────┘
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>                │
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>┌───────────────▼─────────────────────────────────────────┐
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>│ Domain Layer (UNCHANGED — already clean)                  │
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>│   - Pure functions, numpy arrays, no Flask               │
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>│   - Composable effect chain (plugin architecture)        │
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>│   - Stateless RF math                                    │
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>│   - Registry pattern for antennas                        │
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>└─────────────────────────────────────────────────────────┘
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>DELETED:
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>  × models/antenna_model.py  → AntennaRegistry replaces it
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>  × models/footprint_model.py → domain/footprint.py replaces it
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>  × services/shared_service.py → was already dead code
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>KEPT (simplified):
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>  ✓ models/rf_budget_model.py → thin wrapper around RFBudgetParams
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>  ✓ models/telemetry_model.py → XLSX parser (no domain equivalent)
+</code></pre></div>
+<h3 id="key-principles">Key Principles<a class="headerlink" href="#key-principles" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Single Source of Truth:</strong> <code>RFBudgetParams</code> is THE parameter object. <code>RFBudgetModel</code> becomes a thin persistence wrapper.</li>
+<li><strong>Domain Purity:</strong> Domain layer already has zero Flask dependencies — preserve this.</li>
+<li><strong>Thin Routes:</strong> <code>app.py</code> shrinks from 532 to ~200 lines by moving param extraction to controllers.</li>
+<li><strong>No Duplication:</strong> Delete <code>AntennaModel</code>, <code>FootprintModel</code>, <code>SharedService</code>.</li>
+</ol>
+<hr />
+<h2 id="4-backend-refactor-plan">4. Backend Refactor Plan <a id="4-backend-refactor"></a><a class="headerlink" href="#4-backend-refactor-plan" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-eliminate-dead-code-low-risk">Phase 1: Eliminate Dead Code (Low Risk)<a class="headerlink" href="#phase-1-eliminate-dead-code-low-risk" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Delete</strong> <code>services/shared_service.py</code> — unused</li>
+<li><strong>Delete</strong> <code>models/footprint_model.py</code> — superseded by <code>domain/footprint.py</code></li>
+<li><strong>Update</strong> <code>models/__init__.py</code> — remove <code>FootprintModel</code> export</li>
+<li><strong>Update</strong> <code>controllers/footprint_controller.py</code> — already uses domain layer, just remove <code>FootprintModel</code> dependency</li>
+</ol>
+<h3 id="phase-2-consolidate-antenna-registration-medium-risk">Phase 2: Consolidate Antenna Registration (Medium Risk)<a class="headerlink" href="#phase-2-consolidate-antenna-registration-medium-risk" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Delete</strong> pattern functions from <code>models/antenna_model.py</code> (keep only as a thin facade if needed for backward compat)</li>
+<li><strong>Remove</strong> dual registration in <code>antenna_controller.py</code> — register ONLY in <code>AntennaRegistry</code></li>
+<li><strong>Make</strong> <code>AntennaModel.CONFIGS</code> read from <code>AntennaRegistry.all_configs()</code> instead of maintaining its own copy</li>
+</ol>
+<h3 id="phase-3-unify-rf-budget-state-medium-risk">Phase 3: Unify RF Budget State (Medium Risk)<a class="headerlink" href="#phase-3-unify-rf-budget-state-medium-risk" title="Permanent link">&para;</a></h3>
+<p>Replace <code>RFBudgetModel</code> (dict-based) with <code>RFBudgetParams</code> (dataclass):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># models/rf_budget_model.py — AFTER</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">RFBudgetModel</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">RFBudgetParams</span><span class="p">()</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">update_from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RFBudgetParams</span><span class="p">:</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span>
+</code></pre></div>
+<h3 id="phase-4-extract-parameter-parsing-from-apppy-low-risk">Phase 4: Extract Parameter Parsing from <code>app.py</code> (Low Risk)<a class="headerlink" href="#phase-4-extract-parameter-parsing-from-apppy-low-risk" title="Permanent link">&para;</a></h3>
+<p>Move the 30-line parameter extraction blocks from <code>/api/link_budget</code> and <code>/api/statistics</code> into <code>LinkBudgetController.parse_request()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># BEFORE (in app.py, duplicated twice):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">attitude_jitter_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attitude_jitter_deg&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">enable_multipath_fading</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_multipath_fading&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># ... 8 more lines</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># AFTER (in link_budget_controller.py):</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nd">@staticmethod</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse_rf_overrides</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="s2">&quot;attitude_jitter_deg&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attitude_jitter_deg&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="s2">&quot;enable_multipath_fading&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_multipath_fading&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>        <span class="o">...</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="p">}</span>
+</code></pre></div>
+<h3 id="phase-5-consolidate-ground-station-low-risk">Phase 5: Consolidate Ground Station (Low Risk)<a class="headerlink" href="#phase-5-consolidate-ground-station-low-risk" title="Permanent link">&para;</a></h3>
+<p>Single definition in <code>config.py</code>, referenced everywhere else:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># config.py</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">GROUND_STATION</span> <span class="o">=</span> <span class="n">GroundStation</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">48.5678</span><span class="p">,</span> <span class="n">lon</span><span class="o">=-</span><span class="mf">81.3655</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">285.8</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="5-frontend-refactor-plan">5. Frontend Refactor Plan <a id="5-frontend-refactor"></a><a class="headerlink" href="#5-frontend-refactor-plan" title="Permanent link">&para;</a></h2>
+<h3 id="current-state-3784-lines-in-one-file">Current State: 3,784 Lines in One File<a class="headerlink" href="#current-state-3784-lines-in-one-file" title="Permanent link">&para;</a></h3>
+<p>The frontend is a monolith mixing:
+- Layout HTML
+- CSS styling
+- 20+ global state variables
+- Cesium 3D rendering (patterns, trajectory, beam, footprint)
+- Plotly charts (margin, RSSI, pattern, analysis)
+- API communication (10+ fetch calls)
+- PDF report generation (~300 lines)
+- Playback loop with rAF
+- Event handlers with debouncing</p>
+<h3 id="proposed-module-split">Proposed Module Split<a class="headerlink" href="#proposed-module-split" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Responsibility</th>
+<th>Est. Lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index.html</code></td>
+<td>Layout + CSS + script imports</td>
+<td>~800</td>
+</tr>
+<tr>
+<td><code>static/js/state.js</code></td>
+<td>Single reactive state store, all global vars</td>
+<td>~150</td>
+</tr>
+<tr>
+<td><code>static/js/api.js</code></td>
+<td>All <code>fetch()</code> calls, error handling</td>
+<td>~200</td>
+</tr>
+<tr>
+<td><code>static/js/cesium.js</code></td>
+<td>Cesium viewer, patterns, trajectory, beam, footprint</td>
+<td>~800</td>
+</tr>
+<tr>
+<td><code>static/js/charts.js</code></td>
+<td>Plotly charts: margin, RSSI, pattern, analysis</td>
+<td>~400</td>
+</tr>
+<tr>
+<td><code>static/js/report.js</code></td>
+<td>PDF generation, CSV/JSON export</td>
+<td>~400</td>
+</tr>
+<tr>
+<td><code>static/js/app.js</code></td>
+<td>Init, playback loop, event wiring, auto-refresh</td>
+<td>~400</td>
+</tr>
+</tbody>
+</table>
+<h3 id="migration-strategy">Migration Strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Create <code>state.js</code></strong> — Extract all global variables into a single state object:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// state.js</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nx">telemetry</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nx">budgetData</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nx">antennaConfigs</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="nx">currentIdx</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="nx">layerVis</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trajectory</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">beam</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="c1">// ... all 20+ globals</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="p">};</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create <code>api.js</code></strong> — Extract all fetch calls:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// api.js</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loadBudget</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span><span class="w"> </span><span class="nx">rx</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loadStats</span><span class="p">(</span><span class="nx">tx</span><span class="p">,</span><span class="w"> </span><span class="nx">rx</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loadFootprint</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create remaining modules</strong> — Extract by DOM/rendering responsibility</p>
+</li>
+<li>
+<p><strong>Update <code>index.html</code></strong> — Replace inline <code>&lt;script&gt;</code> with ES module imports</p>
+</li>
+</ol>
+<h3 id="key-decision-es-modules-vs-build-tool">Key Decision: ES Modules vs Build Tool<a class="headerlink" href="#key-decision-es-modules-vs-build-tool" title="Permanent link">&para;</a></h3>
+<p><strong>Recommended: ES Modules (no build step)</strong></p>
+<p>The app already references <code>&lt;script type="module"&gt;</code>. Native ES modules work in all modern browsers and keep the development workflow simple (no webpack/vite needed for a small team).</p>
+<hr />
+<h2 id="6-bug-fixes-analysis">6. Bug Fixes Analysis <a id="6-bug-fixes"></a><a class="headerlink" href="#6-bug-fixes-analysis" title="Permanent link">&para;</a></h2>
+<h3 id="bug-1-duplicate-event-handlers-on-checkboxes-confirmed">BUG-1: Duplicate Event Handlers on Checkboxes (CONFIRMED)<a class="headerlink" href="#bug-1-duplicate-event-handlers-on-checkboxes-confirmed" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>index2.html</code> lines 3501-3537 (<code>setupAutoRefreshListeners()</code>)</p>
+<p><strong>Problem:</strong> Checkbox elements have BOTH:
+- Inline <code>onchange="applyRFBudget()"</code> in HTML attributes
+- Programmatic <code>addEventListener('change', ...)</code> in <code>setupAutoRefreshListeners()</code></p>
+<p>This causes <code>applyRFBudget()</code> to fire <strong>twice</strong> on every checkbox change.</p>
+<p><strong>Affected elements:</strong>
+- <code>#enable-multipath-fading</code>
+- <code>#enable-pendulum-swing</code>
+- <code>#enable-body-shadowing</code>
+- <code>#enable-imu-variation</code>
+- <code>#enable-attitude-rotation</code></p>
+<p><strong>Fix:</strong> Remove the inline <code>onchange</code> attributes and rely solely on <code>setupAutoRefreshListeners()</code>.</p>
+<h3 id="bug-2-missing-static-js-files">BUG-2: Missing Static JS Files<a class="headerlink" href="#bug-2-missing-static-js-files" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>index2.html</code> lines ~20</p>
+<p><strong>Problem:</strong> References <code>static/js/state.js</code> and <code>static/js/api.js</code> which don't exist. The <code>&lt;script&gt;</code> tags load empty modules that silently fail.</p>
+<p><strong>Fix:</strong> Either create these files (part of frontend refactor) or remove the dead <code>&lt;script&gt;</code> tags.</p>
+<h3 id="bug-3-frame-counter-pattern-update-miss">BUG-3: Frame Counter Pattern Update Miss<a class="headerlink" href="#bug-3-frame-counter-pattern-update-miss" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>index2.html</code> <code>updateCesiumPatterns()</code> function</p>
+<p><strong>Problem:</strong> The function uses <code>frameCounter % N</code> to throttle updates. When settings change (e.g., antenna type) without an index change, the pattern update may be skipped until the next matching frame counter modulus.</p>
+<p><strong>Fix:</strong> Add a <code>settingsChanged</code> flag that forces an immediate pattern update, then resets.</p>
+<h3 id="bug-4-telemetry-overwrite-on-budget-load">BUG-4: Telemetry Overwrite on Budget Load<a class="headerlink" href="#bug-4-telemetry-overwrite-on-budget-load" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>index2.html</code> <code>loadBudget()</code> function</p>
+<p><strong>Problem:</strong> <code>loadBudget()</code> replaces the <code>telemetry</code> array from the budget API response, but if the call fails, the old telemetry is preserved with stale <code>_imuAccelerations</code> cache.</p>
+<p><strong>Fix:</strong> Clear <code>_imuAccelerations</code> cache regardless of success/failure, or better yet, compute it lazily from current telemetry.</p>
+<h3 id="bug-5-double-telemetry-upload-endpoints">BUG-5: Double Telemetry Upload Endpoints<a class="headerlink" href="#bug-5-double-telemetry-upload-endpoints" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>app.py</code> lines 174-228</p>
+<p><strong>Problem:</strong> Two nearly identical endpoints:
+- <code>POST /api/telemetry/upload</code> (returns <code>{message, count}</code>)<br />
+- <code>POST /api/upload_telemetry</code> (returns <code>{ok, message}</code>)</p>
+<p>Different response formats for the same operation.</p>
+<p><strong>Fix:</strong> Deprecate one, keep a single canonical endpoint.</p>
+<h3 id="bug-6-footprintmodel-imported-but-unused">BUG-6: <code>FootprintModel</code> Imported But Unused<a class="headerlink" href="#bug-6-footprintmodel-imported-but-unused" title="Permanent link">&para;</a></h3>
+<p><strong>Location:</strong> <code>app.py</code> line 14, <code>models/__init__.py</code></p>
+<p><strong>Problem:</strong> <code>FootprintModel</code> is imported and instantiated but the footprint controller actually calls <code>domain.footprint.compute_footprint_grid</code>. The model instance is passed to <code>FootprintController.__init__</code> but may not be used.</p>
+<p><strong>Fix:</strong> Remove after Phase 1 of backend refactor.</p>
+<hr />
+<h2 id="7-coupling-reduction-strategy">7. Coupling Reduction Strategy <a id="7-coupling-reduction"></a><a class="headerlink" href="#7-coupling-reduction-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="current-coupling-hot-spots">Current Coupling Hot Spots<a class="headerlink" href="#current-coupling-hot-spots" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>antenna_controller.py ──→ AntennaModel (legacy)
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>                      ──→ AntennaRegistry (domain)
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>                      ──→ AntennaDefinition (domain)
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>link_budget_controller.py ──→ AntennaModel
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>                          ──→ RFBudgetModel
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>                          ──→ TelemetryModel
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>                          ──→ RFBudgetParams (domain)
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>                          ──→ compute_link_budget (domain)
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>app.py ──→ ALL models (direct access)
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>       ──→ ALL controllers
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>       ──→ AntennaRegistry (for pattern helpers)
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>       ──→ request (Flask global)
+</code></pre></div>
+<h3 id="reduction-plan">Reduction Plan<a class="headerlink" href="#reduction-plan" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Coupling</th>
+<th>Current</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>antenna_controller → AntennaModel</code></td>
+<td>Direct</td>
+<td><strong>REMOVE</strong> (use AntennaRegistry only)</td>
+</tr>
+<tr>
+<td><code>app.py → models</code></td>
+<td>Direct access (e.g., <code>rf_budget_model.get()</code> in routes)</td>
+<td>Via controllers only</td>
+</tr>
+<tr>
+<td><code>app.py → AntennaRegistry</code></td>
+<td>Direct import for pattern helpers</td>
+<td>Move helpers to AntennaController</td>
+</tr>
+<tr>
+<td>Ground station</td>
+<td>3 separate definitions</td>
+<td>Single <code>config.GROUND_STATION</code></td>
+</tr>
+<tr>
+<td><code>link_budget_controller → 3 models</code></td>
+<td>Constructor injection of 3 models</td>
+<td>Inject <code>RFBudgetParams</code> + telemetry list</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-cohesion-improvement">8. Cohesion Improvement <a id="8-cohesion-improvement"></a><a class="headerlink" href="#8-cohesion-improvement" title="Permanent link">&para;</a></h2>
+<h3 id="per-component-assessment">Per-Component Assessment<a class="headerlink" href="#per-component-assessment" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Current Cohesion</th>
+<th>Issue</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domain/</code></td>
+<td><strong>HIGH</strong> ✅</td>
+<td>Already pure, stateless, well-separated</td>
+<td>Keep as-is</td>
+</tr>
+<tr>
+<td><code>antenna_controller</code></td>
+<td>LOW</td>
+<td>Manages both legacy model AND domain registry</td>
+<td>Single registry only</td>
+</tr>
+<tr>
+<td><code>rf_budget_controller</code></td>
+<td>HIGH ✅</td>
+<td>Clean pass-through</td>
+<td>Add param parsing from app.py</td>
+</tr>
+<tr>
+<td><code>telemetry_controller</code></td>
+<td>HIGH ✅</td>
+<td>Clean pass-through</td>
+<td>Keep as-is</td>
+</tr>
+<tr>
+<td><code>link_budget_controller</code></td>
+<td>MEDIUM</td>
+<td>Builds domain params but doesn't parse request</td>
+<td>Add request parsing</td>
+</tr>
+<tr>
+<td><code>footprint_controller</code></td>
+<td>MEDIUM</td>
+<td>Depends on FootprintModel it doesn't really use</td>
+<td>Remove FootprintModel dep</td>
+</tr>
+<tr>
+<td><code>app.py</code></td>
+<td>LOW</td>
+<td>Mixes routing, param parsing, pattern generation</td>
+<td>Route definitions only</td>
+</tr>
+<tr>
+<td><code>index2.html</code></td>
+<td><strong>VERY LOW</strong></td>
+<td>Everything in one file</td>
+<td>Split into 6 modules</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-extensibility-strategy">9. Extensibility Strategy <a id="9-extensibility"></a><a class="headerlink" href="#9-extensibility-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="adding-new-antenna-types-already-plugin-ready">Adding New Antenna Types (Already Plugin-Ready!)<a class="headerlink" href="#adding-new-antenna-types-already-plugin-ready" title="Permanent link">&para;</a></h3>
+<p>The domain layer already supports this via <code>AntennaRegistry</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">server2.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">AntennaRegistry</span><span class="p">,</span> <span class="n">AntennaDefinition</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Define pattern function</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_custom_pattern</span><span class="p">(</span><span class="n">theta_deg</span><span class="p">,</span> <span class="n">phi_deg</span><span class="p">,</span> <span class="n">gain_dbi</span><span class="p">):</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="c1"># ... your math here</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="k">return</span> <span class="n">gain_db_array</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># Register at any time</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">AntennaRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_custom&quot;</span><span class="p">,</span> <span class="n">AntennaDefinition</span><span class="p">(</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Custom Antenna&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">gain_dbi</span><span class="o">=</span><span class="mf">8.5</span><span class="p">,</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">pattern_fn</span><span class="o">=</span><span class="n">my_custom_pattern</span><span class="p">,</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom directional antenna&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">use_case</span><span class="o">=</span><span class="s2">&quot;Specialized tracking&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="n">beamwidth_3db</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="p">))</span>
+</code></pre></div>
+<p><strong>No code changes needed</strong> — the registry pattern is already in place.</p>
+<h3 id="adding-new-rf-effects-already-plugin-ready">Adding New RF Effects (Already Plugin-Ready!)<a class="headerlink" href="#adding-new-rf-effects-already-plugin-ready" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">server2.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">RFEffectsChain</span><span class="p">,</span> <span class="n">EffectContext</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">rain_attenuation</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">EffectContext</span><span class="p">,</span> <span class="n">rain_rate_mm_hr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Rain attenuation effect for frequencies &gt; 10 GHz.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">k</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">rain_rate_mm_hr</span> <span class="o">**</span> <span class="mf">0.65</span>  <span class="c1"># ITU-R P.838</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="k">return</span> <span class="n">k</span> <span class="o">*</span> <span class="n">ctx</span><span class="o">.</span><span class="n">dist_km</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c1"># Add to chain</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="n">chain</span> <span class="o">=</span> <span class="n">RFEffectsChain</span><span class="p">()</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rain_attenuation</span><span class="p">,</span> <span class="n">rain_rate_mm_hr</span><span class="o">=</span><span class="mf">25.0</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="extending-the-frontend">Extending the Frontend<a class="headerlink" href="#extending-the-frontend" title="Permanent link">&para;</a></h3>
+<p>After the module split, new visualizations can be added as independent modules:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// static/js/heatmap.js — new module</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./state.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./api.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">renderHeatmap</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="c1">// New visualization that reads from shared state</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="10-before-vs-after-examples">10. Before vs After Examples <a id="10-before-after"></a><a class="headerlink" href="#10-before-vs-after-examples" title="Permanent link">&para;</a></h2>
+<h3 id="example-1-apilink_budget-route">Example 1: <code>/api/link_budget</code> Route<a class="headerlink" href="#example-1-apilink_budget-route" title="Permanent link">&para;</a></h3>
+<p><strong>BEFORE</strong> (<code>app.py</code> — 45 lines per route):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/link_budget&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">api_link_budget</span><span class="p">():</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">tx</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tx&quot;</span><span class="p">,</span> <span class="s2">&quot;dipole_half_wave&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">rx</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rx&quot;</span><span class="p">,</span> <span class="s2">&quot;yagi&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">gs_lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">,</span> <span class="n">GROUND_STATION</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]))</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">gs_lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">,</span> <span class="n">GROUND_STATION</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">gs_alt</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gs_alt&quot;</span><span class="p">,</span> <span class="n">GROUND_STATION</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">]))</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">attitude_jitter_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attitude_jitter_deg&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">enable_multipath_fading</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_multipath_fading&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">multipath_fade_depth_db</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;multipath_fade_depth_db&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="n">enable_pendulum_swing</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_pendulum_swing&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="n">pendulum_frequency_hz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pendulum_frequency_hz&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="n">enable_body_shadowing</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_body_shadowing&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">body_shadow_angle_range_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body_shadow_angle_range_deg&quot;</span><span class="p">,</span> <span class="mi">45</span><span class="p">))</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    <span class="n">enable_imu_variation</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_imu_variation&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>    <span class="n">imu_variation_intensity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;imu_variation_intensity&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">budget</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">link_budget_controller</span><span class="o">.</span><span class="n">calculate_link_budget</span><span class="p">(</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>        <span class="n">tx</span><span class="o">=</span><span class="n">tx</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="n">rx</span><span class="p">,</span> <span class="n">gs_lat</span><span class="o">=</span><span class="n">gs_lat</span><span class="p">,</span> <span class="n">gs_lon</span><span class="o">=</span><span class="n">gs_lon</span><span class="p">,</span> <span class="n">gs_alt</span><span class="o">=</span><span class="n">gs_alt</span><span class="p">,</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>        <span class="n">attitude_jitter_deg</span><span class="o">=</span><span class="n">attitude_jitter_deg</span><span class="p">,</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>        <span class="n">enable_multipath_fading</span><span class="o">=</span><span class="n">enable_multipath_fading</span><span class="p">,</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>        <span class="c1"># ... 6 more parameters</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>    <span class="p">)</span>
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">budget</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">budget</span><span class="p">,</span> <span class="s1">&#39;to_dict&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">budget</span><span class="p">),</span> <span class="mi">200</span>
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">budget</span><span class="p">),</span> <span class="n">status</span>
+</code></pre></div></p>
+<p><strong>AFTER</strong> (<code>app.py</code> — 5 lines):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/link_budget&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">api_link_budget</span><span class="p">():</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">result</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">link_budget_controller</span><span class="o">.</span><span class="n">handle_request</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="n">status</span>
+</code></pre></div></p>
+<h3 id="example-2-antenna-registration">Example 2: Antenna Registration<a class="headerlink" href="#example-2-antenna-registration" title="Permanent link">&para;</a></h3>
+<p><strong>BEFORE</strong> (<code>antenna_controller.py</code> — dual registration):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">add_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="c1"># Register in LEGACY model</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_custom</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="c1"># ALSO register in domain registry</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">AntennaRegistry</span><span class="o">.</span><span class="n">register_custom</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">AntennaDefinition</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+</code></pre></div></p>
+<p><strong>AFTER</strong> (single registry):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">add_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">AntennaRegistry</span><span class="o">.</span><span class="n">register_custom</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">AntennaDefinition</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+</code></pre></div></p>
+<h3 id="example-3-frontend-state">Example 3: Frontend State<a class="headerlink" href="#example-3-frontend-state" title="Permanent link">&para;</a></h3>
+<p><strong>BEFORE</strong> (20+ globals scattered in index2.html):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kd">let</span><span class="w"> </span><span class="nx">telemetry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kd">let</span><span class="w"> </span><span class="nx">budgetData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="kd">let</span><span class="w"> </span><span class="nx">antennaConfigs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="kd">let</span><span class="w"> </span><span class="nx">viewer</span><span class="p">,</span><span class="w"> </span><span class="nx">balloonEntity</span><span class="p">,</span><span class="w"> </span><span class="nx">beamEntity</span><span class="p">;</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="kd">let</span><span class="w"> </span><span class="nx">txPatternEntities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">rxPatternEntities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="kd">let</span><span class="w"> </span><span class="nx">layerVis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trajectory</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">beam</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1">// ... 15 more globals</span>
+</code></pre></div></p>
+<p><strong>AFTER</strong> (<code>static/js/state.js</code>):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="nx">telemetry</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nx">budgetData</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="nx">antennaConfigs</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="nx">cesium</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">viewer</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">balloonEntity</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">beamEntity</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">tx</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">rx</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="nx">visibility</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trajectory</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">beam</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="nx">playback</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">currentIdx</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">timer</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">playing</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="nx">settings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">trajectory</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="nx">render</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="nx">grid</span><span class="o">:</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="p">};</span>
+</code></pre></div></p>
+<hr />
+<h2 id="implementation-priority">Implementation Priority<a class="headerlink" href="#implementation-priority" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Task</th>
+<th>Risk</th>
+<th>Effort</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅ DONE</td>
+<td>Recover domain .py source files</td>
+<td>—</td>
+<td>—</td>
+<td><strong>App now works</strong></td>
+</tr>
+<tr>
+<td>1</td>
+<td>Delete dead code (SharedService, FootprintModel)</td>
+<td>Low</td>
+<td>30 min</td>
+<td>Clean codebase</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Fix checkbox duplicate events (BUG-1)</td>
+<td>Low</td>
+<td>15 min</td>
+<td>Fixes double-fire</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Remove dead <code>&lt;script&gt;</code> tags (BUG-2)</td>
+<td>Low</td>
+<td>5 min</td>
+<td>No console errors</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Consolidate antenna registration</td>
+<td>Medium</td>
+<td>2 hrs</td>
+<td>Eliminate duplication</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Extract param parsing to controllers</td>
+<td>Low</td>
+<td>2 hrs</td>
+<td>Thin routes</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Unify ground station config</td>
+<td>Low</td>
+<td>30 min</td>
+<td>Single source</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Frontend module split</td>
+<td>Medium</td>
+<td>8 hrs</td>
+<td>Maintainability</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Create <code>state.js</code> and <code>api.js</code></td>
+<td>Medium</td>
+<td>4 hrs</td>
+<td>State management</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total estimated effort: ~17 hours for a single developer.</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,58 @@
+FROM nvcr.io/nvidia/l4t-jetpack:r36.2.0 AS base
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    curl \
+    git \
+    clang \
+    libclang-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/usr/local/cuda/bin:/root/.cargo/bin:${PATH}"
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable && \
+    cargo install cargo-chef
+
+# ---- planner: generate recipe.json from manifest + lockfile ----
+FROM base AS planner
+WORKDIR /workspace
+COPY docker/Cargo.ffed_rs.toml Cargo.toml
+COPY Cargo.lock ./
+COPY ffed_rs/ ffed_rs/
+RUN cargo chef prepare --recipe-path recipe.json
+
+# ---- builder: cook deps (cached), then build crate ----
+FROM base AS builder
+WORKDIR /workspace
+
+COPY docker/Cargo.ffed_rs.toml Cargo.toml
+COPY Cargo.lock ./
+COPY --from=planner /workspace/recipe.json recipe.json
+RUN set -eux; \
+    LIBCLANG_PATH="$(dirname "$(find /usr -name 'libclang.so*' | head -n1)")"; \
+    test -n "${LIBCLANG_PATH}"; \
+    export LIBCLANG_PATH; \
+    cargo chef cook --release --recipe-path recipe.json
+
+COPY ffed_rs/ ffed_rs/
+RUN set -eux; \
+    LIBCLANG_PATH="$(dirname "$(find /usr -name 'libclang.so*' | head -n1)")"; \
+    test -n "${LIBCLANG_PATH}"; \
+    export LIBCLANG_PATH; \
+    cargo build --release
+
+# ---- runtime image ----
+FROM nvcr.io/nvidia/l4t-base:r36.2.0
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cuda-libraries-12-2 \
+    gphoto2 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/usr/local/cuda/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64"
+
+COPY --from=builder /workspace/target/release/ffed_rs /usr/local/bin/ffed_rs
+
+CMD ["/usr/local/bin/ffed_rs", "/etc/ffed/config.toml"]

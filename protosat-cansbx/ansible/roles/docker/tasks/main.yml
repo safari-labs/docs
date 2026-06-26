@@ -1,0 +1,99 @@
+- name: Install Docker dependencies
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+    update_cache: true
+
+- name: Create Docker keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Docker GPG key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+    force: false
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
+    state: present
+
+- name: Install Docker Engine 27.5.1 (pinned - Docker 28+ breaks on JetPack 6.2 kernel)
+  ansible.builtin.apt:
+    name:
+      - docker-ce=5:27.5.1-1~ubuntu.22.04~jammy
+      - docker-ce-cli=5:27.5.1-1~ubuntu.22.04~jammy
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+    allow_downgrade: true
+
+- name: Hold Docker Engine at 27.5.1 to prevent upgrade to incompatible Docker 28+
+  ansible.builtin.command:
+    cmd: apt-mark hold docker-ce docker-ce-cli
+  changed_when: false
+
+- name: Switch iptables to legacy backend (required for Docker on JetPack kernels)
+  ansible.builtin.alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+
+- name: Switch ip6tables to legacy backend
+  ansible.builtin.alternatives:
+    name: ip6tables
+    path: /usr/sbin/ip6tables-legacy
+
+- name: Ensure Docker service is enabled and running
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: restarted
+
+- name: Add ansible_user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+
+- name: Check if nvidia-container-toolkit is already installed
+  ansible.builtin.command:
+    cmd: dpkg -s nvidia-container-toolkit
+  register: nct_check
+  changed_when: false
+  failed_when: false
+
+- name: Install NVIDIA Container Toolkit
+  when: nct_check.rc != 0
+  block:
+    - name: Add NVIDIA Container Toolkit repository and GPG key
+      ansible.builtin.shell: |
+        curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
+          | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+        curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+          | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+          | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+      args:
+        creates: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+    - name: Install nvidia-container-toolkit
+      ansible.builtin.apt:
+        name: nvidia-container-toolkit
+        state: present
+        update_cache: true
+
+    - name: Configure Docker to use NVIDIA runtime
+      ansible.builtin.command:
+        cmd: nvidia-ctk runtime configure --runtime=docker
+      changed_when: true
+
+    - name: Restart Docker to apply NVIDIA runtime
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted
